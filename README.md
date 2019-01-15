@@ -1,2 +1,6 @@
 # biolink-model-toolkit
-A set of python functions for using the biolink model
+A collection of python functions for using the biolink model (https://github.com/biolink/biolink-model)
+
+https://pypi.org/project/bmt/
+
+Official source for `biolink-model.yaml`: https://biolink.github.io/biolink-model/biolink-model.yaml
