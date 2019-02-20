@@ -1,3 +1,5 @@
+# Aquired from https://biolink.github.io/biolink-model/biolink-model.yaml on 2019-02-20
+
 id: "https://biolink.github.io/biolink-model/ontology/biolink.ttl"
 name: biolink model
 description: >-
