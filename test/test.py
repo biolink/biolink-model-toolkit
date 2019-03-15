@@ -1,5 +1,7 @@
 import bmt, unittest
 
+from inspect import signature
+
 class TestBiolinkModelToolkit(unittest.TestCase):
 
     def test_edgelabel(self):
@@ -55,6 +57,29 @@ class TestBiolinkModelToolkit(unittest.TestCase):
         p2 = bmt.get_predicate('treats')
         self.assertTrue(p1.name == p2.name == 'treats')
         self.assertEqual(bmt.get_predicate('gene'), None)
+        self.assertTrue(bmt.get_class('locus').name == 'gene')
+
+    def test_inputs(self):
+        """
+        All methods in bmt.ToolKit take a single string as an input. This test
+        checks that they still work for invalid inputs and return None.
+        """
+        tk = bmt.Toolkit()
+
+        for name in dir(tk):
+            if name.startswith('_'):
+                continue
+            method = getattr(tk, name)
+            if hasattr(method, '__call__'):
+                sig = signature(method)
+                if len(sig.parameters) == 1:
+                    # Testing the standard lookup methods
+                    method(None)
+                    method(3)
+                    method('invalid')
+                    method(0.25)
+                else:
+                    method(*sig.parameters.keys())
 
 if __name__ == '__main__':
     unittest.main()
