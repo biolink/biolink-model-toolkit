@@ -1,70 +1,68 @@
-import bmt, unittest
+import unittest
+from bmt import Toolkit
 
 from inspect import signature
 
 class TestBiolinkModelToolkit(unittest.TestCase):
 
-    def test_edgelabel(self):
-        self.assertEqual(bmt.is_edgelabel('named thing'), False)
-        self.assertEqual(bmt.is_edgelabel('gene'), False)
-        self.assertEqual(bmt.is_edgelabel('causes'), True)
+    def test_get_element(self):
+        toolkit = Toolkit.build_locally()
 
-    def test_predicate(self):
-        self.assertEqual(bmt.is_predicate('named thing'), False)
-        self.assertEqual(bmt.is_predicate('gene'), False)
-        self.assertEqual(bmt.is_predicate('related to'), True)
-        self.assertEqual(bmt.is_predicate('causes'), True)
+        gene = toolkit.get_element('gene')
+        locus = toolkit.get_element('locus')
+
+        self.assertEqual(gene, locus)
+        self.assertTrue(gene is not None)
+
+    def test_edgelabel(self):
+        toolkit = Toolkit.build_locally()
+        self.assertEqual(toolkit.is_edgelabel('named thing'), False)
+        self.assertEqual(toolkit.is_edgelabel('gene'), False)
+        self.assertEqual(toolkit.is_edgelabel('causes'), True)
 
     def test_category(self):
-        self.assertTrue(bmt.is_category('named thing'))
-        self.assertTrue(bmt.is_category('gene'))
-        self.assertFalse(bmt.is_category('causes'))
+        toolkit = Toolkit.build_locally()
+        self.assertTrue(toolkit.is_category('named thing'))
+        self.assertTrue(toolkit.is_category('gene'))
+        self.assertFalse(toolkit.is_category('causes'))
 
     def test_ancestors(self):
-        self.assertTrue('related to' in bmt.ancestors('causes'))
-        self.assertTrue('named thing' in bmt.ancestors('gene'))
+        toolkit = Toolkit.build_locally()
+        self.assertTrue('related to' in toolkit.ancestors('causes'))
+        self.assertTrue('named thing' in toolkit.ancestors('gene'))
 
     def test_descendents(self):
-        self.assertTrue('causes' in bmt.descendents('related to'))
-        self.assertTrue('gene' in bmt.descendents('named thing'))
+        toolkit = Toolkit.build_locally()
+        self.assertTrue('causes' in toolkit.descendents('related to'))
+        self.assertTrue('gene' in toolkit.descendents('named thing'))
 
     def test_children(self):
-        self.assertTrue('causes' in bmt.children('contributes to'))
+        toolkit = Toolkit.build_locally()
+        self.assertTrue('causes' in toolkit.children('contributes to'))
 
     def test_parent(self):
-        self.assertTrue('contributes to' == bmt.parent('causes'))
+        toolkit = Toolkit.build_locally()
+        self.assertTrue('contributes to' == toolkit.parent('causes'))
 
     def test_mapping(self):
-        self.assertEqual(bmt.get_by_mapping('RO:0002410'), 'causes')
-        self.assertEqual(bmt.get_by_mapping('UMLSSG:GENE'), 'genomic entity')
-        self.assertTrue('gene' in bmt.get_all_by_mapping('UMLSSG:GENE'))
-        self.assertTrue('genomic entity' in bmt.get_all_by_mapping('UMLSSG:GENE'))
+        toolkit = Toolkit.build_locally()
+        self.assertEqual(toolkit.get_by_mapping('RO:0002410'), 'causes')
+        self.assertEqual(toolkit.get_by_mapping('UMLSSG:GENE'), 'genomic entity')
+        self.assertTrue('gene' in toolkit.get_all_by_mapping('UMLSSG:GENE'))
+        self.assertTrue('genomic entity' in toolkit.get_all_by_mapping('UMLSSG:GENE'))
 
         try:
-            bmt.get_by_mapping('SEMMEDDB:ASSOCIATED_WITH')
-            bmt.get_by_mapping('SEMMEDDB:CAUSES')
+            toolkit.get_by_mapping('SEMMEDDB:ASSOCIATED_WITH')
+            toolkit.get_by_mapping('SEMMEDDB:CAUSES')
         except:
             self.fail()
 
-    def test_get_class(self):
-        p1 = bmt.get_class('phenotype')
-        p2 = bmt.get_class('phenotypic feature')
-        self.assertTrue(p1.name == p2.name == 'phenotypic feature')
-        self.assertEqual(bmt.get_class('causes'), None)
-
-    def test_get_predicate(self):
-        p1 = bmt.get_predicate('is substance that treats')
-        p2 = bmt.get_predicate('treats')
-        self.assertTrue(p1.name == p2.name == 'treats')
-        self.assertEqual(bmt.get_predicate('gene'), None)
-        self.assertTrue(bmt.get_class('locus').name == 'gene')
-
     def test_inputs(self):
         """
-        All methods in bmt.ToolKit take a single string as an input. This test
+        All methods in toolkit.ToolKit take a single string as an input. This test
         checks that they still work for invalid inputs and return None.
         """
-        tk = bmt.Toolkit()
+        tk = Toolkit.build_locally()
 
         for name in dir(tk):
             if name.startswith('_'):

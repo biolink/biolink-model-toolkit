@@ -2,7 +2,7 @@ import sys, os, shutil
 
 from setuptools import setup, find_packages
 
-version = '0.0.6'
+version = '0.0.7'
 
 requires = [
     "BiolinkMG"

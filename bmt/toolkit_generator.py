@@ -14,49 +14,27 @@ class ToolkitGenerator(Generator):
     valid_formats = [None]
     def __init__(self, schema: Union[str, TextIO, SchemaDefinition]) -> None:
         super().__init__(schema, None)
-
+        self.aliases = dict()
         self.mappings = defaultdict(set)
-        self.children = defaultdict(list)
+        self.children = defaultdict(set)
         self.parent = dict()
-        self.predicates = {}
-        self.classes = {}
-
-    def add_predicate(self, s:str, e:Element):
-        if s not in self.predicates:
-            self.predicates[s] = e
-        elif s != self.predicates[s].name:
-            raise Exception(f'Predicate {s} already identifies {self.predicates[s].name}')
-
-    def add_class(self, s:str, e:Element):
-        if s not in self.classes:
-            self.classes[s] = e
-        elif s != self.classes[s].name:
-            raise Exception(f'Class {s} already identifies {self.classes[s].name}')
 
     def visit_slot(self, aliased_slot_name: str, slot: SlotDefinition) -> None:
-        ancestors = self.ancestors(slot)
-        if 'related to' in ancestors:
-            slot.edge_label = slot.name.replace(' ', '_')
+        for curie in slot.mappings:
+            self.mappings[curie].add(slot.name)
 
-            self.add_predicate(slot.name, slot)
-            for alias in slot.aliases:
-                self.add_predicate(alias, slot)
+        for alias in slot.aliases:
+            self.aliases[alias] = slot.name
 
-            for curie in slot.mappings:
-                self.mappings[curie].add(slot.edge_label)
-
-            self.children[slot.is_a].append(slot.name)
-            self.parent[slot.name] = slot.is_a
+        self.children[slot.is_a].add(slot.name)
+        self.parent[slot.name] = slot.is_a
 
     def visit_class(self, cls: ClassDefinition) -> bool:
-        ancestors = self.ancestors(cls)
-        if 'named thing' in ancestors:
-            for curie in cls.mappings:
-                self.mappings[curie].add(cls.name)
+        for curie in cls.mappings:
+            self.mappings[curie].add(cls.name)
 
-            self.add_class(cls.name, cls)
-            for alias in cls.aliases:
-                self.add_class(alias, cls)
+        for alias in cls.aliases:
+            self.aliases[alias] = cls.name
 
-            self.children[cls.is_a].append(cls.name)
-            self.parent[cls.name] = cls.is_a
+        self.children[cls.is_a].add(cls.name)
+        self.parent[cls.name] = cls.is_a
