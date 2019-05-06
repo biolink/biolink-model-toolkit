@@ -11,6 +11,46 @@ https://pypi.org/project/bmt/
 
 `pip install bmt`
 
+### Documentation
+This is a small project, so I'll let the code speak for itself. To see documentation use pythons built in `help` method:
+
+```
+$ python
+>>> import bmt
+>>> help(bmt)
+CLASSES
+    builtins.object
+        Toolkit
+    
+    class Toolkit(builtins.object)
+     |  Provides a series of methods for performing lookups on the
+     |  biolink-model.yaml file.
+     |  
+     |  Methods defined here:
+     |  
+     |  __init__(self, schema:Union[str, TextIO, metamodel.metamodel.SchemaDefinition]='https://biolink.github.io/biolink-model/biolink-model.yaml') -> bmt.toolkit_generator.ToolkitGenerator
+     |      Instantiates a Toolkit object.
+     |      
+     |      Parameters
+     |      ----------
+     |      schema : Union[str, TextIO, SchemaDefinition]
+     |          The path or url to an instance of the biolink-model.yaml file.
+     |  
+     |  ancestors(self, name:str) -> List[str]
+     |      Gets a list of names of ancestors.
+     |      
+     |      Parameters
+     |      ----------
+     |      name : str
+     |          The name of an element in the biolink model.
+     |      
+     |      Returns
+     |      -------
+     |      List[str]
+     |          The names of the given elements ancestors.
+     ...
+```
+
 ### Usage
 
 ```
