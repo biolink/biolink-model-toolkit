@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 version = '0.1.0'
 
 requires = [
-    "biolinkml"
+    "biolinkml>=1.3.6"
 ]
 
 setup(
