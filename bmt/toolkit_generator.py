@@ -1,10 +1,9 @@
-from typing import List, Union, TextIO
-
-from metamodel.metamodel import SchemaDefinition, ClassDefinition, SlotDefinition, ClassDefinitionName, \
-    TypeDefinition, Element, SlotDefinitionName, TypeDefinitionName, PrefixLocalName
-from metamodel.utils.generator import Generator, SLOT_OR_SLOTNAME, CLASS_OR_CLASSNAME
-
 from collections import defaultdict
+from typing import Union, TextIO, Dict, Set, Optional, List
+
+from biolinkml.meta import SchemaDefinition, ClassDefinition, SlotDefinition, TypeDefinition, Element, SubsetDefinition
+from biolinkml.utils.generator import Generator
+
 
 class ToolkitGenerator(Generator):
     """
@@ -12,29 +11,29 @@ class ToolkitGenerator(Generator):
     it's methods.
     """
     valid_formats = [None]
-    def __init__(self, schema: Union[str, TextIO, SchemaDefinition]) -> None:
-        super().__init__(schema, None)
-        self.aliases = dict()
-        self.mappings = defaultdict(set)
-        self.children = defaultdict(set)
-        self.parent = dict()
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.mappings: Dict[str, Set[str]] = defaultdict(set)   # URI to slot names
+        self.aliases: Dict[str, str] = dict()                   # Alias to reference
+
+    def visit_element(self, element: Element, element_uri: Optional[str]) -> None:
+        for curie in element.mappings:
+            self.mappings[self.namespaces.uri_for(curie)].add(element.name)
+        if element_uri:
+            self.mappings[self.namespaces.uri_for(element_uri)].add(element.name)
+        self.aliases.update({a: element.name for a in element.aliases})
 
     def visit_slot(self, aliased_slot_name: str, slot: SlotDefinition) -> None:
-        for curie in slot.mappings:
-            self.mappings[curie].add(slot.name)
+        self.visit_element(slot, slot.slot_uri)
+        self.aliases.update({a: slot.name for a in slot.aliases})
 
-        for alias in slot.aliases:
-            self.aliases[alias] = slot.name
-
-        self.children[slot.is_a].add(slot.name)
-        self.parent[slot.name] = slot.is_a
+    def visit_type(self, typ: TypeDefinition) -> None:
+        self.visit_element(typ, typ.uri)
 
     def visit_class(self, cls: ClassDefinition) -> bool:
-        for curie in cls.mappings:
-            self.mappings[curie].add(cls.name)
+        self.visit_element(cls, cls.class_uri)
+        return False
 
-        for alias in cls.aliases:
-            self.aliases[alias] = cls.name
-
-        self.children[cls.is_a].add(cls.name)
-        self.parent[cls.name] = cls.is_a
+    def visit_subset(self, subset: SubsetDefinition) -> None:
+        self.visit_element(subset, None)
