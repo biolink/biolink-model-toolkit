@@ -12,7 +12,7 @@ installed_biolink_model_path = os.path.join(os.path.dirname(__file__), 'biolink-
 Url = str
 Path = str
 
-REMOTE_PATH = 'http://w3id.org/biolink/biolink-model.yaml'
+REMOTE_PATH = 'https://biolink.github.io/biolink-model/biolink-model.yaml'
 
 
 class Toolkit(object):
@@ -32,20 +32,6 @@ class Toolkit(object):
         """
         self.generator = ToolkitGenerator(schema)
         self.generator.serialize()
-
-    @staticmethod
-    def build_locally() -> "Toolkit":
-        """
-        Uses the locally installed instance of biolink-model.yaml to instantiate
-        a new Toolkit object.
-
-        Returns
-        -------
-        Toolkit
-            An instance that will perform lookups on the locally installed
-            instance of the biolink-model.yaml file.
-        """
-        return Toolkit(schema=installed_biolink_model_path)
 
     @staticmethod
     def _union_of(r: References) -> List[str]:
