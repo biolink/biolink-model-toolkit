@@ -440,3 +440,11 @@ class Toolkit(object):
     @deprecation.deprecated(deprecated_in='0.1.1', removed_in='1.0', details='Use is_predicate method instead')
     def is_edgelabel(self, name: str) -> bool:
         return self.is_predicate(name)
+
+    @deprecation.deprecated(deprecated_in='0.1.1', removed_in='1.0', details='Use get_all_elements_by_mapping method instead')
+    def get_all_by_mapping(self, uriorcurie: str) -> Set[str]:
+        return self.get_all_elements_by_mapping(uriorcurie)
+
+    @deprecation.deprecated(deprecated_in='0.1.1', removed_in='1.0', details='Use get_element_by_mapping method instead')
+    def get_by_mapping(self, uriorcurie: str) -> Optional[str]:
+        return self.get_element_by_mapping(uriorcurie)
