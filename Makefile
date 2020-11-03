@@ -4,6 +4,9 @@ dev-install:
 install:
 	python setup.py install
 
+tests:
+	pytest test/*
+
 release:
 	pip install twine
 	rm -rf dist/
