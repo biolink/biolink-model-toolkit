@@ -6,7 +6,7 @@ with open("requirements.txt", "r") as FH:
 NAME = 'bmt'
 VERSION = '0.2.0'
 DESCRIPTION = 'Biolink Model Toolkit: A Python API for working with the Biolink Model'
-URL = 'https://github.com/NCATS-Tangerine/kgx'
+URL = 'https://github.com/biolink/biolink-model-toolkit'
 AUTHOR = 'Deepak Unni'
 EMAIL = 'deepak.unni3@gmail.com'
 REQUIRES_PYTHON = '>=3.7'
