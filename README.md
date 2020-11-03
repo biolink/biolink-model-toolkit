@@ -1,94 +1,127 @@
 # biolink-model-toolkit
 
-A collection of useful python functions for looking up information from the Biolink Model (https://github.com/biolink/biolink-model).
+Biolink Model Toolkit (BMT): A Python API for working with the [Biolink Model](https://github.com/biolink/biolink-model).
 
+BMT provides utility functions to look up Biolink Model for classes, relations, and properties based on Biolink CURIEs
+or external CURIEs that have been mapped to Biolink Model.
 
-Official source of truth for `biolink-model.yaml`: https://biolink.github.io/biolink-model/biolink-model.yaml
+> Note: Each release of BMT is pinned to a specific version of the Biolink Model to ensure consistency.
 
-### Installation
+## Installation
 
-https://pypi.org/project/bmt/
+### For users
 
-`pip install bmt`
-
-### Documentation
-
-This is a small project, so I'll let the code speak for itself. To see documentation use pythons built in `help` method:
+BMT is available on [PyPI](https://pypi.org/project/bmt/) and can be installed via `pip`: 
 
 ```
-$ python
->>> import bmt
->>> help(bmt)
-CLASSES
-    builtins.object
-        Toolkit
-    
-    class Toolkit(builtins.object)
-     |  Provides a series of methods for performing lookups on the
-     |  biolink-model.yaml file.
-     |  
-     |  Methods defined here:
-     |  
-     |  __init__(self, schema:Union[str, TextIO, metamodel.metamodel.SchemaDefinition]='https://biolink.github.io/biolink-model/biolink-model.yaml') -> bmt.toolkit_generator.ToolkitGenerator
-     |      Instantiates a Toolkit object.
-     |      
-     |      Parameters
-     |      ----------
-     |      schema : Union[str, TextIO, SchemaDefinition]
-     |          The path or url to an instance of the biolink-model.yaml file.
-     |  
-     |  ancestors(self, name:str) -> List[str]
-     |      Gets a list of names of ancestors.
-     |      
-     |      Parameters
-     |      ----------
-     |      name : str
-     |          The name of an element in the biolink model.
-     |      
-     |      Returns
-     |      -------
-     |      List[str]
-     |          The names of the given elements ancestors.
-     ...
+pip install bmt
 ```
 
-### Usage
+## For developers
 
-
-#### Using Toolkit
-
-```
->>> from bmt import Toolkit
->>> t = Toolkit()
->>> t.get_by_mapping('SEMMEDDB:CAUSES')
-'causes'
-
->>> t.get_by_mapping('RO:0002410')
-'causes'
-
->>> t.get_element('causes')
-SlotDefinition(name='causes', singular_name=None, description='holds between two entities where the occurrence, existence, or activity of one causes the occurrence or  generation of the other', note=None, comment=None, examples=[], see_also=None, flags=[], aliases=[], mappings=['RO:0002410', 'SEMMEDDB:CAUSES', 'WD:P1542'], id_prefixes=[], in_subset=['translator_minimal'], from_schema=None, alt_descriptions=[], exact_matches=[], broader_matches=[], narrower_matches=[], close_matches=[], is_a='contributes to', mixin=False, mixins=[], abstract=False, local_names=[], union_of=[], subclass_of=None, values_from=[], symmetric=False, multivalued=False, domain='named thing', range='named thing', required=False, object_property=False, inlined=False, primary_key=False, identifier=False, definitional=False, alias=None, path=None, subproperty_of=None, inverse=None, is_class_field=False, role=None, inherited=False)
-
->>> t.ancestors('causes')
-['contributes to', 'related to']
-
->>> t.descendents('related to')
-['has gene product', 'produces', 'homologous to', 'expresses', 'participates in', 'has phenotype', 'has participant', 'in taxon', 'has molecular consequence', 'interacts with', 'correlated with', 'contributes to', 'model of', 'affects', 'same as', 'coexists with', 'located in', 'gene associated with condition', 'precedes', 'location of', 'derives from', 'affects risk for', 'derives into', 'occurs in', 'treated by', 'expressed in', 'overlaps', 'subclass of', 'manifestation of', 'orthologous to', 'xenologous to', 'paralogous to', 'actively involved in', 'has input', 'physically interacts with', 'genetically interacts with', 'has biomarker', 'biomarker for', 'causes', 'affects mutation rate of', 'affects stability of', 'affects expression of', 'affects degradation of', 'affects response to', 'affects synthesis of', 'affects activity of', 'disrupts', 'affects molecular modification of', 'affects transport of', 'affects uptake of', 'treats', 'affects secretion of', 'affects abundance of', 'affects localization of', 'affects splicing of', 'regulates', 'affects metabolic processing of', 'affects folding of', 'co-localizes with', 'in cell population with', 'in pathway with', 'in complex with', 'predisposes', 'prevents', 'has part', 'part of', 'capable of', 'molecularly interacts with', 'decreases mutation rate of', 'increases mutation rate of', 'increases stability of', 'decreases stability of', 'increases expression of', 'decreases expression of', 'increases degradation of', 'decreases degradation of', 'decreases response to', 'increases response to', 'decreases synthesis of', 'increases synthesis of', 'decreases activity of', 'increases activity of', 'increases molecular modification of', 'decreases molecular modification of', 'increases transport of', 'decreases transport of', 'decreases uptake of', 'increases uptake of', 'decreases secretion of', 'increases secretion of', 'decreases abundance of', 'increases abundance of', 'decreases localization of', 'increases localization of', 'increases splicing of', 'decreases splicing of', 'regulates, process to process', 'positively regulates', 'regulates, entity to entity', 'negatively regulates', 'increases metabolic processing of', 'decreases metabolic processing of', 'increases folding of', 'decreases folding of', 'positively regulates, process to process', 'negatively regulates, process to process', 'negatively regulates, entity to entity', 'positively regulates, entity to entity']
-
->>> t.is_category('causes')
-False
-
->>> t.is_edgelabel('causes')
-True
-
->>> t.is_category('gene')
-True
-```
-
-#### Using Toolkit with a local instance of biolink-model.yaml
+You can install BMT from GitHub as follows:
 
 ```
+# clone the repo
+git clone https://github.com/biolink/biolink-model-toolkit
+
+# cd into the folder
+cd biolink-model-toolkit
+
+# install
+python setup.py install
+```
+
+## Documentation
+
+The technical documentation for BMT can be found at [bmt.readthedocs.io](bmt.readthedocs.io)
+
+## Usage
+
+BMT provides convenience methods to operate on the Biolink Model.
+
+Using this toolkit you can,
+- Get Biolink Model elements corresponding to a given Biolink class or slot name
+- Get Biolink Model elements corresponding to a given external CURIE/IRI
+- Get ancestors for a given Biolink Model element
+- Get descendants for a given Biolink Model element
+- Get parent for a given Biolink Model element
+- Get children for a given Biolink Model element
+- Check whether a given Biolink Model element is part of a specified subset
+
+
+### Using the Toolkit class
+
+The main entrypoint is the Toolkit class that provides various methods for accessing and working with the Biolink Model.
+
+#### Getting a Biolink Model element based on its name
+
+```py
+from bmt import Toolkit
+t = Toolkit()
+element = t.get_element('gene') # This returns the element for 'biolink:Gene'
+```
+
+#### Get a Biolink Model element based on its mappings
+
+```py
+from bmt import Toolkit
+t = Toolkit()
+element_name = t.get_element_by_mapping('SEMMEDDB:CAUSES') # This returns 'causes'
+element = t.get_element(element_name)
+
+element_name = t.get_element_by_mapping('RO:0002410') # This returns 'causes'
+element = t.get_element(element_name)
+```
+
+#### Get ancestors for a given Biolink Model element
+
+```py
+from bmt import Toolkit
+t = Toolkit()
+ancestors = t.get_ancestors('gene')
+```
+
+The above returns a list of ancestors: `['gene', 'gene or gene product', 'macromolecular machine', 'genomic entity', 'molecular entity', 'biological entity', 'named thing']`
+
+#### Get descendants for a given Biolink Model element
+
+```py
+from bmt import Toolkit
+t = Toolkit()
+descendants = t.get_descendants('gene or gene product')
+```
+
+The above returns a list of descendants: `['gene', 'gene product', 'gene product isoform', 'RNA product', 'noncoding RNA product', 'microRNA', 'RNA product isoform', 'transcript', 'protein', 'protein isoform']`
+
+#### Check whether a given string is a valid Biolink Model category
+
+```py
+from bmt import Toolkit
+t = Toolkit()
+t.is_category('gene') # True
+t.is_category('treats') # False
+```
+
+#### Check whether a given string is a valid Biolink Model predicate
+
+```py
+from bmt import Toolkit
+t = Toolkit()
+t.is_predicate('related to') # True
+t.is_predicate('interacts with') # True
+t.is_predicate('disease') # False
+```
+
+
+### Using the Toolkit class with different versions of Biolink Model
+
+BMT is pinned to a specific version of Biolink Model at each release. This can be configured to use your custom
+version of Biolink Model YAML:
+
+```py
 from bmt import Toolkit
 t = Toolkit('/path/to/biolink-model.yaml')
-```
+``` 
 
+The path can be a file path or a URL.

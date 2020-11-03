@@ -1,0 +1,2 @@
+biolinkml>=1.5.10
+deprecation>=2.0.6

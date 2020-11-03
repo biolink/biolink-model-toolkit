@@ -1,19 +1,35 @@
 from setuptools import setup, find_packages
 
-version = '0.1.1'
+with open("requirements.txt", "r") as FH:
+    REQUIREMENTS = FH.readlines()
 
-requires = [
-    "biolinkml>=1.3.6"
-]
+NAME = 'bmt'
+VERSION = '0.2.0'
+DESCRIPTION = 'Biolink Model Toolkit: A Python API for working with the Biolink Model'
+URL = 'https://github.com/biolink/biolink-model-toolkit'
+AUTHOR = 'Deepak Unni'
+EMAIL = 'deepak.unni3@gmail.com'
+REQUIRES_PYTHON = '>=3.7'
+LICENSE = 'BSD'
 
 setup(
-    name='bmt',
-    version=version,
-    packages=find_packages(),
+    name=NAME,
+    author=AUTHOR,
+    version=VERSION,
+    author_email=EMAIL,
+    python_requires=REQUIRES_PYTHON,
+    url=URL,
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
+    license=LICENSE,
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     include_package_data=True,
-    url='https://github.com/lhannest/biolink-model-toolkit',
-    install_requires=requires,
-    python_requires='>=3.7',
-    description='Biolink Model Toolkit - a collection of python functions for using the biolink model '
-                '(https://github.com/biolink/biolink-model)'
+    install_requires=[r for r in REQUIREMENTS if not r.startswith("#")],
+    keywords='NCATS NCATS-Translator Biolink-Model',
+    classifiers=[
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'License :: OSI Approved :: BSD License',
+        'Programming Language :: Python :: 3'
+    ],
 )
