@@ -169,7 +169,7 @@ class Toolkit(object):
         bool
             That the named element is a valid relation/predicate in Biolink Model
         """
-        return 'related to' in self.ancestors(name)
+        return 'related to' in self.get_ancestors(name)
 
     def in_subset(self, name: str, subset: str) -> bool:
         """
@@ -210,7 +210,7 @@ class Toolkit(object):
             That the named element is a valid category in Biolink Model
 
         """
-        return 'named thing' in self.ancestors(name)
+        return 'named thing' in self.get_ancestors(name)
 
     @lru_cache()
     def get_element_by_mapping(self, identifier: str, most_specific: bool = False) -> Optional[str]:
@@ -239,7 +239,7 @@ class Toolkit(object):
         if mappings:
             ancestors: List[List[str]] = []
             for m in mappings:
-                ancestors.append([x for x in self.ancestors(m)[::-1] if x in mappings])
+                ancestors.append([x for x in self.get_ancestors(m)[::-1] if x in mappings])
             common_ancestors = reduce(lambda s, l: s.intersection(set(l)), ancestors[1:], set(ancestors[0]))
             for a in ancestors[0]:
                 if a in common_ancestors:
@@ -406,7 +406,6 @@ class Toolkit(object):
         mappings.update(narrow)
         broad = self.get_element_by_broad_mapping(identifier)
         mappings.update(broad)
-        logging.error(mappings)
         return mappings
 
     @staticmethod

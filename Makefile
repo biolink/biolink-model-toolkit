@@ -7,9 +7,6 @@ install:
 tests:
 	pytest test/*
 
-release:
-	pip install twine
+cleandist:
 	rm -rf dist/
 	rm -rf build/
-	python setup.py sdist bdist_wheel
-	twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
