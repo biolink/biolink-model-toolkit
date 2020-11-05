@@ -1,7 +1,7 @@
 [![Python](https://img.shields.io/badge/python-3.7+-blue.svg)]()
 [![PyPI](https://img.shields.io/pypi/v/bmt)](https://img.shields.io/pypi/v/bmt)
 
-# biolink-model-toolkit
+# Biolink Model Toolkit
 
 Biolink Model Toolkit (BMT): A Python API for working with the [Biolink Model](https://github.com/biolink/biolink-model).
 
