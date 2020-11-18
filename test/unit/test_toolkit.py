@@ -28,6 +28,10 @@ def test_ancestors():
     assert 'related to' in toolkit.get_ancestors('causes')
     assert 'named thing' in toolkit.get_ancestors('gene')
 
+    assert 'causes' in toolkit.get_ancestors('causes')
+    assert 'causes' in toolkit.get_ancestors('causes', reflexive=True)
+    assert 'causes' not in toolkit.get_ancestors('causes', reflexive=False)
+
 
 def test_descendants():
     toolkit = Toolkit()
@@ -35,6 +39,10 @@ def test_descendants():
     assert 'interacts with' in toolkit.get_descendants('related to')
     assert 'gene' in toolkit.get_descendants('named thing')
     assert 'phenotypic feature' in toolkit.get_descendants('named thing')
+
+    assert 'genomic entity' in toolkit.get_ancestors('genomic entity')
+    assert 'genomic entity' in toolkit.get_ancestors('genomic entity', reflexive=True)
+    assert 'genomic entity' not in toolkit.get_ancestors('genomic entity', reflexive=False)
 
 
 def test_children():

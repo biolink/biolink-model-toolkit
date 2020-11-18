@@ -3,7 +3,6 @@ from functools import lru_cache, reduce
 from typing import List, Union, TextIO, Optional, Set
 import deprecation
 from biolinkml.meta import SchemaDefinition, Element, Definition, ClassDefinition, SlotDefinition
-from biolinkml.utils.typereferences import References
 
 from bmt.toolkit_generator import ToolkitGenerator
 
@@ -40,8 +39,7 @@ class Toolkit(object):
         """
         return list(self.generator.aliases.values())
 
-    @lru_cache()
-    def get_ancestors(self, name: str) -> List[str]:
+    def get_ancestors(self, name: str, reflexive: bool = True) -> List[str]:
         """
         Gets a list of names of ancestors.
 
@@ -49,6 +47,8 @@ class Toolkit(object):
         ----------
         name: str
             The name of an element in the Biolink Model.
+        reflexive: bool
+            Whether to include the query element in the list of ancestors.
 
         Returns
         -------
@@ -57,12 +57,14 @@ class Toolkit(object):
 
         """
         obj = self.generator.obj_for(name)
+        ancs = []
         if isinstance(obj, (ClassDefinition, SlotDefinition)):
-            return self.generator.ancestors(obj)
-        return []
+            a = self.generator.ancestors(obj)
+            ancs = a if reflexive else a[1:]
+        return ancs
 
     @lru_cache()
-    def get_descendants(self, name: str) -> List[str]:
+    def get_descendants(self, name: str, reflexive: bool = True) -> List[str]:
         """
         Gets a list of names of descendants.
 
@@ -70,18 +72,21 @@ class Toolkit(object):
         ----------
         name: str
             The name of an element in the Biolink Model.
+        reflexive: bool
+            Whether to include the query element in the list of ancestors.
 
         Returns
         -------
         List[str]
-            The names of the given elements descendants.
+            The names of the given element's descendants.
 
         """
-        c = []
-        for child in self.get_children(name):
-            c.append(child)
-            c += self.get_descendants(child)
-        return c
+        desc = []
+        d = self.generator.descendants(name)
+        if d and reflexive:
+            desc.append(name)
+        desc += d
+        return desc
 
     @lru_cache()
     def get_children(self, name: str) -> List[str]:
@@ -99,7 +104,7 @@ class Toolkit(object):
             The names of the given elements children.
 
         """
-        return self._union_of(self.generator.synopsis.isarefs.get(name, References()))
+        return self.generator.children(name)
 
     @lru_cache()
     def get_parent(self, name: str) -> Optional[str]:
@@ -408,17 +413,6 @@ class Toolkit(object):
         mappings.update(broad)
         return mappings
 
-    @staticmethod
-    def _union_of(r: References) -> List[str]:
-        """
-        Return all references in r
-
-        Parameters
-        ----------
-        r: biolinkml.utils.typereferences.References
-
-        """
-        return list(r.classrefs.union(r.slotrefs.union(r.typerefs).union(r.subsetrefs)))
 
     @deprecation.deprecated(deprecated_in='0.2.0', removed_in='1.0', details='Use get_descendants method instead')
     def descendents(self, name: str) -> List[str]:
