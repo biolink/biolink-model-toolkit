@@ -27,20 +27,6 @@ class Toolkit(object):
         self.generator = ToolkitGenerator(schema)
         self.generator.serialize()
 
-    @deprecation.deprecated(deprecated_in='0.3.0', removed_in='1.0', details='Use get_all_elements method instead')
-    def names(self, formatted: bool = False) -> List[str]:
-        """
-        Gets the list of names of all elements
-
-        Returns
-        -------
-        List[str]
-            The names of all elements in Biolink Model
-
-        """
-        #return list(self.generator.aliases.values())
-        return self.get_all_elements(formatted)
-
     def get_all_elements(self, formatted: bool = False) -> List[str]:
         """
         Get all elements from Biolink Model.
@@ -154,7 +140,6 @@ class Toolkit(object):
             A list of elements
 
         """
-        #elements = self.generator.descendants('named thing')
         elements = self.get_descendants('named thing')
         return self._format_all_elements(elements, formatted)
 
@@ -270,11 +255,10 @@ class Toolkit(object):
             The names of the given elements ancestors
 
         """
-        parsed_name = parse_name(name)
-        obj = self.generator.obj_for(parsed_name)
+        element = self.get_element(name)
         ancs = []
-        if isinstance(obj, (ClassDefinition, SlotDefinition)):
-            a = self.generator.ancestors(obj)
+        if isinstance(element, (ClassDefinition, SlotDefinition)):
+            a = self.generator.ancestors(element)
             ancs = a if reflexive else a[1:]
         return self._format_all_elements(ancs, formatted)
 
@@ -299,10 +283,10 @@ class Toolkit(object):
 
         """
         desc = []
-        parsed_name = parse_name(name)
-        d = self.generator.descendants(parsed_name)
+        element = self.get_element(name)
+        d = self.generator.descendants(element.name)
         if d and reflexive:
-            desc.append(name)
+            desc.append(element.name)
         desc += d
         return self._format_all_elements(desc, formatted)
 
@@ -324,8 +308,8 @@ class Toolkit(object):
             The names of the given elements children
 
         """
-        parsed_name = parse_name(name)
-        children = self.generator.children(parsed_name)
+        element = self.get_element(name)
+        children = self.generator.children(element.name)
         return self._format_all_elements(children, formatted)
 
     @lru_cache()
@@ -346,11 +330,10 @@ class Toolkit(object):
             The name of the given elements parent
 
         """
-        parsed_name = parse_name(name)
-        obj = self.generator.obj_for(parsed_name)
-        p = obj.is_a if isinstance(obj, Definition) else None
+        element = self.get_element(name)
+        p = element.is_a if isinstance(element, Definition) else None
         if p and formatted:
-            parent = format_element(obj)
+            parent = format_element(element)
         else:
             parent = p
         return parent
@@ -684,6 +667,10 @@ class Toolkit(object):
         else:
             formatted_elements = elements
         return formatted_elements
+
+    @deprecation.deprecated(deprecated_in='0.3.0', removed_in='1.0', details='Use get_all_elements method instead')
+    def names(self, formatted: bool = False) -> List[str]:
+        return self.get_all_elements(formatted)
 
     @deprecation.deprecated(deprecated_in='0.2.0', removed_in='1.0', details='Use get_descendants method instead')
     def descendents(self, name: str) -> List[str]:
