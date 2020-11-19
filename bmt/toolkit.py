@@ -5,6 +5,7 @@ import deprecation
 from biolinkml.meta import SchemaDefinition, Element, Definition, ClassDefinition, SlotDefinition
 
 from bmt.toolkit_generator import ToolkitGenerator
+from bmt.utils import format_element, parse_name
 
 Url = str
 Path = str
@@ -26,95 +27,318 @@ class Toolkit(object):
         self.generator = ToolkitGenerator(schema)
         self.generator.serialize()
 
-    @lru_cache()
-    def names(self) -> List[str]:
+    @deprecation.deprecated(deprecated_in='0.3.0', removed_in='1.0', details='Use get_all_elements method instead')
+    def names(self, formatted: bool = False) -> List[str]:
         """
         Gets the list of names of all elements
 
         Returns
         -------
         List[str]
-            The names of all elements in biolink-model.yaml
+            The names of all elements in Biolink Model
 
         """
-        return list(self.generator.aliases.values())
+        #return list(self.generator.aliases.values())
+        return self.get_all_elements(formatted)
 
-    def get_ancestors(self, name: str, reflexive: bool = True) -> List[str]:
+    def get_all_elements(self, formatted: bool = False) -> List[str]:
+        """
+        Get all elements from Biolink Model.
+
+        This method returns a list containing all
+        classes, slots, and types defined in the model.
+
+        Parameters
+        ----------
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        classes = self.get_all_classes(formatted)
+        slots = self.get_all_slots(formatted)
+        types = self.get_all_types(formatted)
+        all_elements = classes + slots + types
+        return all_elements
+
+    def get_all_classes(self, formatted: bool = False) -> List[str]:
+        """
+        Get all classes from Biolink Model.
+
+        This method returns a list containing all the
+        classes defined in the model.
+
+        Parameters
+        ----------
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        classes = []
+        for x in self.generator.schema.classes:
+            classes.append(x)
+        filtered_classes = self._filter_secondary(classes)
+        return self._format_all_elements(filtered_classes, formatted)
+
+    def get_all_slots(self, formatted: bool = False) -> List[str]:
+        """
+        Get all slots from Biolink Model.
+
+        This method returns a list containing all the
+        slots defined in the model.
+
+        Parameters
+        ----------
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        slots = []
+        for x in self.generator.schema.slots:
+            slots.append(x)
+        filtered_slots = self._filter_secondary(slots)
+        return self._format_all_elements(filtered_slots, formatted)
+
+    def get_all_types(self, formatted: bool = False) -> List[str]:
+        """
+        Get all types from Biolink Model.
+
+        This method returns a list containing all the
+        built-in and defined types in the model.
+
+        Parameters
+        ----------
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        types = []
+        for x in self.generator.schema.types:
+            types.append(x)
+        return self._format_all_elements(types, formatted)
+
+    def get_all_entities(self, formatted: bool = False) -> List[str]:
+        """
+        Get all entities from Biolink Model.
+
+        This method returns a list containing all the classes
+        that are descendants of the class ``named thing``.
+
+        Parameters
+        ----------
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        #elements = self.generator.descendants('named thing')
+        elements = self.get_descendants('named thing')
+        return self._format_all_elements(elements, formatted)
+
+    def get_all_associations(self, formatted: bool = False) -> List[str]:
+        """
+        Get all associations from Biolink Model.
+
+        This method returns a list containing all the classes
+        that are descendants of the class ``association``.
+
+        Parameters
+        ----------
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        elements = self.get_descendants('association')
+        return self._format_all_elements(elements, formatted)
+
+    def get_all_node_properties(self, formatted: bool = False) -> List[str]:
+        """
+        Get all node properties from Biolink Model.
+
+        This method returns a list containing all the slots
+        that are descendants of the slot ``node property``.
+
+        Parameters
+        ----------
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        elements = self.get_descendants('node property')
+        filtered_elements = self._filter_secondary(elements)
+        return self._format_all_elements(filtered_elements, formatted)
+
+    def get_all_edge_properties(self, formatted: bool = False) -> List[str]:
+        """
+        Get all edge properties from Biolink Model.
+
+        This method returns a list containing all the slots
+        that are descendants of the slot ``association slot``.
+
+        Parameters
+        ----------
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        elements = self.get_descendants('association slot')
+        filtered_elements = self._filter_secondary(elements)
+        return self._format_all_elements(filtered_elements, formatted)
+
+    def _filter_secondary(self, elements: List[str]) -> List[str]:
+        """
+        From a given list of elements, remove elements that are not proper slots.
+
+        This method removes spurious slots like ``gene_to_gene_association_subject``
+        that are artifact of domain/range constraints and not actual slots.
+
+        Parameters
+        ----------
+        elements: List[str]
+            List of elements
+
+        Returns
+        -------
+        List[str]
+            A filtered list of elements
+
+        """
+        filtered_elements = []
+        for e in elements:
+            eo = self.generator.obj_for(e)
+            if isinstance(eo, SlotDefinition):
+                if not eo.alias:
+                    filtered_elements.append(e)
+            else:
+                filtered_elements.append(e)
+        return filtered_elements
+
+    def get_ancestors(self, name: str, reflexive: bool = True, formatted: bool = False) -> List[str]:
         """
         Gets a list of names of ancestors.
 
         Parameters
         ----------
         name: str
-            The name of an element in the Biolink Model.
+            The name of an element in the Biolink Model
         reflexive: bool
-            Whether to include the query element in the list of ancestors.
+            Whether to include the query element in the list of ancestors
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
         List[str]
-            The names of the given elements ancestors.
+            The names of the given elements ancestors
 
         """
-        obj = self.generator.obj_for(name)
+        parsed_name = parse_name(name)
+        obj = self.generator.obj_for(parsed_name)
         ancs = []
         if isinstance(obj, (ClassDefinition, SlotDefinition)):
             a = self.generator.ancestors(obj)
             ancs = a if reflexive else a[1:]
-        return ancs
+        return self._format_all_elements(ancs, formatted)
 
     @lru_cache()
-    def get_descendants(self, name: str, reflexive: bool = True) -> List[str]:
+    def get_descendants(self, name: str, reflexive: bool = True, formatted: bool = False) -> List[str]:
         """
         Gets a list of names of descendants.
 
         Parameters
         ----------
         name: str
-            The name of an element in the Biolink Model.
+            The name of an element in the Biolink Model
         reflexive: bool
-            Whether to include the query element in the list of ancestors.
+            Whether to include the query element in the list of ancestors
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
         List[str]
-            The names of the given element's descendants.
+            The names of the given element's descendants
 
         """
         desc = []
-        d = self.generator.descendants(name)
+        parsed_name = parse_name(name)
+        d = self.generator.descendants(parsed_name)
         if d and reflexive:
             desc.append(name)
         desc += d
-        return desc
+        return self._format_all_elements(desc, formatted)
 
     @lru_cache()
-    def get_children(self, name: str) -> List[str]:
+    def get_children(self, name: str, formatted: bool = False) -> List[str]:
         """
         Gets a list of names of children.
 
         Parameters
         ----------
         name: str
-            The name of an element in the Biolink Model.
+            The name of an element in the Biolink Model
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
         List[str]
-            The names of the given elements children.
+            The names of the given elements children
 
         """
-        return self.generator.children(name)
+        parsed_name = parse_name(name)
+        children = self.generator.children(parsed_name)
+        return self._format_all_elements(children, formatted)
 
     @lru_cache()
-    def get_parent(self, name: str) -> Optional[str]:
+    def get_parent(self, name: str, formatted: bool = False) -> Optional[str]:
         """
         Gets the name of the parent.
 
         Parameters
         ----------
         name: str
-            The name of an element in the Biolink Model.
+            The name of an element in the Biolink Model
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
@@ -122,8 +346,14 @@ class Toolkit(object):
             The name of the given elements parent
 
         """
-        obj = self.generator.obj_for(name)
-        return obj.is_a if isinstance(obj, Definition) else None
+        parsed_name = parse_name(name)
+        obj = self.generator.obj_for(parsed_name)
+        p = obj.is_a if isinstance(obj, Definition) else None
+        if p and formatted:
+            parent = format_element(obj)
+        else:
+            parent = p
+        return parent
 
     @lru_cache()
     def get_element(self, name: str) -> Optional[Element]:
@@ -134,7 +364,7 @@ class Toolkit(object):
         Parameters
         ----------
         name: str
-            The name or alias of an element in the Biolink Model.
+            The name or alias of an element in the Biolink Model
 
         Returns
         -------
@@ -142,20 +372,15 @@ class Toolkit(object):
             The element identified by the given name
 
         """
-        if name is None:
-            return None
-        name = str(name)
-        e = self.generator.obj_for(name)
-        if e is not None:
-            return e
-
-        if name in self.generator.aliases:
-            return self.get_element(self.generator.aliases[name])
-
-        if '_' in name:
-            return self.get_element(name.replace('_', ' '))
-
-        return None
+        parsed_name = parse_name(name)
+        element = self.generator.obj_for(parsed_name)
+        if element is None:
+            if name in self.generator.aliases:
+                element = self.get_element(self.generator.aliases[name])
+        if element is None:
+            if '_' in name:
+                element = self.get_element(name.replace('_', ' '))
+        return element
 
     @lru_cache()
     def is_predicate(self, name: str) -> bool:
@@ -167,7 +392,7 @@ class Toolkit(object):
         Parameters
         ----------
         name: str
-            The name or alias of an element in the Biolink Model.
+            The name or alias of an element in the Biolink Model
 
         Returns
         -------
@@ -194,7 +419,8 @@ class Toolkit(object):
             That the named element is part of a given subset in Biolink Model
 
         """
-        element = self.generator.obj_for(name)
+        parsed_name = parse_name(name)
+        element = self.generator.obj_for(parsed_name)
         return subset in element.in_subset
 
     @lru_cache()
@@ -207,7 +433,7 @@ class Toolkit(object):
         Parameters
         ----------
         name : str
-            The name or alias of an element in the Biolink Model.
+            The name or alias of an element in the Biolink Model
 
         Returns
         -------
@@ -218,7 +444,7 @@ class Toolkit(object):
         return 'named thing' in self.get_ancestors(name)
 
     @lru_cache()
-    def get_element_by_mapping(self, identifier: str, most_specific: bool = False) -> Optional[str]:
+    def get_element_by_mapping(self, identifier: str, most_specific: bool = False, formatted: bool = False) -> Optional[str]:
         """
         Get a Biolink Model element by mapping.
         This method return the common ancestor of the set of elements referenced by uriorcurie.
@@ -230,6 +456,8 @@ class Toolkit(object):
         most_specific: bool
             Whether or not to get the first available mapping in the order of specificity
             or to get all mappings of varying specificity
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
@@ -248,10 +476,14 @@ class Toolkit(object):
             common_ancestors = reduce(lambda s, l: s.intersection(set(l)), ancestors[1:], set(ancestors[0]))
             for a in ancestors[0]:
                 if a in common_ancestors:
-                    return a
+                    if formatted:
+                        element = format_element(self.generator.obj_for(a))
+                    else:
+                        element = a
+                    return element
 
     @lru_cache()
-    def _get_element_by_mapping(self, identifier: str) -> Set[str]:
+    def _get_element_by_mapping(self, identifier: str) -> List[str]:
         """
         Get the most specific mapping corresponding to a given identifier.
         This method first checks for general mappings. If it can't find any then
@@ -266,49 +498,52 @@ class Toolkit(object):
 
         Returns
         -------
-        Set[str]
-            A set with Biolink elements that correspond to the given identifier IRI/CURIE
+        List[str]
+            A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
         mappings = self.generator.mappings.get(self.generator.namespaces.uri_for(identifier), set())
         if not mappings:
-            exact = self.get_element_by_exact_mapping(identifier)
+            exact = set(self.get_element_by_exact_mapping(identifier))
             mappings.update(exact)
         if not mappings:
-            close = self.get_element_by_close_mapping(identifier)
+            close = set(self.get_element_by_close_mapping(identifier))
             mappings.update(close)
         if not mappings:
-            related = self.get_element_by_related_mapping(identifier)
+            related = set(self.get_element_by_related_mapping(identifier))
             mappings.update(related)
         if not mappings:
-            narrow = self.get_element_by_narrow_mapping(identifier)
+            narrow = set(self.get_element_by_narrow_mapping(identifier))
             mappings.update(narrow)
         if not mappings:
-            broad = self.get_element_by_broad_mapping(identifier)
+            broad = set(self.get_element_by_broad_mapping(identifier))
             mappings.update(broad)
         return mappings
 
     @lru_cache()
-    def get_element_by_exact_mapping(self, identifier: str) -> Set[str]:
+    def get_element_by_exact_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
         to the given identifier as part of its exact_mappings.
 
         Parameters
         ----------
-        identifier:
+        identifier: str
             The identifier as an IRI or CURIE
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
-        Set[str]
-            A set with Biolink elements that correspond to the given identifier IRI/CURIE
+        List[str]
+            A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        return self.generator.exact_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        mappings = self.generator.exact_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        return self._format_all_elements(mappings, formatted)
 
     @lru_cache()
-    def get_element_by_close_mapping(self, identifier: str) -> Set[str]:
+    def get_element_by_close_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
         to the given identifier as part of its close_mappings.
@@ -317,102 +552,138 @@ class Toolkit(object):
         ----------
         identifier:
             The identifier as an IRI or CURIE
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
-        Set[str]
-            A set with Biolink elements that correspond to the given identifier IRI/CURIE
+        List[str]
+            A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        return self.generator.close_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        mappings = self.generator.close_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        return self._format_all_elements(mappings, formatted)
 
     @lru_cache()
-    def get_element_by_related_mapping(self, identifier: str) -> Set[str]:
+    def get_element_by_related_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
         to the given identifier as part of its related_mappings.
 
         Parameters
         ----------
-        identifier:
+        identifier: str
             The identifier as an IRI or CURIE
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
-        Set[str]
-            A set with Biolink elements that correspond to the given identifier IRI/CURIE
+        List[str]
+            A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        return self.generator.related_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        mappings = self.generator.related_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        return self._format_all_elements(mappings, formatted)
 
     @lru_cache()
-    def get_element_by_narrow_mapping(self, identifier: str) -> Set[str]:
+    def get_element_by_narrow_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
         to the given identifier as part of its narrow_mappings.
 
         Parameters
         ----------
-        identifier:
+        identifier: str
             The identifier as an IRI or CURIE
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
-        Set[str]
-            A set with Biolink elements that correspond to the given identifier IRI/CURIE
+        List[str]
+            A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        return self.generator.narrow_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        mappings = self.generator.narrow_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        return self._format_all_elements(mappings, formatted)
 
     @lru_cache()
-    def get_element_by_broad_mapping(self, identifier: str) -> Set[str]:
+    def get_element_by_broad_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
         to the given identifier as part of its broad_mappings.
 
         Parameters
         ----------
-        identifier:
+        identifier: str
             The identifier as an IRI or CURIE
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
-        Set[str]
-            A set with Biolink elements that correspond to the given identifier IRI/CURIE
+        List[str]
+            A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        return self.generator.broad_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        mappings = self.generator.broad_mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        return self._format_all_elements(mappings, formatted)
 
     @lru_cache()
-    def get_all_elements_by_mapping(self, identifier: str) -> Set[str]:
+    def get_all_elements_by_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find all Biolink element that corresponds
         to the given identifier as part of its mappings.
 
         Parameters
         ----------
-        identifier:
+        identifier: str
             The identifier as an IRI or CURIE
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
-        Set[str]
-            A set with Biolink elements that correspond to the given identifier IRI/CURIE
+        List[str]
+            A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
         mappings = self.generator.mappings.get(self.generator.namespaces.uri_for(identifier), set())
-        exact = self.get_element_by_exact_mapping(identifier)
+        exact = set(self.get_element_by_exact_mapping(identifier))
         mappings.update(exact)
-        close = self.get_element_by_close_mapping(identifier)
+        close = set(self.get_element_by_close_mapping(identifier))
         mappings.update(close)
-        related = self.get_element_by_related_mapping(identifier)
+        related = set(self.get_element_by_related_mapping(identifier))
         mappings.update(related)
-        narrow = self.get_element_by_narrow_mapping(identifier)
+        narrow = set(self.get_element_by_narrow_mapping(identifier))
         mappings.update(narrow)
-        broad = self.get_element_by_broad_mapping(identifier)
+        broad = set(self.get_element_by_broad_mapping(identifier))
         mappings.update(broad)
-        return mappings
+        return self._format_all_elements(mappings, formatted)
 
+    def _format_all_elements(self, elements: List[str], formatted: bool = False) -> List[str]:
+        """
+        Format all the elements in a given list.
+
+        Parameters
+        ----------
+        elements: str
+            A list of elements
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            The formatted list of elements
+
+        """
+        if formatted:
+            formatted_elements = [format_element(self.generator.obj_for(x)) for x in elements]
+        else:
+            formatted_elements = elements
+        return formatted_elements
 
     @deprecation.deprecated(deprecated_in='0.2.0', removed_in='1.0', details='Use get_descendants method instead')
     def descendents(self, name: str) -> List[str]:
@@ -435,7 +706,7 @@ class Toolkit(object):
         return self.is_predicate(name)
 
     @deprecation.deprecated(deprecated_in='0.1.1', removed_in='1.0', details='Use get_all_elements_by_mapping method instead')
-    def get_all_by_mapping(self, uriorcurie: str) -> Set[str]:
+    def get_all_by_mapping(self, uriorcurie: str) -> List[str]:
         return self.get_all_elements_by_mapping(uriorcurie)
 
     @deprecation.deprecated(deprecated_in='0.1.1', removed_in='1.0', details='Use get_element_by_mapping method instead')
