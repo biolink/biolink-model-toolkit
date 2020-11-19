@@ -1,8 +1,10 @@
 from collections import defaultdict
 from typing import Union, TextIO, Dict, Set, Optional, List
 
-from biolinkml.meta import SchemaDefinition, ClassDefinition, SlotDefinition, TypeDefinition, Element, SubsetDefinition
+from biolinkml.meta import SchemaDefinition, ClassDefinition, SlotDefinition, TypeDefinition, Element, SubsetDefinition, \
+    ElementName
 from biolinkml.utils.generator import Generator
+from biolinkml.utils.typereferences import References
 
 
 class ToolkitGenerator(Generator):
@@ -113,3 +115,60 @@ class ToolkitGenerator(Generator):
             The subset definition
         """
         self.visit_element(subset, None)
+
+    def ancestors(self, element: Union[ClassDefinition, SlotDefinition]) -> List[ElementName]:
+        """
+        Return an ordered list of ancestor names for the supplied slot or class.
+
+        Parameters
+        ----------
+        element: Union[ClassDefinition, SlotDefinition]
+            An element
+
+        """
+        return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
+
+    def descendants(self, element_name: str):
+        """
+        Return an ordered list of descendant names for the supplied slot or class.
+
+        Parameters
+        ----------
+        element_name: Union[ClassDefinition, SlotDefinition]
+            An element
+
+        """
+        c = []
+        for child in self.children(element_name):
+            c.append(child)
+            c += self.descendants(child)
+        return c
+
+    def children(self, name: str) -> List[str]:
+        """
+        Gets a list of names of children.
+
+        Parameters
+        ----------
+        name: str
+            The name of an element in the Biolink Model.
+
+        Returns
+        -------
+        List[str]
+            The names of the given elements children.
+
+        """
+        return self._union_of(self.synopsis.isarefs.get(name, References()))
+
+    @staticmethod
+    def _union_of(r: References) -> List[str]:
+        """
+        Return all references in r
+
+        Parameters
+        ----------
+        r: biolinkml.utils.typereferences.References
+
+        """
+        return list(r.classrefs.union(r.slotrefs.union(r.typerefs).union(r.subsetrefs)))
