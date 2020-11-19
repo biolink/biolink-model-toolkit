@@ -11,6 +11,8 @@ Url = str
 Path = str
 REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.3.9/biolink-model.yaml'
 
+CACHE_SIZE = 1024
+
 
 class Toolkit(object):
     """
@@ -27,20 +29,7 @@ class Toolkit(object):
         self.generator = ToolkitGenerator(schema)
         self.generator.serialize()
 
-    @deprecation.deprecated(deprecated_in='0.3.0', removed_in='1.0', details='Use get_all_elements method instead')
-    def names(self, formatted: bool = False) -> List[str]:
-        """
-        Gets the list of names of all elements
-
-        Returns
-        -------
-        List[str]
-            The names of all elements in Biolink Model
-
-        """
-        #return list(self.generator.aliases.values())
-        return self.get_all_elements(formatted)
-
+    @lru_cache(CACHE_SIZE)
     def get_all_elements(self, formatted: bool = False) -> List[str]:
         """
         Get all elements from Biolink Model.
@@ -65,6 +54,7 @@ class Toolkit(object):
         all_elements = classes + slots + types
         return all_elements
 
+    @lru_cache(CACHE_SIZE)
     def get_all_classes(self, formatted: bool = False) -> List[str]:
         """
         Get all classes from Biolink Model.
@@ -89,6 +79,7 @@ class Toolkit(object):
         filtered_classes = self._filter_secondary(classes)
         return self._format_all_elements(filtered_classes, formatted)
 
+    @lru_cache(CACHE_SIZE)
     def get_all_slots(self, formatted: bool = False) -> List[str]:
         """
         Get all slots from Biolink Model.
@@ -113,6 +104,7 @@ class Toolkit(object):
         filtered_slots = self._filter_secondary(slots)
         return self._format_all_elements(filtered_slots, formatted)
 
+    @lru_cache(CACHE_SIZE)
     def get_all_types(self, formatted: bool = False) -> List[str]:
         """
         Get all types from Biolink Model.
@@ -136,6 +128,7 @@ class Toolkit(object):
             types.append(x)
         return self._format_all_elements(types, formatted)
 
+    @lru_cache(CACHE_SIZE)
     def get_all_entities(self, formatted: bool = False) -> List[str]:
         """
         Get all entities from Biolink Model.
@@ -154,10 +147,10 @@ class Toolkit(object):
             A list of elements
 
         """
-        #elements = self.generator.descendants('named thing')
         elements = self.get_descendants('named thing')
         return self._format_all_elements(elements, formatted)
 
+    @lru_cache(CACHE_SIZE)
     def get_all_associations(self, formatted: bool = False) -> List[str]:
         """
         Get all associations from Biolink Model.
@@ -179,6 +172,7 @@ class Toolkit(object):
         elements = self.get_descendants('association')
         return self._format_all_elements(elements, formatted)
 
+    @lru_cache(CACHE_SIZE)
     def get_all_node_properties(self, formatted: bool = False) -> List[str]:
         """
         Get all node properties from Biolink Model.
@@ -201,6 +195,7 @@ class Toolkit(object):
         filtered_elements = self._filter_secondary(elements)
         return self._format_all_elements(filtered_elements, formatted)
 
+    @lru_cache(CACHE_SIZE)
     def get_all_edge_properties(self, formatted: bool = False) -> List[str]:
         """
         Get all edge properties from Biolink Model.
@@ -251,6 +246,7 @@ class Toolkit(object):
                 filtered_elements.append(e)
         return filtered_elements
 
+    @lru_cache(CACHE_SIZE)
     def get_ancestors(self, name: str, reflexive: bool = True, formatted: bool = False) -> List[str]:
         """
         Gets a list of names of ancestors.
@@ -270,15 +266,14 @@ class Toolkit(object):
             The names of the given elements ancestors
 
         """
-        parsed_name = parse_name(name)
-        obj = self.generator.obj_for(parsed_name)
+        element = self.get_element(name)
         ancs = []
-        if isinstance(obj, (ClassDefinition, SlotDefinition)):
-            a = self.generator.ancestors(obj)
+        if isinstance(element, (ClassDefinition, SlotDefinition)):
+            a = self.generator.ancestors(element)
             ancs = a if reflexive else a[1:]
         return self._format_all_elements(ancs, formatted)
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_descendants(self, name: str, reflexive: bool = True, formatted: bool = False) -> List[str]:
         """
         Gets a list of names of descendants.
@@ -299,14 +294,14 @@ class Toolkit(object):
 
         """
         desc = []
-        parsed_name = parse_name(name)
-        d = self.generator.descendants(parsed_name)
+        element = self.get_element(name)
+        d = self.generator.descendants(element.name)
         if d and reflexive:
-            desc.append(name)
+            desc.append(element.name)
         desc += d
         return self._format_all_elements(desc, formatted)
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_children(self, name: str, formatted: bool = False) -> List[str]:
         """
         Gets a list of names of children.
@@ -324,11 +319,11 @@ class Toolkit(object):
             The names of the given elements children
 
         """
-        parsed_name = parse_name(name)
-        children = self.generator.children(parsed_name)
+        element = self.get_element(name)
+        children = self.generator.children(element.name)
         return self._format_all_elements(children, formatted)
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_parent(self, name: str, formatted: bool = False) -> Optional[str]:
         """
         Gets the name of the parent.
@@ -346,16 +341,15 @@ class Toolkit(object):
             The name of the given elements parent
 
         """
-        parsed_name = parse_name(name)
-        obj = self.generator.obj_for(parsed_name)
-        p = obj.is_a if isinstance(obj, Definition) else None
+        element = self.get_element(name)
+        p = element.is_a if isinstance(element, Definition) else None
         if p and formatted:
-            parent = format_element(obj)
+            parent = format_element(element)
         else:
             parent = p
         return parent
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_element(self, name: str) -> Optional[Element]:
         """
         Gets an element that is identified by the given name, either as its name
@@ -382,7 +376,7 @@ class Toolkit(object):
                 element = self.get_element(name.replace('_', ' '))
         return element
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def is_predicate(self, name: str) -> bool:
         """
         Determines whether the given name is the name of an relation/predicate
@@ -401,6 +395,7 @@ class Toolkit(object):
         """
         return 'related to' in self.get_ancestors(name)
 
+    @lru_cache(CACHE_SIZE)
     def in_subset(self, name: str, subset: str) -> bool:
         """
         Determines whether the given name is in a given subset
@@ -423,7 +418,7 @@ class Toolkit(object):
         element = self.generator.obj_for(parsed_name)
         return subset in element.in_subset
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def is_category(self, name: str) -> bool:
         """
         Determines whether the given name is the name of a category in the
@@ -443,7 +438,7 @@ class Toolkit(object):
         """
         return 'named thing' in self.get_ancestors(name)
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_element_by_mapping(self, identifier: str, most_specific: bool = False, formatted: bool = False) -> Optional[str]:
         """
         Get a Biolink Model element by mapping.
@@ -482,7 +477,7 @@ class Toolkit(object):
                         element = a
                     return element
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def _get_element_by_mapping(self, identifier: str) -> List[str]:
         """
         Get the most specific mapping corresponding to a given identifier.
@@ -520,7 +515,7 @@ class Toolkit(object):
             mappings.update(broad)
         return mappings
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_element_by_exact_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -542,7 +537,7 @@ class Toolkit(object):
         mappings = self.generator.exact_mappings.get(self.generator.namespaces.uri_for(identifier), set())
         return self._format_all_elements(mappings, formatted)
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_element_by_close_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -564,7 +559,7 @@ class Toolkit(object):
         mappings = self.generator.close_mappings.get(self.generator.namespaces.uri_for(identifier), set())
         return self._format_all_elements(mappings, formatted)
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_element_by_related_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -586,7 +581,7 @@ class Toolkit(object):
         mappings = self.generator.related_mappings.get(self.generator.namespaces.uri_for(identifier), set())
         return self._format_all_elements(mappings, formatted)
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_element_by_narrow_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -608,7 +603,7 @@ class Toolkit(object):
         mappings = self.generator.narrow_mappings.get(self.generator.namespaces.uri_for(identifier), set())
         return self._format_all_elements(mappings, formatted)
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_element_by_broad_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -630,7 +625,7 @@ class Toolkit(object):
         mappings = self.generator.broad_mappings.get(self.generator.namespaces.uri_for(identifier), set())
         return self._format_all_elements(mappings, formatted)
 
-    @lru_cache()
+    @lru_cache(CACHE_SIZE)
     def get_all_elements_by_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find all Biolink element that corresponds
@@ -684,6 +679,10 @@ class Toolkit(object):
         else:
             formatted_elements = elements
         return formatted_elements
+
+    @deprecation.deprecated(deprecated_in='0.3.0', removed_in='1.0', details='Use get_all_elements method instead')
+    def names(self, formatted: bool = False) -> List[str]:
+        return self.get_all_elements(formatted)
 
     @deprecation.deprecated(deprecated_in='0.2.0', removed_in='1.0', details='Use get_descendants method instead')
     def descendents(self, name: str) -> List[str]:
