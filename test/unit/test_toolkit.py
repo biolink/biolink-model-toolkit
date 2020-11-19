@@ -76,6 +76,12 @@ def test_get_element():
     locus = toolkit.get_element('locus')
     assert gene == locus
 
+    o = toolkit.get_element('drug intake')
+    assert o and o.name == 'drug exposure'
+
+    o = toolkit.get_element('molecular function')
+    assert o and o.name == 'molecular activity'
+
 
 def test_predicate():
     toolkit = Toolkit()
@@ -105,6 +111,8 @@ def test_ancestors():
     assert 'causes' not in toolkit.get_ancestors('causes', reflexive=False)
     assert 'biolink:causes' in toolkit.get_ancestors('causes', reflexive=True, formatted=True)
 
+    assert 'drug exposure' in toolkit.get_ancestors('drug intake', reflexive=True)
+
 
 def test_descendants():
     toolkit = Toolkit()
@@ -118,6 +126,8 @@ def test_descendants():
     assert 'genomic entity' in toolkit.get_ancestors('genomic entity', reflexive=True)
     assert 'genomic entity' not in toolkit.get_ancestors('genomic entity', reflexive=False)
     assert 'biolink:GenomicEntity' in toolkit.get_ancestors('gene', formatted=True)
+
+    assert 'gross anatomical structure' in toolkit.get_ancestors('tissue', reflexive=True)
 
 
 def test_children():
