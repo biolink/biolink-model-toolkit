@@ -160,3 +160,89 @@ def test_mapping():
     assert len(toolkit.get_all_elements_by_mapping('RO:0004033')) == 1
     assert 'negatively regulates' in toolkit.get_all_elements_by_mapping('RO:0004033')
     assert 'biolink:negatively_regulates' in toolkit.get_all_elements_by_mapping('RO:0004033', formatted=True)
+
+
+def test_get_slot_domain():
+    toolkit = Toolkit()
+    assert 'treatment' in toolkit.get_slot_domain('treats')
+    assert 'exposure event' in toolkit.get_slot_domain('treats', include_ancestors=True)
+    assert 'biolink:ExposureEvent' in toolkit.get_slot_domain('treats', include_ancestors=True, formatted=True)
+
+    assert 'biological process or activity' in toolkit.get_slot_domain('enabled by')
+    assert 'biological entity' in toolkit.get_slot_domain('enabled by', include_ancestors=True)
+    assert 'biolink:BiologicalEntity' in toolkit.get_slot_domain('enabled by', include_ancestors=True, formatted=True)
+
+    assert 'named thing' in toolkit.get_slot_domain('name')
+    assert 'association' in toolkit.get_slot_domain('relation')
+
+
+def test_get_slot_range():
+    toolkit = Toolkit()
+    assert 'disease or phenotypic feature' in toolkit.get_slot_range('treats')
+    assert 'biological entity' in toolkit.get_slot_range('treats', include_ancestors=True)
+    assert 'biolink:BiologicalEntity' in toolkit.get_slot_range('treats', include_ancestors=True, formatted=True)
+
+    assert 'label type' in toolkit.get_slot_range('name')
+    assert 'uriorcurie' in toolkit.get_slot_range('relation')
+    assert 'metatype:Uriorcurie' in toolkit.get_slot_range('relation', formatted=True)
+
+
+def test_get_all_slots_with_class_domain():
+    toolkit = Toolkit()
+    assert 'treats' in toolkit.get_all_slots_with_class_domain('treatment')
+    assert 'biolink:treats' in toolkit.get_all_slots_with_class_domain('treatment', formatted=True)
+
+
+def test_get_all_slots_with_class_range():
+    toolkit = Toolkit()
+    assert 'treated by' in toolkit.get_all_slots_with_class_range('treatment')
+    assert 'biolink:treated_by' in toolkit.get_all_slots_with_class_range('treatment', formatted=True)
+
+
+def test_get_all_predicates_with_class_domain():
+    toolkit = Toolkit()
+    assert 'genetically interacts with' in toolkit.get_all_slots_with_class_domain('gene')
+    assert 'interacts with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True)
+    assert 'biolink:interacts_with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True, formatted=True)
+
+    assert 'in complex with' in toolkit.get_all_slots_with_class_domain('gene or gene product')
+    assert 'expressed in' in toolkit.get_all_slots_with_class_domain('gene or gene product')
+    assert 'expressed in' in toolkit.get_all_slots_with_class_domain('gene or gene product')
+    assert 'interacts with' in toolkit.get_all_slots_with_class_domain('gene or gene product', check_ancestors=True)
+    assert 'biolink:interacts_with' in toolkit.get_all_slots_with_class_domain('gene or gene product', check_ancestors=True, formatted=True)
+
+
+def test_get_all_predicates_with_class_range():
+    toolkit = Toolkit()
+    assert 'manifestation of' in toolkit.get_all_predicates_with_class_range('disease')
+    assert 'disease has basis in' in toolkit.get_all_predicates_with_class_range('disease', check_ancestors=True)
+    assert 'biolink:disease_has_basis_in' in toolkit.get_all_predicates_with_class_range('disease', check_ancestors=True, formatted=True)
+
+
+def test_get_all_properties_with_class_domain():
+    toolkit = Toolkit()
+    assert 'category' in toolkit.get_all_properties_with_class_domain('named thing')
+    assert 'category' in toolkit.get_all_properties_with_class_domain('gene', check_ancestors=True)
+    assert 'biolink:category' in toolkit.get_all_properties_with_class_domain('gene', check_ancestors=True, formatted=True)
+
+    assert 'subject' in toolkit.get_all_properties_with_class_domain('association')
+    assert 'subject' in toolkit.get_all_properties_with_class_domain('association', check_ancestors=True)
+    assert 'biolink:subject' in toolkit.get_all_properties_with_class_domain('association', check_ancestors=True, formatted=True)
+
+
+def test_get_all_properties_with_class_range():
+    toolkit = Toolkit()
+    assert 'has gene' in toolkit.get_all_properties_with_class_range('gene')
+    assert 'subject' in toolkit.get_all_properties_with_class_range('gene', check_ancestors=True)
+    assert 'biolink:subject' in toolkit.get_all_properties_with_class_range('gene', check_ancestors=True, formatted=True)
+
+
+def test_get_value_type_for_slot():
+    toolkit = Toolkit()
+    assert 'uriorcurie' in toolkit.get_value_type_for_slot('subject')
+    assert 'uriorcurie' in toolkit.get_value_type_for_slot('object')
+    assert 'string' in toolkit.get_value_type_for_slot('symbol')
+    assert 'biolink:CategoryType' in toolkit.get_value_type_for_slot('category', formatted=True)
+
+
+
