@@ -374,7 +374,304 @@ class Toolkit(object):
         if element is None:
             if '_' in name:
                 element = self.get_element(name.replace('_', ' '))
+        if not element:
+            raise ValueError(f"{name} is not a valid Biolink Model element")
         return element
+
+    def get_slot_domain(self, slot_name, include_ancestors: bool = False, formatted: bool = False) -> List[str]:
+        """
+        Get the domain for a given slot.
+
+        Parameters
+        ----------
+        slot_name: str
+            The name or alias of a slot in the Biolink Model
+        include_ancestors: bool
+            Whether or not to include ancestors of the domain class
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            The domain for a given slot
+
+        """
+        element = self.get_element(slot_name)
+        domain = []
+        if element.domain:
+            domain.append(element.domain)
+        if include_ancestors:
+            ancs = self.get_ancestors(element.domain, reflexive=False)
+            domain.extend(ancs)
+        return self._format_all_elements(domain, formatted)
+
+    def get_slot_range(self, slot_name, include_ancestors: bool = False, formatted: bool = False) -> List[str]:
+        """
+        Get the range for a given slot.
+
+        Parameters
+        ----------
+        slot_name: str
+            The name or alias of a slot in the Biolink Model
+        include_ancestors: bool
+            Whether or not to include ancestors of the domain class
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            The range for a given slot
+
+        """
+        element = self.get_element(slot_name)
+        range = []
+        if element.range:
+            range.append(element.range)
+        if include_ancestors:
+            ancs = self.get_ancestors(element.range, reflexive=False)
+            range.extend(ancs)
+        return self._format_all_elements(range, formatted)
+
+    def get_all_slots_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+        """
+        Given a class, get all the slots where the class is the domain.
+
+        Parameters
+        ----------
+        class_name: str
+            The name or alias of a class in the Biolink Model
+        check_ancestors: bool
+            Whether or not to lookup slots that include ancestors of the given class as its domain
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of slots
+
+        """
+        element = self.get_element(class_name)
+        slots = self._get_all_slots_with_class_domain(element, check_ancestors)
+        slot_names = [x.name for x in slots]
+        return self._format_all_elements(slot_names, formatted)
+
+    def get_all_slots_with_class_range(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+        """
+        Given a class, get all the slots where the class is the range.
+
+        Parameters
+        ----------
+        class_name: str
+            The name or alias of a class in the Biolink Model
+        check_ancestors: bool
+            Whether or not to lookup slots that include ancestors of the given class as its range
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of slots
+
+        """
+        element = self.get_element(class_name)
+        slots = self._get_all_slots_with_class_range(element, check_ancestors)
+        slot_names = [x.name for x in slots]
+        return self._format_all_elements(slot_names, formatted)
+
+    def get_all_predicates_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+        """
+        Given a class, get all Biolink predicates where the class is the domain.
+
+        Parameters
+        ----------
+        class_name: str
+            The name or alias of a class in the Biolink Model
+        check_ancestors: bool
+            Whether or not to lookup slots that include ancestors of the given class as its domain
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of slots
+
+        """
+        element = self.get_element(class_name)
+        slots = self._get_all_slots_with_class_domain(element, check_ancestors)
+        filtered_slots = []
+        for s in slots:
+            if not s.alias and 'related to' in self.get_ancestors(s.name):
+                filtered_slots.append(s.name)
+        return self._format_all_elements(filtered_slots, formatted)
+
+    def get_all_predicates_with_class_range(self, class_name, check_ancestors: bool = False, formatted: bool = False):
+        """
+        Given a class, get all Biolink predicates where the class is the range.
+
+        Parameters
+        ----------
+        class_name: str
+            The name or alias of a class in the Biolink Model
+        check_ancestors: bool
+            Whether or not to lookup slots that include ancestors of the given class as its range
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of slots
+
+        """
+        element = self.get_element(class_name)
+        slots = self._get_all_slots_with_class_range(element, check_ancestors)
+        filtered_slots = []
+        for s in slots:
+            if not s.alias and 'related to' in self.get_ancestors(s.name):
+                filtered_slots.append(s.name)
+        return self._format_all_elements(filtered_slots, formatted)
+
+    def get_all_properties_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+        """
+        Given a class, get all Biolink properties where the class is the domain.
+
+        Parameters
+        ----------
+        class_name: str
+            The name or alias of a class in the Biolink Model
+        check_ancestors: bool
+            Whether or not to lookup slots that include ancestors of the given class as its domain
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of slots
+
+        """
+        element = self.get_element(class_name)
+        slots = self._get_all_slots_with_class_domain(element, check_ancestors)
+        filtered_slots = []
+        for s in slots:
+            if not s.alias and 'related to' not in self.get_ancestors(s.name):
+                filtered_slots.append(s.name)
+        return self._format_all_elements(filtered_slots, formatted)
+
+    def get_all_properties_with_class_range(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+        """
+        Given a class, get all Biolink properties where the class is the range.
+
+        Parameters
+        ----------
+        class_name: str
+            The name or alias of a class in the Biolink Model
+        check_ancestors: bool
+            Whether or not to lookup slots that include ancestors of the given class as its range
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of slots
+
+        """
+        element = self.get_element(class_name)
+        slots = self._get_all_slots_with_class_range(element, check_ancestors)
+        filtered_slots = []
+        for s in slots:
+            if not s.alias and 'related to' not in self.get_ancestors(s.name):
+                filtered_slots.append(s.name)
+        return self._format_all_elements(filtered_slots, formatted)
+
+    def get_value_type_for_slot(self, slot_name, formatted: bool = False) -> str:
+        """
+        Get the value type for a given slot.
+
+        Parameters
+        ----------
+        slot_name: str
+            The name or alias of a slot in the Biolink Model
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        str
+            The slot type
+
+        """
+        element = self.get_element(slot_name)
+        types = self.get_all_types()
+        if element.range in types:
+            et = element.range
+        else:
+            et = 'uriorcurie'
+        if formatted:
+            element_type = format_element(self.generator.obj_for(et))
+        else:
+            element_type = et
+        return element_type
+
+    def _get_all_slots_with_class_domain(self, element: Element, check_ancestors: bool) -> List[Element]:
+        """
+        Given a class, get all the slots where the class is the domain.
+
+        Parameters
+        ----------
+        element: biolinkml.meta.Element
+            An element
+        check_ancestors: bool
+            Whether or not to lookup slots that include ancestors of the given class as its domain
+
+        Returns
+        -------
+        List[biolinkml.meta.Element]
+            A list of slots
+
+        """
+        slots = []
+        for k, v in self.generator.schema.slots.items():
+            if check_ancestors:
+                if v.domain == element.name or v.domain in self.get_ancestors(element.name):
+                    slots.append(v)
+            else:
+                if v.domain == element.name:
+                    slots.append(v)
+        return slots
+
+    def _get_all_slots_with_class_range(self, element: Element, check_ancestors: bool) -> List[Element]:
+        """
+        Given a class, get all the slots where the class is the range.
+
+        Parameters
+        ----------
+        element: biolinkml.meta.Element
+            An element
+        check_ancestors: bool
+            Whether or not to lookup slots that include ancestors of the given class as its range
+
+        Returns
+        -------
+        List[biolinkml.meta.Element]
+            A list of slots
+
+        """
+        slots = []
+        for k, v in self.generator.schema.slots.items():
+            if check_ancestors:
+                if v.range == element.name or v.range in self.get_ancestors(element.name):
+                    slots.append(v)
+            else:
+                if v.range == element.name:
+                    slots.append(v)
+        return slots
 
     @lru_cache(CACHE_SIZE)
     def is_predicate(self, name: str) -> bool:
