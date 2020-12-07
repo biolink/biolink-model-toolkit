@@ -1,8 +1,8 @@
 from collections import defaultdict
-from typing import Union, TextIO, Dict, Set, Optional, List
+from typing import Union, TextIO, Dict, Set, Optional, List, cast
 
 from biolinkml.meta import SchemaDefinition, ClassDefinition, SlotDefinition, TypeDefinition, Element, SubsetDefinition, \
-    ElementName
+    ElementName, SlotDefinitionName
 from biolinkml.utils.generator import Generator
 from biolinkml.utils.typereferences import References
 
@@ -115,6 +115,55 @@ class ToolkitGenerator(Generator):
             The subset definition
         """
         self.visit_element(subset, None)
+
+    def obj_for(self, el_or_elname: str, is_range_name: bool = False) -> Optional[Element]:
+        """
+        Get object for a given element name.
+
+        Parameters
+        ----------
+        el_or_elname: str
+            The element or element name
+        is_range_name: bool
+            If True, then that means we are looking for a class or type
+
+        Returns
+        -------
+        Optional[Element]
+            An instance of Element corresponding to the given name
+
+        """
+        element_obj = None
+        if el_or_elname in self.schema.classes:
+            element_obj = self.class_or_type_for(el_or_elname)
+        elif el_or_elname in self.schema.slots:
+            element_obj = self.slot_for(el_or_elname)
+        elif el_or_elname in self.schema.types or el_or_elname == self.schema.default_range:
+            element_obj = self.class_or_type_for(el_or_elname)
+        elif el_or_elname in self.schema.subsets:
+            element_obj = self.subset_for(el_or_elname)
+        else:
+            element_obj = self.class_or_type_for(el_or_elname)
+
+        if not element_obj:
+            # try case-insensitive match
+            classes = {k.lower(): v for k,v in self.schema.classes.items()}
+            slots = {k.lower(): v for k, v in self.schema.slots.items()}
+            types = {k.lower(): v for k, v in self.schema.types.items()}
+            subsets = {k.lower(): v for k, v in self.schema.subsets.items()}
+            el_or_elname_lower = el_or_elname.lower()
+            if el_or_elname_lower in classes:
+                element_obj = self.class_or_type_for(classes[el_or_elname_lower].name)
+            elif el_or_elname_lower in slots:
+                element_obj = self.slot_for(slots[el_or_elname_lower].name)
+            elif el_or_elname_lower in types or el_or_elname_lower == self.schema.default_range:
+                element_obj = self.class_or_type_for(types[el_or_elname_lower].name)
+            elif el_or_elname_lower in self.schema.subsets:
+                element_obj = self.subset_for(subsets[el_or_elname_lower].name)
+            else:
+                element_obj = self.class_or_type_for(el_or_elname_lower)
+
+        return element_obj
 
     def ancestors(self, element: Union[ClassDefinition, SlotDefinition]) -> List[ElementName]:
         """

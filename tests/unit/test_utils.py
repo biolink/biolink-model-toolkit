@@ -15,6 +15,9 @@ from bmt.utils import parse_name
     ('gene', 'gene'),
     ('has_gene', 'has gene'),
     ('biolink:GeneToGeneAssociation', 'gene to gene association'),
+    ('RNA product', 'RNA product'),
+    ('RNA Product', 'RNA Product'),
+    ('Rna Product', 'Rna Product'),
 ])
 def test_parse_name(query):
     n = parse_name(query[0])

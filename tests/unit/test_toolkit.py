@@ -82,6 +82,12 @@ def test_get_element():
     o = toolkit.get_element('molecular function')
     assert o and o.name == 'molecular activity'
 
+    o = toolkit.get_element('RNA Product')
+    assert o and o.name == 'RNA product'
+
+    o = toolkit.get_element('rna product')
+    assert o and o.name == 'RNA product'
+
 
 def test_predicate():
     toolkit = Toolkit()
@@ -128,6 +134,8 @@ def test_descendants():
     assert 'biolink:GenomicEntity' in toolkit.get_ancestors('gene', formatted=True)
 
     assert 'gross anatomical structure' in toolkit.get_ancestors('tissue', reflexive=True)
+    assert 'molecular activity_has output' not in toolkit.get_descendants('molecular activity', reflexive=True)
+    assert 'molecular activity_has output' not in toolkit.get_descendants('has output', reflexive=True)
 
 
 def test_children():

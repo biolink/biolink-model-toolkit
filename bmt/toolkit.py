@@ -271,7 +271,11 @@ class Toolkit(object):
         if isinstance(element, (ClassDefinition, SlotDefinition)):
             a = self.generator.ancestors(element)
             ancs = a if reflexive else a[1:]
-        return self._format_all_elements(ancs, formatted)
+        if isinstance(element, SlotDefinition):
+            filtered_ancs = self._filter_secondary(ancs)
+        else:
+            filtered_ancs = ancs
+        return self._format_all_elements(filtered_ancs, formatted)
 
     @lru_cache(CACHE_SIZE)
     def get_descendants(self, name: str, reflexive: bool = True, formatted: bool = False) -> List[str]:
@@ -299,7 +303,11 @@ class Toolkit(object):
         if d and reflexive:
             desc.append(element.name)
         desc += d
-        return self._format_all_elements(desc, formatted)
+        if isinstance(element, SlotDefinition):
+            filtered_desc = self._filter_secondary(desc)
+        else:
+            filtered_desc = desc
+        return self._format_all_elements(filtered_desc, formatted)
 
     @lru_cache(CACHE_SIZE)
     def get_children(self, name: str, formatted: bool = False) -> List[str]:
