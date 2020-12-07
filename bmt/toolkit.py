@@ -383,7 +383,7 @@ class Toolkit(object):
             if '_' in name:
                 element = self.get_element(name.replace('_', ' '))
         if not element:
-            raise ValueError(f"{name} is not a valid Biolink Model element")
+            logging.warning(f"{name} is not a valid Biolink Model element")
         return element
 
     def get_slot_domain(self, slot_name, include_ancestors: bool = False, formatted: bool = False) -> List[str]:
