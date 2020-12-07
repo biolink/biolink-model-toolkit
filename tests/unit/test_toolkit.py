@@ -134,6 +134,8 @@ def test_descendants():
     assert 'biolink:GenomicEntity' in toolkit.get_ancestors('gene', formatted=True)
 
     assert 'gross anatomical structure' in toolkit.get_ancestors('tissue', reflexive=True)
+    assert 'molecular activity_has output' not in toolkit.get_descendants('molecular activity', reflexive=True)
+    assert 'molecular activity_has output' not in toolkit.get_descendants('has output', reflexive=True)
 
 
 def test_children():
