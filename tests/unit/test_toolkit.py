@@ -82,6 +82,12 @@ def test_get_element():
     o = toolkit.get_element('molecular function')
     assert o and o.name == 'molecular activity'
 
+    o = toolkit.get_element('RNA Product')
+    assert o and o.name == 'RNA product'
+
+    o = toolkit.get_element('rna product')
+    assert o and o.name == 'RNA product'
+
 
 def test_predicate():
     toolkit = Toolkit()
