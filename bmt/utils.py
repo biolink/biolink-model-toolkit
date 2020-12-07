@@ -130,6 +130,8 @@ def parse_name(name) -> str:
                 actual_name = camelcase_to_sentencecase(r)
     elif '_' in name:
         actual_name = snakecase_to_sentencecase(name)
+    elif ' ' in name:
+        actual_name = name
     else:
         actual_name = camelcase_to_sentencecase(name)
     return actual_name
