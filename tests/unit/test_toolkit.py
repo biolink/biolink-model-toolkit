@@ -180,7 +180,8 @@ def test_get_slot_domain():
     assert 'biological entity' in toolkit.get_slot_domain('enabled by', include_ancestors=True)
     assert 'biolink:BiologicalEntity' in toolkit.get_slot_domain('enabled by', include_ancestors=True, formatted=True)
 
-    assert 'named thing' in toolkit.get_slot_domain('name')
+    assert 'entity' in toolkit.get_slot_domain('name')
+    assert 'entity' in toolkit.get_slot_domain('category')
     assert 'association' in toolkit.get_slot_domain('relation')
 
 
@@ -229,7 +230,7 @@ def test_get_all_predicates_with_class_range():
 
 def test_get_all_properties_with_class_domain():
     toolkit = Toolkit()
-    assert 'category' in toolkit.get_all_properties_with_class_domain('named thing')
+    assert 'category' in toolkit.get_all_properties_with_class_domain('entity')
     assert 'category' in toolkit.get_all_properties_with_class_domain('gene', check_ancestors=True)
     assert 'biolink:category' in toolkit.get_all_properties_with_class_domain('gene', check_ancestors=True, formatted=True)
 

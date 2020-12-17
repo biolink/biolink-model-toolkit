@@ -9,7 +9,7 @@ from bmt.utils import format_element, parse_name
 
 Url = str
 Path = str
-REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.3.9/biolink-model.yaml'
+REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.4.0/biolink-model.yaml'
 
 CACHE_SIZE = 1024
 
@@ -191,7 +191,8 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants('node property')
+        elements = self.get_all_slots_with_class_domain('entity')
+        elements += self.get_descendants('node property')
         filtered_elements = self._filter_secondary(elements)
         return self._format_all_elements(filtered_elements, formatted)
 
@@ -214,7 +215,8 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants('association slot')
+        elements = self.get_all_slots_with_class_domain('entity')
+        elements += self.get_descendants('association slot')
         filtered_elements = self._filter_secondary(elements)
         return self._format_all_elements(filtered_elements, formatted)
 
@@ -298,15 +300,17 @@ class Toolkit(object):
 
         """
         desc = []
+        filtered_desc = []
         element = self.get_element(name)
-        d = self.generator.descendants(element.name)
-        if d and reflexive:
-            desc.append(element.name)
-        desc += d
-        if isinstance(element, SlotDefinition):
-            filtered_desc = self._filter_secondary(desc)
-        else:
-            filtered_desc = desc
+        if element:
+            d = self.generator.descendants(element.name)
+            if d and reflexive:
+                desc.append(element.name)
+            desc += d
+            if isinstance(element, SlotDefinition):
+                filtered_desc = self._filter_secondary(desc)
+            else:
+                filtered_desc = desc
         return self._format_all_elements(filtered_desc, formatted)
 
     @lru_cache(CACHE_SIZE)
@@ -327,8 +331,10 @@ class Toolkit(object):
             The names of the given elements children
 
         """
+        children = []
         element = self.get_element(name)
-        children = self.generator.children(element.name)
+        if element:
+            children = self.generator.children(element.name)
         return self._format_all_elements(children, formatted)
 
     @lru_cache(CACHE_SIZE)
@@ -349,12 +355,14 @@ class Toolkit(object):
             The name of the given elements parent
 
         """
+        parent = None
         element = self.get_element(name)
-        p = element.is_a if isinstance(element, Definition) else None
-        if p and formatted:
-            parent = format_element(element)
-        else:
-            parent = p
+        if element:
+            p = element.is_a if isinstance(element, Definition) else None
+            if p and formatted:
+                parent = format_element(element)
+            else:
+                parent = p
         return parent
 
     @lru_cache(CACHE_SIZE)
@@ -405,14 +413,23 @@ class Toolkit(object):
             The domain for a given slot
 
         """
+        slot_domain = []
+        domain_classes = set()
         element = self.get_element(slot_name)
-        domain = []
-        if element.domain:
-            domain.append(element.domain)
-        if include_ancestors:
-            ancs = self.get_ancestors(element.domain, reflexive=False)
-            domain.extend(ancs)
-        return self._format_all_elements(domain, formatted)
+        if element:
+            if element.domain:
+                domain_classes.add(element.domain)
+                if include_ancestors:
+                    slot_domain.extend(self.get_ancestors(element.domain, reflexive=True))
+                else:
+                    slot_domain.append(element.domain)
+            for d in element.domain_of:
+                if d not in domain_classes:
+                    if include_ancestors:
+                        slot_domain.extend(self.get_ancestors(d, reflexive=True))
+                    else:
+                        slot_domain.append(d)
+        return self._format_all_elements(slot_domain, formatted)
 
     def get_slot_range(self, slot_name, include_ancestors: bool = False, formatted: bool = False) -> List[str]:
         """
@@ -423,7 +440,7 @@ class Toolkit(object):
         slot_name: str
             The name or alias of a slot in the Biolink Model
         include_ancestors: bool
-            Whether or not to include ancestors of the domain class
+            Whether or not to include ancestors of the range class
         formatted: bool
             Whether to format element names as CURIEs
 
@@ -433,13 +450,14 @@ class Toolkit(object):
             The range for a given slot
 
         """
-        element = self.get_element(slot_name)
         range = []
-        if element.range:
-            range.append(element.range)
-        if include_ancestors:
-            ancs = self.get_ancestors(element.range, reflexive=False)
-            range.extend(ancs)
+        element = self.get_element(slot_name)
+        if element:
+            if element.range:
+                range.append(element.range)
+            if include_ancestors:
+                ancs = self.get_ancestors(element.range, reflexive=False)
+                range.extend(ancs)
         return self._format_all_elements(range, formatted)
 
     def get_all_slots_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
@@ -509,12 +527,13 @@ class Toolkit(object):
             A list of slots
 
         """
-        element = self.get_element(class_name)
-        slots = self._get_all_slots_with_class_domain(element, check_ancestors)
         filtered_slots = []
-        for s in slots:
-            if not s.alias and 'related to' in self.get_ancestors(s.name):
-                filtered_slots.append(s.name)
+        element = self.get_element(class_name)
+        if element:
+            slots = self._get_all_slots_with_class_domain(element, check_ancestors)
+            for s in slots:
+                if not s.alias and 'related to' in self.get_ancestors(s.name):
+                    filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
     def get_all_predicates_with_class_range(self, class_name, check_ancestors: bool = False, formatted: bool = False):
@@ -536,12 +555,13 @@ class Toolkit(object):
             A list of slots
 
         """
-        element = self.get_element(class_name)
-        slots = self._get_all_slots_with_class_range(element, check_ancestors)
         filtered_slots = []
-        for s in slots:
-            if not s.alias and 'related to' in self.get_ancestors(s.name):
-                filtered_slots.append(s.name)
+        element = self.get_element(class_name)
+        if element:
+            slots = self._get_all_slots_with_class_range(element, check_ancestors)
+            for s in slots:
+                if not s.alias and 'related to' in self.get_ancestors(s.name):
+                    filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
     def get_all_properties_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
@@ -563,12 +583,13 @@ class Toolkit(object):
             A list of slots
 
         """
-        element = self.get_element(class_name)
-        slots = self._get_all_slots_with_class_domain(element, check_ancestors)
         filtered_slots = []
-        for s in slots:
-            if not s.alias and 'related to' not in self.get_ancestors(s.name):
-                filtered_slots.append(s.name)
+        element = self.get_element(class_name)
+        if element:
+            slots = self._get_all_slots_with_class_domain(element, check_ancestors)
+            for s in slots:
+                if not s.alias and 'related to' not in self.get_ancestors(s.name):
+                    filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
     def get_all_properties_with_class_range(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
@@ -590,12 +611,13 @@ class Toolkit(object):
             A list of slots
 
         """
-        element = self.get_element(class_name)
-        slots = self._get_all_slots_with_class_range(element, check_ancestors)
         filtered_slots = []
-        for s in slots:
-            if not s.alias and 'related to' not in self.get_ancestors(s.name):
-                filtered_slots.append(s.name)
+        element = self.get_element(class_name)
+        if element:
+            slots = self._get_all_slots_with_class_range(element, check_ancestors)
+            for s in slots:
+                if not s.alias and 'related to' not in self.get_ancestors(s.name):
+                    filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
     def get_value_type_for_slot(self, slot_name, formatted: bool = False) -> str:
@@ -615,16 +637,18 @@ class Toolkit(object):
             The slot type
 
         """
+        element_type = None
         element = self.get_element(slot_name)
-        types = self.get_all_types()
-        if element.range in types:
-            et = element.range
-        else:
-            et = 'uriorcurie'
-        if formatted:
-            element_type = format_element(self.generator.obj_for(et))
-        else:
-            element_type = et
+        if element:
+            types = self.get_all_types()
+            if element.range in types:
+                et = element.range
+            else:
+                et = 'uriorcurie'
+            if formatted:
+                element_type = format_element(self.generator.obj_for(et))
+            else:
+                element_type = et
         return element_type
 
     def _get_all_slots_with_class_domain(self, element: Element, check_ancestors: bool) -> List[Element]:
@@ -647,10 +671,11 @@ class Toolkit(object):
         slots = []
         for k, v in self.generator.schema.slots.items():
             if check_ancestors:
-                if v.domain == element.name or v.domain in self.get_ancestors(element.name):
-                    slots.append(v)
+                if v.domain == element.name or v.domain in self.get_ancestors(element.name) \
+                        or element.name in v.domain_of or any(v.domain_of) in self.get_ancestors(element.name):
+                        slots.append(v)
             else:
-                if v.domain == element.name:
+                if element.name == v.domain or element.name in v.domain_of:
                     slots.append(v)
         return slots
 
@@ -677,8 +702,9 @@ class Toolkit(object):
                 if v.range == element.name or v.range in self.get_ancestors(element.name):
                     slots.append(v)
             else:
-                if v.range == element.name:
-                    slots.append(v)
+                if v.range:
+                    if element.name == v.range:
+                        slots.append(v)
         return slots
 
     @lru_cache(CACHE_SIZE)
