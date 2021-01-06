@@ -3,7 +3,7 @@ import pytest
 from bmt import Toolkit
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def toolkit():
     return Toolkit()
 
