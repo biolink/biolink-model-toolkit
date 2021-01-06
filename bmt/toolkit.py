@@ -304,7 +304,7 @@ class Toolkit(object):
         element = self.get_element(name)
         if element:
             d = self.generator.descendants(element.name)
-            if d and reflexive:
+            if reflexive:
                 desc.append(element.name)
             desc += d
             if isinstance(element, SlotDefinition):
