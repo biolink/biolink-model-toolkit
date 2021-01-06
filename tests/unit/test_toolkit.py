@@ -137,6 +137,8 @@ def test_descendants():
     assert 'molecular activity_has output' not in toolkit.get_descendants('molecular activity', reflexive=True)
     assert 'molecular activity_has output' not in toolkit.get_descendants('has output', reflexive=True)
 
+    assert 'gene' in toolkit.get_descendants('gene', reflexive=True)
+
 
 def test_children():
     toolkit = Toolkit()
