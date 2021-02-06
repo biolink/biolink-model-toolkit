@@ -390,8 +390,6 @@ class Toolkit(object):
         if element is None:
             if '_' in name:
                 element = self.get_element(name.replace('_', ' '))
-        if not element:
-            logging.warning(f"{name} is not a valid Biolink Model element")
         return element
 
     def get_slot_domain(self, slot_name, include_ancestors: bool = False, formatted: bool = False) -> List[str]:
@@ -673,7 +671,7 @@ class Toolkit(object):
             if check_ancestors:
                 if v.domain == element.name or v.domain in self.get_ancestors(element.name) \
                         or element.name in v.domain_of or any(v.domain_of) in self.get_ancestors(element.name):
-                        slots.append(v)
+                    slots.append(v)
             else:
                 if element.name == v.domain or element.name in v.domain_of:
                     slots.append(v)
