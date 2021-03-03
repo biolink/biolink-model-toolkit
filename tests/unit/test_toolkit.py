@@ -14,7 +14,7 @@ def test_get_all_elements():
     assert 'biolink:GeneToGeneAssociation' in elements
     assert 'biolink:related_to' in elements
     assert 'metatype:Uriorcurie' in elements
-    assert 'biolink:Frequency' in elements
+    assert 'biolink:FrequencyValue' in elements
 
 
 def test_get_all_entities():
@@ -142,16 +142,16 @@ def test_children():
     toolkit = Toolkit()
     assert 'causes' in toolkit.get_children('contributes to')
     assert 'physically interacts with' in toolkit.get_children('interacts with')
-    assert 'gene' in toolkit.get_children('gene or gene product')
-    assert 'biolink:Gene' in toolkit.get_children('gene or gene product', formatted=True)
+    assert 'gene' in toolkit.get_children('genomic entity')
+    assert 'biolink:Gene' in toolkit.get_children('genomic entity', formatted=True)
 
 
 def test_parent():
     toolkit = Toolkit()
     assert 'contributes to' in toolkit.get_parent('causes')
     assert 'interacts with' in toolkit.get_parent('physically interacts with')
-    assert 'gene or gene product' in toolkit.get_parent('gene')
-    assert 'biolink:GeneOrGeneProduct' in toolkit.get_parent('gene or gene product', formatted=True)
+    assert 'genomic entity' in toolkit.get_parent('gene')
+    assert 'biolink:GenomicEntity' in toolkit.get_parent('gene', formatted=True)
 
 
 def test_mapping():
@@ -172,9 +172,9 @@ def test_mapping():
 
 def test_get_slot_domain():
     toolkit = Toolkit()
-    assert 'treatment' in toolkit.get_slot_domain('treats')
-    assert 'exposure event' in toolkit.get_slot_domain('treats', include_ancestors=True)
-    assert 'biolink:ExposureEvent' in toolkit.get_slot_domain('treats', include_ancestors=True, formatted=True)
+    assert 'biological entity' in toolkit.get_slot_domain('ameliorates')
+    assert 'named thing' in toolkit.get_slot_domain('treats', include_ancestors=True)
+    assert 'biolink:NamedThing' in toolkit.get_slot_domain('treats', include_ancestors=True, formatted=True)
 
     assert 'biological process or activity' in toolkit.get_slot_domain('enabled by')
     assert 'biological entity' in toolkit.get_slot_domain('enabled by', include_ancestors=True)
@@ -216,9 +216,6 @@ def test_get_all_predicates_with_class_domain():
 
     assert 'in complex with' in toolkit.get_all_slots_with_class_domain('gene or gene product')
     assert 'expressed in' in toolkit.get_all_slots_with_class_domain('gene or gene product')
-    assert 'expressed in' in toolkit.get_all_slots_with_class_domain('gene or gene product')
-    assert 'interacts with' in toolkit.get_all_slots_with_class_domain('gene or gene product', check_ancestors=True)
-    assert 'biolink:interacts_with' in toolkit.get_all_slots_with_class_domain('gene or gene product', check_ancestors=True, formatted=True)
 
 
 def test_get_all_predicates_with_class_range():
