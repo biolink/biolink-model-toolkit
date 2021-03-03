@@ -360,7 +360,7 @@ class Toolkit(object):
         if element:
             p = element.is_a if isinstance(element, Definition) else None
             if p and formatted:
-                parent = format_element(element)
+                parent = format_element(p)
             else:
                 parent = p
         return parent
