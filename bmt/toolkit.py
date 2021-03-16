@@ -9,7 +9,7 @@ from bmt.utils import format_element, parse_name
 
 Url = str
 Path = str
-REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.5.0/biolink-model.yaml'
+REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.6.0/biolink-model.yaml'
 
 CACHE_SIZE = 1024
 
@@ -723,6 +723,52 @@ class Toolkit(object):
             That the named element is a valid relation/predicate in Biolink Model
         """
         return 'related to' in self.get_ancestors(name)
+
+    @lru_cache(CACHE_SIZE)
+    def is_mixin(self, name: str) -> bool:
+        """
+        Determines whether the given name is the name of a mixin
+        in the Biolink Model. An element is a mixin if one of its properties is "is_mixin:true"
+
+        Parameters
+        ----------
+        name: str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is a valid mixin in Biolink Model
+        """
+        is_mixin = "false"
+        element = self.get_element(name)
+        if element:
+            is_mixin = element.mixin if isinstance(element, Definition) else None
+        return is_mixin
+
+    @lru_cache(CACHE_SIZE)
+    def has_inverse(self, name: str) -> bool:
+        """
+        Determines whether the given name is a predicate and if that predicate has an inverse defined
+        in the Biolink Model. An element is a predicate if it descends from
+        `related to`
+
+        Parameters
+        ----------
+        name: str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is a valid mixin in Biolink Model
+        """
+        has_inverse = False
+        element = self.get_element(name)
+        inverse_name = element.inverse if isinstance(element, SlotDefinition) else None
+        if inverse_name is not None:
+            has_inverse = True
+        return bool(has_inverse)
 
     @lru_cache(CACHE_SIZE)
     def in_subset(self, name: str, subset: str) -> bool:

@@ -96,6 +96,18 @@ def test_predicate():
     assert toolkit.is_predicate('causes')
 
 
+def test_mixin():
+    toolkit = Toolkit()
+    assert not toolkit.is_mixin('named thing')
+    assert toolkit.is_mixin('ontology class')
+
+
+def test_has_inverse():
+    toolkit = Toolkit()
+    assert not toolkit.has_inverse('contributor')
+    assert toolkit.has_inverse('superclass of')
+
+
 def test_category():
     toolkit = Toolkit()
     assert toolkit.is_category('named thing')
