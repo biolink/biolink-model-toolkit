@@ -740,10 +740,9 @@ class Toolkit(object):
         bool
             That the named element is a valid mixin in Biolink Model
         """
-        is_mixin = "false"
         element = self.get_element(name)
         if element:
-            is_mixin = element.mixin if isinstance(element, Definition) else None
+            is_mixin = element.mixin if isinstance(element, Definition) else False
         return is_mixin
 
     @lru_cache(CACHE_SIZE)
@@ -763,11 +762,8 @@ class Toolkit(object):
         bool
             That the named element is a valid mixin in Biolink Model
         """
-        has_inverse = False
         element = self.get_element(name)
-        inverse_name = element.inverse if isinstance(element, SlotDefinition) else None
-        if inverse_name is not None:
-            has_inverse = True
+        has_inverse = element.inverse if isinstance(element, SlotDefinition) else False
         return bool(has_inverse)
 
     @lru_cache(CACHE_SIZE)
