@@ -741,8 +741,7 @@ class Toolkit(object):
             That the named element is a valid mixin in Biolink Model
         """
         element = self.get_element(name)
-        if element:
-            is_mixin = element.mixin if isinstance(element, Definition) else False
+        is_mixin = element.mixin if isinstance(element, Definition) else False
         return is_mixin
 
     @lru_cache(CACHE_SIZE)

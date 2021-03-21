@@ -100,12 +100,14 @@ def test_mixin():
     toolkit = Toolkit()
     assert not toolkit.is_mixin('named thing')
     assert toolkit.is_mixin('ontology class')
+    assert not toolkit.is_mixin('this_does_not_exist')
 
 
 def test_has_inverse():
     toolkit = Toolkit()
     assert not toolkit.has_inverse('contributor')
     assert toolkit.has_inverse('superclass of')
+    assert not toolkit.has_inverse('this_does_not_exist')
 
 
 def test_category():
