@@ -1,15 +1,14 @@
-import logging
 from functools import lru_cache, reduce
-from typing import List, Union, TextIO, Optional, Set
+from typing import List, Union, TextIO, Optional
 import deprecation
-from biolinkml.meta import SchemaDefinition, Element, Definition, ClassDefinition, SlotDefinition
+from linkml_model.meta import SchemaDefinition, Element, Definition, ClassDefinition, SlotDefinition
 
 from bmt.toolkit_generator import ToolkitGenerator
 from bmt.utils import format_element, parse_name
 
 Url = str
 Path = str
-REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.5.0/biolink-model.yaml'
+REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.6.0/biolink-model.yaml'
 
 CACHE_SIZE = 1024
 
@@ -456,6 +455,7 @@ class Toolkit(object):
             if include_ancestors:
                 ancs = self.get_ancestors(element.range, reflexive=False)
                 range.extend(ancs)
+            print("here is the element content")
         return self._format_all_elements(range, formatted)
 
     def get_all_slots_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
@@ -655,14 +655,14 @@ class Toolkit(object):
 
         Parameters
         ----------
-        element: biolinkml.meta.Element
+        element: linkml_model.meta.Element
             An element
         check_ancestors: bool
             Whether or not to lookup slots that include ancestors of the given class as its domain
 
         Returns
         -------
-        List[biolinkml.meta.Element]
+        List[linkml_model.meta.Element]
             A list of slots
 
         """
@@ -683,14 +683,14 @@ class Toolkit(object):
 
         Parameters
         ----------
-        element: biolinkml.meta.Element
+        element: linkml_model.meta.Element
             An element
         check_ancestors: bool
             Whether or not to lookup slots that include ancestors of the given class as its range
 
         Returns
         -------
-        List[biolinkml.meta.Element]
+        List[linkml_model.meta.Element]
             A list of slots
 
         """
@@ -723,6 +723,47 @@ class Toolkit(object):
             That the named element is a valid relation/predicate in Biolink Model
         """
         return 'related to' in self.get_ancestors(name)
+
+    @lru_cache(CACHE_SIZE)
+    def is_mixin(self, name: str) -> bool:
+        """
+        Determines whether the given name is the name of a mixin
+        in the Biolink Model. An element is a mixin if one of its properties is "is_mixin:true"
+
+        Parameters
+        ----------
+        name: str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is a valid mixin in Biolink Model
+        """
+        element = self.get_element(name)
+        is_mixin = element.mixin if isinstance(element, Definition) else False
+        return is_mixin
+
+    @lru_cache(CACHE_SIZE)
+    def has_inverse(self, name: str) -> bool:
+        """
+        Determines whether the given name is a predicate and if that predicate has an inverse defined
+        in the Biolink Model. An element is a predicate if it descends from
+        `related to`
+
+        Parameters
+        ----------
+        name: str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is a valid mixin in Biolink Model
+        """
+        element = self.get_element(name)
+        has_inverse = element.inverse if isinstance(element, SlotDefinition) else False
+        return bool(has_inverse)
 
     @lru_cache(CACHE_SIZE)
     def in_subset(self, name: str, subset: str) -> bool:

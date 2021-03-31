@@ -1,7 +1,7 @@
 import re
 
 import stringcase
-from biolinkml.meta import Definition, ClassDefinition, SlotDefinition, Element, ClassDefinitionName, \
+from linkml_model.meta import ClassDefinition, SlotDefinition, Element, ClassDefinitionName, \
     SlotDefinitionName, ElementName, TypeDefinition
 
 
@@ -74,7 +74,7 @@ def format_element(element: Element) -> str:
 
     Parameters
     ----------
-    element: biolinkml.meta.Element
+    element: linkml_model.meta.Element
         An element
 
     Returns
@@ -92,7 +92,10 @@ def format_element(element: Element) -> str:
     elif isinstance(element, SlotDefinition):
         formatted = f"biolink:{sentencecase_to_snakecase(element.name)}"
     elif isinstance(element, TypeDefinition):
+        print("here sierra")
+        print(element.from_schema)
         if element.from_schema == 'https://w3id.org/biolink/biolinkml/types':
+            print("here sierra types found")
             formatted = f"metatype:{sentencecase_to_camelcase(element.name)}"
         else:
             formatted = f"biolink:{sentencecase_to_camelcase(element.name)}"
