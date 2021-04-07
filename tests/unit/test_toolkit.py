@@ -96,6 +96,20 @@ def test_predicate():
     assert toolkit.is_predicate('causes')
 
 
+def test_mixin():
+    toolkit = Toolkit()
+    assert not toolkit.is_mixin('named thing')
+    assert toolkit.is_mixin('ontology class')
+    assert not toolkit.is_mixin('this_does_not_exist')
+
+
+def test_has_inverse():
+    toolkit = Toolkit()
+    assert not toolkit.has_inverse('contributor')
+    assert toolkit.has_inverse('superclass of')
+    assert not toolkit.has_inverse('this_does_not_exist')
+
+
 def test_category():
     toolkit = Toolkit()
     assert toolkit.is_category('named thing')
@@ -136,6 +150,8 @@ def test_descendants():
     assert 'gross anatomical structure' in toolkit.get_ancestors('tissue', reflexive=True)
     assert 'molecular activity_has output' not in toolkit.get_descendants('molecular activity', reflexive=True)
     assert 'molecular activity_has output' not in toolkit.get_descendants('has output', reflexive=True)
+
+    assert 'gene' in toolkit.get_descendants('gene', reflexive=True)
 
 
 def test_children():
