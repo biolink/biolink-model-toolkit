@@ -173,9 +173,6 @@ def test_mapping():
 def test_get_slot_domain():
     toolkit = Toolkit()
     assert 'biological entity' in toolkit.get_slot_domain('ameliorates')
-    assert 'named thing' in toolkit.get_slot_domain('treats', include_ancestors=True)
-    assert 'biolink:NamedThing' in toolkit.get_slot_domain('treats', include_ancestors=True, formatted=True)
-
     assert 'biological process or activity' in toolkit.get_slot_domain('enabled by')
     assert 'biological entity' in toolkit.get_slot_domain('enabled by', include_ancestors=True)
     assert 'biolink:BiologicalEntity' in toolkit.get_slot_domain('enabled by', include_ancestors=True, formatted=True)
@@ -198,8 +195,8 @@ def test_get_slot_range():
 
 def test_get_all_slots_with_class_domain():
     toolkit = Toolkit()
-    assert 'treats' in toolkit.get_all_slots_with_class_domain('treatment')
-    assert 'biolink:treats' in toolkit.get_all_slots_with_class_domain('treatment', formatted=True)
+    assert 'has drug' in toolkit.get_all_slots_with_class_domain('treatment')
+    assert 'biolink:has_drug' in toolkit.get_all_slots_with_class_domain('treatment', formatted=True)
 
 
 def test_get_all_slots_with_class_range():

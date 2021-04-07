@@ -8,7 +8,7 @@ from bmt.utils import format_element, parse_name
 
 Url = str
 Path = str
-REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.6.0/biolink-model.yaml'
+REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.8.0/biolink-model.yaml'
 
 CACHE_SIZE = 1024
 

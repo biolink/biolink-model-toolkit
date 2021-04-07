@@ -94,8 +94,7 @@ def format_element(element: Element) -> str:
     elif isinstance(element, TypeDefinition):
         print("here sierra")
         print(element.from_schema)
-        if element.from_schema == 'https://w3id.org/biolink/biolinkml/types':
-            print("here sierra types found")
+        if element.from_schema == 'https://w3id.org/linkml/types':
             formatted = f"metatype:{sentencecase_to_camelcase(element.name)}"
         else:
             formatted = f"biolink:{sentencecase_to_camelcase(element.name)}"
