@@ -455,7 +455,6 @@ class Toolkit(object):
             if include_ancestors:
                 ancs = self.get_ancestors(element.range, reflexive=False)
                 range.extend(ancs)
-            print("here is the element content")
         return self._format_all_elements(range, formatted)
 
     def get_all_slots_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
