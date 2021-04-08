@@ -1,15 +1,15 @@
 from collections import defaultdict
-from typing import Union, TextIO, Dict, Set, Optional, List, cast
+from typing import Union, Dict, Set, Optional, List
 
-from biolinkml.meta import SchemaDefinition, ClassDefinition, SlotDefinition, TypeDefinition, Element, SubsetDefinition, \
-    ElementName, SlotDefinitionName
-from biolinkml.utils.generator import Generator
-from biolinkml.utils.typereferences import References
+from linkml_model.meta import ClassDefinition, SlotDefinition, TypeDefinition, Element, \
+    SubsetDefinition, ElementName
+from linkml.utils.generator import Generator
+from linkml.utils.typereferences import References
 
 
 class ToolkitGenerator(Generator):
     """
-    An extension to biolinkml.utils.generator.Generator for accessing the Biolink Model.
+    An extension to linkml.utils.generator.Generator for accessing the Biolink Model.
 
     Parameters
     ----------
@@ -39,7 +39,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        element: biolinkml.meta.Element
+        element: linkml_model.meta.Element
             The element to access
         element_uri: Optional[str]
             The URI for the element
@@ -70,7 +70,7 @@ class ToolkitGenerator(Generator):
         ----------
         aliased_slot_name: str
             Alias name of the slot
-        slot: biolinkml.meta.SlotDefinition
+        slot: linkml_model.meta.SlotDefinition
             The slot definition
 
         """
@@ -84,7 +84,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        typ: biolinkml.meta.TypeDefinition
+        typ: linkml_model.meta.TypeDefinition
             The type definition
 
         """
@@ -97,7 +97,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        cls: biolinkml.meta.ClassDefinition
+        cls: linkml_model.meta.ClassDefinition
             The class definition
 
         """
@@ -111,7 +111,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        subset: biolinkml.meta.SubsetDefinition
+        subset: linkml_model.meta.SubsetDefinition
             The subset definition
         """
         self.visit_element(subset, None)
@@ -217,7 +217,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        r: biolinkml.utils.typereferences.References
+        r: linkml.utils.typereferences.References
 
         """
         return list(r.classrefs.union(r.slotrefs.union(r.typerefs).union(r.subsetrefs)))

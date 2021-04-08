@@ -1,15 +1,15 @@
-import logging
 from functools import lru_cache, reduce
-from typing import List, Union, TextIO, Optional, Set
+from typing import List, Union, TextIO, Optional
 import deprecation
-from biolinkml.meta import SchemaDefinition, Element, Definition, ClassDefinition, SlotDefinition
+from linkml_model.meta import SchemaDefinition, Element, Definition, ClassDefinition, SlotDefinition
 
 from bmt.toolkit_generator import ToolkitGenerator
 from bmt.utils import format_element, parse_name
 
 Url = str
 Path = str
-REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.6.0/biolink-model.yaml'
+
+REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.8.0/biolink-model.yaml'
 
 CACHE_SIZE = 1024
 
@@ -655,14 +655,14 @@ class Toolkit(object):
 
         Parameters
         ----------
-        element: biolinkml.meta.Element
+        element: linkml_model.meta.Element
             An element
         check_ancestors: bool
             Whether or not to lookup slots that include ancestors of the given class as its domain
 
         Returns
         -------
-        List[biolinkml.meta.Element]
+        List[linkml_model.meta.Element]
             A list of slots
 
         """
@@ -683,14 +683,14 @@ class Toolkit(object):
 
         Parameters
         ----------
-        element: biolinkml.meta.Element
+        element: linkml_model.meta.Element
             An element
         check_ancestors: bool
             Whether or not to lookup slots that include ancestors of the given class as its range
 
         Returns
         -------
-        List[biolinkml.meta.Element]
+        List[linkml_model.meta.Element]
             A list of slots
 
         """

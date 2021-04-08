@@ -5,7 +5,7 @@ install:
 	python setup.py install
 
 tests:
-	pytest test/*
+	pytest tests/*
 
 cleandist:
 	rm -rf dist/
