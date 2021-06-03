@@ -103,7 +103,7 @@ def test_mixin():
     assert not toolkit.is_mixin('this_does_not_exist')
 
 
-def test_is_translator_canonical_predicacte():
+def test_is_translator_canonical_predicate():
     toolkit = Toolkit()
     assert toolkit.is_translator_canonical_predicate('treats')
     assert not toolkit.is_translator_canonical_predicate('treated by')
