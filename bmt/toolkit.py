@@ -9,7 +9,7 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/1.8.0/biolink-model.yaml'
+REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/2.0.0/biolink-model.yaml'
 
 CACHE_SIZE = 1024
 
@@ -270,8 +270,16 @@ class Toolkit(object):
         """
         element = self.get_element(name)
         ancs = []
+        mixins = element.mixins
+
         if isinstance(element, (ClassDefinition, SlotDefinition)):
             a = self.generator.ancestors(element)
+            if mixins is not None:
+                for mixin in mixins:
+                    ancs.append(mixin)
+                    mixin_element = self.get_element(mixin)
+                    m = self.generator.ancestors(mixin_element)
+                    a = a + m
             ancs = a if reflexive else a[1:]
         if isinstance(element, SlotDefinition):
             filtered_ancs = self._filter_secondary(ancs)
@@ -302,6 +310,8 @@ class Toolkit(object):
         desc = []
         filtered_desc = []
         element = self.get_element(name)
+        mixins = element.mixins
+
         if element:
             d = self.generator.descendants(element.name)
             if reflexive:
@@ -723,6 +733,33 @@ class Toolkit(object):
             That the named element is a valid relation/predicate in Biolink Model
         """
         return 'related to' in self.get_ancestors(name)
+
+    @lru_cache(CACHE_SIZE)
+    def is_translator_canonical_predicate(self, name: str) -> bool:
+        """
+        Determines whether the given name is the name of a canonical relation/predicate
+        in the Biolink Model. An element is a predicate if it descends from
+        `related to` and is tagged with the annotation 'biolink:canonical_predicate'
+
+        Parameters
+        ----------
+        name: str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is a valid translator canonical prediacte in Biolink Model
+        """
+        element = self.get_element(name)
+        annotation_tags = []
+
+        if element:
+            for annotation in element.annotations:
+                annotation_tags.append(annotation.value)
+        is_canonical = True if element is not None and 'biolink:canonical_predicate' in annotation_tags else False
+
+        return is_canonical
 
     @lru_cache(CACHE_SIZE)
     def is_mixin(self, name: str) -> bool:

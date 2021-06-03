@@ -103,6 +103,13 @@ def test_mixin():
     assert not toolkit.is_mixin('this_does_not_exist')
 
 
+def test_is_translator_canonical_predicacte():
+    toolkit = Toolkit()
+    assert toolkit.is_translator_canonical_predicate('treats')
+    assert not toolkit.is_translator_canonical_predicate('treated by')
+    assert not toolkit.is_translator_canonical_predicate('this_does_not_exist')
+
+
 def test_has_inverse():
     toolkit = Toolkit()
     assert not toolkit.has_inverse('contributor')
@@ -122,35 +129,37 @@ def test_ancestors():
     toolkit = Toolkit()
     assert 'related to' in toolkit.get_ancestors('causes')
     assert 'biolink:related_to' in toolkit.get_ancestors('causes', formatted=True)
-
+    assert 'biolink:GeneOrGeneProduct' in toolkit.get_ancestors('gene', formatted=True)
     assert 'named thing' in toolkit.get_ancestors('gene')
+    assert 'gene or gene product' in toolkit.get_ancestors('gene')
     assert 'biolink:NamedThing' in toolkit.get_ancestors('gene', formatted=True)
-
+    assert 'chemical entity' in toolkit.get_ancestors('gene')
+    assert 'transcript' not in toolkit.get_ancestors('gene')
     assert 'causes' in toolkit.get_ancestors('causes')
     assert 'causes' in toolkit.get_ancestors('causes', reflexive=True)
     assert 'causes' not in toolkit.get_ancestors('causes', reflexive=False)
     assert 'biolink:causes' in toolkit.get_ancestors('causes', reflexive=True, formatted=True)
-
     assert 'drug exposure' in toolkit.get_ancestors('drug intake', reflexive=True)
+    assert 'genomic entity' in toolkit.get_ancestors('genomic entity')
+    assert 'genomic entity' in toolkit.get_ancestors('genomic entity', reflexive=True)
+    assert 'genomic entity' not in toolkit.get_ancestors('genomic entity', reflexive=False)
+    assert 'biolink:GenomicEntity' in toolkit.get_ancestors('gene', formatted=True)
+    assert 'gross anatomical structure' in toolkit.get_ancestors('tissue', reflexive=True)
 
 
 def test_descendants():
     toolkit = Toolkit()
+    assert 'gene' in toolkit.get_descendants('gene or gene product')
+    assert 'gene' not in toolkit.get_descendants('outcome')
+    assert 'gene' in toolkit.get_descendants('named thing')
     assert 'causes' in toolkit.get_descendants('related to')
     assert 'interacts with' in toolkit.get_descendants('related to')
     assert 'gene' in toolkit.get_descendants('named thing')
     assert 'phenotypic feature' in toolkit.get_descendants('named thing')
     assert 'biolink:PhenotypicFeature' in toolkit.get_descendants('named thing', formatted=True)
-
-    assert 'genomic entity' in toolkit.get_ancestors('genomic entity')
-    assert 'genomic entity' in toolkit.get_ancestors('genomic entity', reflexive=True)
-    assert 'genomic entity' not in toolkit.get_ancestors('genomic entity', reflexive=False)
-    assert 'biolink:GenomicEntity' in toolkit.get_ancestors('gene', formatted=True)
-
-    assert 'gross anatomical structure' in toolkit.get_ancestors('tissue', reflexive=True)
+    assert 'gene' in toolkit.get_descendants('gene or gene product')
     assert 'molecular activity_has output' not in toolkit.get_descendants('molecular activity', reflexive=True)
     assert 'molecular activity_has output' not in toolkit.get_descendants('has output', reflexive=True)
-
     assert 'gene' in toolkit.get_descendants('gene', reflexive=True)
 
 
@@ -158,16 +167,16 @@ def test_children():
     toolkit = Toolkit()
     assert 'causes' in toolkit.get_children('contributes to')
     assert 'physically interacts with' in toolkit.get_children('interacts with')
-    assert 'gene' in toolkit.get_children('genomic entity')
-    assert 'biolink:Gene' in toolkit.get_children('genomic entity', formatted=True)
+    assert 'gene' in toolkit.get_children('nucleic acid entity')
+    assert 'biolink:Gene' in toolkit.get_children('nucleic acid entity', formatted=True)
 
 
 def test_parent():
     toolkit = Toolkit()
     assert 'contributes to' in toolkit.get_parent('causes')
     assert 'interacts with' in toolkit.get_parent('physically interacts with')
-    assert 'genomic entity' in toolkit.get_parent('gene')
-    assert 'biolink:GenomicEntity' in toolkit.get_parent('gene', formatted=True)
+    assert 'nucleic acid entity' in toolkit.get_parent('gene')
+    assert 'biolink:NucleicAcidEntity' in toolkit.get_parent('gene', formatted=True)
 
 
 def test_mapping():
@@ -181,7 +190,7 @@ def test_mapping():
     assert len(toolkit.get_all_elements_by_mapping('UPHENO:0000001')) == 1
     assert 'affects' in toolkit.get_all_elements_by_mapping('UPHENO:0000001')
 
-    assert len(toolkit.get_all_elements_by_mapping('RO:0004033')) == 1
+    assert len(toolkit.get_all_elements_by_mapping('RO:0004033')) == 2
     assert 'negatively regulates' in toolkit.get_all_elements_by_mapping('RO:0004033')
     assert 'biolink:negatively_regulates' in toolkit.get_all_elements_by_mapping('RO:0004033', formatted=True)
 

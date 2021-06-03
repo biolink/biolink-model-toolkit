@@ -147,7 +147,7 @@ class ToolkitGenerator(Generator):
 
         if not element_obj:
             # try case-insensitive match
-            classes = {k.lower(): v for k,v in self.schema.classes.items()}
+            classes = {k.lower(): v for k, v in self.schema.classes.items()}
             slots = {k.lower(): v for k, v in self.schema.slots.items()}
             types = {k.lower(): v for k, v in self.schema.types.items()}
             subsets = {k.lower(): v for k, v in self.schema.subsets.items()}
@@ -208,7 +208,12 @@ class ToolkitGenerator(Generator):
             The names of the given elements children.
 
         """
-        return self._union_of(self.synopsis.isarefs.get(name, References()))
+        kids_or_mixin_kids = []
+        for mixin in self._union_of(self.synopsis.mixinrefs.get(name, References())):
+            kids_or_mixin_kids.append(mixin)
+        for kid in self._union_of(self.synopsis.isarefs.get(name, References())):
+            kids_or_mixin_kids.append(kid)
+        return kids_or_mixin_kids
 
     @staticmethod
     def _union_of(r: References) -> List[str]:
