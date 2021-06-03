@@ -9,7 +9,7 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/2.0.0/biolink-model.yaml'
+REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/master/biolink-model.yaml'
 
 CACHE_SIZE = 1024
 
@@ -281,6 +281,7 @@ class Toolkit(object):
                     m = self.generator.ancestors(mixin_element)
                     a = a + m
             ancs = a if reflexive else a[1:]
+            print(ancs)
         if isinstance(element, SlotDefinition):
             filtered_ancs = self._filter_secondary(ancs)
         else:
@@ -753,10 +754,9 @@ class Toolkit(object):
         """
         element = self.get_element(name)
         annotation_tags = []
-
         if element:
             for annotation in element.annotations:
-                annotation_tags.append(annotation.value)
+                annotation_tags.append(annotation.tag)
         is_canonical = True if element is not None and 'biolink:canonical_predicate' in annotation_tags else False
 
         return is_canonical
