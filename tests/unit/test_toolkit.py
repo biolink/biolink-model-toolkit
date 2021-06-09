@@ -1,5 +1,10 @@
 from bmt import Toolkit
+
+# make into constants to help with sonarcloud.  Rule says only 3 instances of a string in one file before it
+# needs to become a constant.
+
 GGP = "gene or gene product"
+NAE = "nucleic acid entity"
 
 
 def test_get_all_elements():
@@ -165,15 +170,15 @@ def test_children():
     toolkit = Toolkit()
     assert 'causes' in toolkit.get_children('contributes to')
     assert 'physically interacts with' in toolkit.get_children('interacts with')
-    assert 'gene' in toolkit.get_children('nucleic acid entity')
-    assert 'biolink:Gene' in toolkit.get_children('nucleic acid entity', formatted=True)
+    assert 'gene' in toolkit.get_children(NAE)
+    assert 'biolink:Gene' in toolkit.get_children(NAE, formatted=True)
 
 
 def test_parent():
     toolkit = Toolkit()
     assert 'contributes to' in toolkit.get_parent('causes')
     assert 'interacts with' in toolkit.get_parent('physically interacts with')
-    assert 'nucleic acid entity' in toolkit.get_parent('gene')
+    assert NAE in toolkit.get_parent('gene')
     assert 'biolink:NucleicAcidEntity' in toolkit.get_parent('gene', formatted=True)
 
 
