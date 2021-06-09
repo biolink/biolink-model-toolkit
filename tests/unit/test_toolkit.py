@@ -140,11 +140,9 @@ def test_ancestors():
     assert 'causes' in toolkit.get_ancestors('causes', reflexive=True)
     assert 'causes' not in toolkit.get_ancestors('causes', reflexive=False)
     assert 'biolink:causes' in toolkit.get_ancestors('causes', reflexive=True, formatted=True)
-    assert 'drug exposure' in toolkit.get_ancestors('drug intake', reflexive=True)
     assert 'genomic entity' in toolkit.get_ancestors('genomic entity')
     assert 'genomic entity' in toolkit.get_ancestors('genomic entity', reflexive=True)
     assert 'genomic entity' not in toolkit.get_ancestors('genomic entity', reflexive=False)
-    assert 'gross anatomical structure' in toolkit.get_ancestors('tissue', reflexive=True)
 
 
 def test_descendants():
@@ -157,7 +155,6 @@ def test_descendants():
     assert 'gene' in toolkit.get_descendants('named thing')
     assert 'phenotypic feature' in toolkit.get_descendants('named thing')
     assert 'biolink:PhenotypicFeature' in toolkit.get_descendants('named thing', formatted=True)
-    assert 'gene' in toolkit.get_descendants('gene or gene product')
     assert 'molecular activity_has output' not in toolkit.get_descendants('molecular activity', reflexive=True)
     assert 'molecular activity_has output' not in toolkit.get_descendants('has output', reflexive=True)
     assert 'gene' in toolkit.get_descendants('gene', reflexive=True)

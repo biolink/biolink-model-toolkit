@@ -178,12 +178,8 @@ class ToolkitGenerator(Generator):
         if not element.mixins:
             return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
         else:
-            print("mixins")
             for mixin in element.mixins:
-                print(mixin)
-                print("obj for name")
                 mixin_element = self.obj_for(mixin)
-                print(mixin_element)
                 return [element.name] + [mixin_element.name] + ([] if element.is_a is None else
                                                                 self.ancestors(self.parent(element)) +
                                                                 self.ancestors(self.parent(mixin_element)))

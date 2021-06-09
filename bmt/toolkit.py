@@ -270,18 +270,10 @@ class Toolkit(object):
         """
         element = self.get_element(name)
         ancs = []
-        # mixins = element.mixins
 
         if isinstance(element, (ClassDefinition, SlotDefinition)):
             a = self.generator.ancestors(element)
-            # if mixins is not None:
-            #     for mixin in mixins:
-            #         ancs.append(mixin)
-            #         mixin_element = self.get_element(mixin)
-            #         m = self.generator.ancestors(mixin_element)
-            #         a = a + m
             ancs = a if reflexive else a[1:]
-            print(ancs)
         if isinstance(element, SlotDefinition):
             filtered_ancs = self._filter_secondary(ancs)
         else:
