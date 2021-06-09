@@ -1,14 +1,18 @@
+import pytest
 from bmt import Toolkit
 
-# make into constants to help with sonarcloud.  Rule says only 3 instances of a string in one file before it
-# needs to become a constant.
+
+@pytest.fixture(scope="module")
+def toolkit():
+    return Toolkit()
+
 
 GGP = "gene or gene product"
 NAE = "nucleic acid entity"
 MA = "molecular activity"
 
-def test_get_all_elements():
-    toolkit = Toolkit()
+
+def test_get_all_elements(toolkit):
     elements = toolkit.get_all_elements()
     assert 'named thing' in elements
     assert 'association' in elements
@@ -23,8 +27,7 @@ def test_get_all_elements():
     assert 'biolink:FrequencyValue' in elements
 
 
-def test_get_all_entities():
-    toolkit = Toolkit()
+def test_get_all_entities(toolkit):
     entities = toolkit.get_all_entities()
     assert 'named thing' in entities
     assert 'gene' in entities
@@ -38,8 +41,7 @@ def test_get_all_entities():
     assert 'biolink:Disease' in entities
 
 
-def test_get_all_associations():
-    toolkit = Toolkit()
+def test_get_all_associations(toolkit):
     associations = toolkit.get_all_associations()
     assert 'association' in associations
     assert 'gene to gene association' in associations
@@ -50,8 +52,7 @@ def test_get_all_associations():
     assert 'biolink:GeneToGeneAssociation' in associations
 
 
-def test_get_all_node_properties():
-    toolkit = Toolkit()
+def test_get_all_node_properties(toolkit):
     properties = toolkit.get_all_node_properties()
     assert 'name' in properties
     assert 'category' in properties
@@ -63,8 +64,7 @@ def test_get_all_node_properties():
     assert 'biolink:has_gene' in properties
 
 
-def test_get_all_edge_properties():
-    toolkit = Toolkit()
+def test_get_all_edge_properties(toolkit):
     properties = toolkit.get_all_edge_properties()
     assert 'subject' in properties
     assert 'object' in properties
@@ -76,8 +76,7 @@ def test_get_all_edge_properties():
     assert 'biolink:frequency_qualifier' in properties
 
 
-def test_get_element():
-    toolkit = Toolkit()
+def test_get_element(toolkit):
     gene = toolkit.get_element('gene')
     locus = toolkit.get_element('locus')
     assert gene == locus
@@ -95,44 +94,38 @@ def test_get_element():
     assert o and o.name == 'RNA product'
 
 
-def test_predicate():
-    toolkit = Toolkit()
+def test_predicate(toolkit):
     assert not toolkit.is_predicate('named thing')
     assert not toolkit.is_predicate('gene')
     assert toolkit.is_predicate('causes')
 
 
-def test_mixin():
-    toolkit = Toolkit()
+def test_mixin(toolkit):
     assert not toolkit.is_mixin('named thing')
     assert toolkit.is_mixin('ontology class')
     assert not toolkit.is_mixin('this_does_not_exist')
 
 
-def test_is_translator_canonical_predicate():
-    toolkit = Toolkit()
+def test_is_translator_canonical_predicate(toolkit):
     assert toolkit.is_translator_canonical_predicate('treats')
     assert not toolkit.is_translator_canonical_predicate('treated by')
     assert not toolkit.is_translator_canonical_predicate('this_does_not_exist')
 
 
-def test_has_inverse():
-    toolkit = Toolkit()
+def test_has_inverse(toolkit):
     assert not toolkit.has_inverse('contributor')
     assert toolkit.has_inverse('superclass of')
     assert not toolkit.has_inverse('this_does_not_exist')
 
 
-def test_category():
-    toolkit = Toolkit()
+def test_category(toolkit):
     assert toolkit.is_category('named thing')
     assert toolkit.is_category('gene')
     assert not toolkit.is_category('causes')
     assert not toolkit.is_category('affects')
 
 
-def test_ancestors():
-    toolkit = Toolkit()
+def test_ancestors(toolkit):
     assert 'related to' in toolkit.get_ancestors('causes')
     assert 'biolink:GenomicEntity' in toolkit.get_ancestors('gene', formatted=True)
     assert 'biolink:related_to' in toolkit.get_ancestors('causes', formatted=True)
@@ -151,8 +144,7 @@ def test_ancestors():
     assert 'genomic entity' not in toolkit.get_ancestors('genomic entity', reflexive=False)
 
 
-def test_descendants():
-    toolkit = Toolkit()
+def test_descendants(toolkit):
     assert 'gene' in toolkit.get_descendants(GGP)
     assert MA in toolkit.get_descendants('occurrent')
     assert 'gene' not in toolkit.get_descendants('outcome')
@@ -167,24 +159,21 @@ def test_descendants():
     assert 'gene' in toolkit.get_descendants('gene', reflexive=True)
 
 
-def test_children():
-    toolkit = Toolkit()
+def test_children(toolkit):
     assert 'causes' in toolkit.get_children('contributes to')
     assert 'physically interacts with' in toolkit.get_children('interacts with')
     assert 'gene' in toolkit.get_children(NAE)
     assert 'biolink:Gene' in toolkit.get_children(NAE, formatted=True)
 
 
-def test_parent():
-    toolkit = Toolkit()
+def test_parent(toolkit):
     assert 'contributes to' in toolkit.get_parent('causes')
     assert 'interacts with' in toolkit.get_parent('physically interacts with')
     assert NAE in toolkit.get_parent('gene')
     assert 'biolink:NucleicAcidEntity' in toolkit.get_parent('gene', formatted=True)
 
 
-def test_mapping():
-    toolkit = Toolkit()
+def test_mapping(toolkit):
     assert len(toolkit.get_all_elements_by_mapping('SO:0000704')) == 1
     assert 'gene' in toolkit.get_all_elements_by_mapping('SO:0000704')
 
@@ -199,8 +188,7 @@ def test_mapping():
     assert 'biolink:negatively_regulates' in toolkit.get_all_elements_by_mapping('RO:0004033', formatted=True)
 
 
-def test_get_slot_domain():
-    toolkit = Toolkit()
+def test_get_slot_domain(toolkit):
     assert 'biological entity' in toolkit.get_slot_domain('ameliorates')
     assert 'biological process or activity' in toolkit.get_slot_domain('enabled by')
     assert 'biological entity' in toolkit.get_slot_domain('enabled by', include_ancestors=True)
@@ -211,8 +199,7 @@ def test_get_slot_domain():
     assert 'association' in toolkit.get_slot_domain('relation')
 
 
-def test_get_slot_range():
-    toolkit = Toolkit()
+def test_get_slot_range(toolkit):
     assert 'disease or phenotypic feature' in toolkit.get_slot_range('treats')
     assert 'biological entity' in toolkit.get_slot_range('treats', include_ancestors=True)
     assert 'biolink:BiologicalEntity' in toolkit.get_slot_range('treats', include_ancestors=True, formatted=True)
@@ -222,20 +209,17 @@ def test_get_slot_range():
     assert 'metatype:Uriorcurie' in toolkit.get_slot_range('relation', formatted=True)
 
 
-def test_get_all_slots_with_class_domain():
-    toolkit = Toolkit()
+def test_get_all_slots_with_class_domain(toolkit):
     assert 'has drug' in toolkit.get_all_slots_with_class_domain('treatment')
     assert 'biolink:has_drug' in toolkit.get_all_slots_with_class_domain('treatment', formatted=True)
 
 
-def test_get_all_slots_with_class_range():
-    toolkit = Toolkit()
+def test_get_all_slots_with_class_range(toolkit):
     assert 'in taxon' in toolkit.get_all_slots_with_class_range('organism taxon')
     assert 'biolink:in_taxon' in toolkit.get_all_slots_with_class_range('organism taxon', formatted=True)
 
 
-def test_get_all_predicates_with_class_domain():
-    toolkit = Toolkit()
+def test_get_all_predicates_with_class_domain(toolkit):
     assert 'genetically interacts with' in toolkit.get_all_slots_with_class_domain('gene')
     assert 'interacts with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True)
     assert 'biolink:interacts_with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True, formatted=True)
@@ -244,15 +228,13 @@ def test_get_all_predicates_with_class_domain():
     assert 'expressed in' in toolkit.get_all_slots_with_class_domain(GGP)
 
 
-def test_get_all_predicates_with_class_range():
-    toolkit = Toolkit()
+def test_get_all_predicates_with_class_range(toolkit):
     assert 'manifestation of' in toolkit.get_all_predicates_with_class_range('disease')
     assert 'disease has basis in' in toolkit.get_all_predicates_with_class_range('disease', check_ancestors=True)
     assert 'biolink:disease_has_basis_in' in toolkit.get_all_predicates_with_class_range('disease', check_ancestors=True, formatted=True)
 
 
-def test_get_all_properties_with_class_domain():
-    toolkit = Toolkit()
+def test_get_all_properties_with_class_domain(toolkit):
     assert 'category' in toolkit.get_all_properties_with_class_domain('entity')
     assert 'category' in toolkit.get_all_properties_with_class_domain('gene', check_ancestors=True)
     assert 'biolink:category' in toolkit.get_all_properties_with_class_domain('gene', check_ancestors=True, formatted=True)
@@ -262,15 +244,13 @@ def test_get_all_properties_with_class_domain():
     assert 'biolink:subject' in toolkit.get_all_properties_with_class_domain('association', check_ancestors=True, formatted=True)
 
 
-def test_get_all_properties_with_class_range():
-    toolkit = Toolkit()
+def test_get_all_properties_with_class_range(toolkit):
     assert 'has gene' in toolkit.get_all_properties_with_class_range('gene')
     assert 'subject' in toolkit.get_all_properties_with_class_range('gene', check_ancestors=True)
     assert 'biolink:subject' in toolkit.get_all_properties_with_class_range('gene', check_ancestors=True, formatted=True)
 
 
-def test_get_value_type_for_slot():
-    toolkit = Toolkit()
+def test_get_value_type_for_slot(toolkit):
     assert 'uriorcurie' in toolkit.get_value_type_for_slot('subject')
     assert 'uriorcurie' in toolkit.get_value_type_for_slot('object')
     assert 'string' in toolkit.get_value_type_for_slot('symbol')

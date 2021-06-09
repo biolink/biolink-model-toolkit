@@ -1,0 +1,44 @@
+contributes to,RO:0002326
+has gene product,NCIT:gene_encodes_gene_product
+has sequence location,faldo:location
+opposite of,RO:0002604
+participates in,RTXKG1:participates_in
+gene product of,RO:0002204
+located in,FMA:has_location
+affects,RTXKG1:affects
+temporally related to,SNOMED:temporally_related_to
+contraindicated for,RTXKG1:contraindicated_for
+lacks part,RTXKG1:lacks_part
+genetic association,WIKIDATA_PROPERTY:P2293
+expresses,hetio:EXPRESSES_AeG
+manifestation of,OMIM:manifestation_of
+correlated with,PATO:correlates_with
+produced by,RO:0003001
+develops from,RO:0002202
+contributor,dct:contributor
+in linkage disequilibrium with,NCIT:C16798
+derives into,NCIT:may_be_normal_cell_origin_of_disease
+expressed in,RO:0002206
+broad match,WIKIDATA:Q39894595
+similar to,SO:similar_to
+has not completed,CL:has_not_completed
+treated by,MONDO:disease_responds_to
+related condition,GENO:0000790
+close match,SEMMEDDB:same_as
+derives from,OBO:doid#derives_from
+has completed,RTXKG1:has_completed
+interacts with,RO:0002434
+transcribed from,SIO:010081
+caused by,WIKIDATA_PROPERTY:P828
+location of,RTXKG1:site_of
+produces,SEMMEDDB:produces
+subclass of,VANDF:isa
+in taxon,WIKIDATA_PROPERTY:P703
+superclass of,VANDF:inverse_isa
+has phenotype,SNOMED:characterized_by
+narrow match,WIKIDATA:Q39893967
+occurs in,SNOMED:occurs_in
+has participant,RO:has_participant
+transcribed to,SIO:010080
+overlaps,RO:0002131
+coexists with,SEMMEDDB:coexists_with
