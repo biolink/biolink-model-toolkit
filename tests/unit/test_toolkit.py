@@ -7,9 +7,11 @@ def toolkit():
     return Toolkit()
 
 
-GGP = "gene or gene product"
-NAE = "nucleic acid entity"
-MA = "molecular activity"
+GENE_OR_GENE_PRODUCT = "gene or gene product"
+NUCLEIC_ACID_ENTITY = "nucleic acid entity"
+MOLECULAR_ACTIVITY = "molecular activity"
+GENOMIC_ENTITY = "genomic entity"
+BIOLOGICAL_ENTITY = "biological entity"
 
 
 def test_get_model_version(toolkit):
@@ -90,7 +92,7 @@ def test_get_element(toolkit):
     assert o and o.name == 'drug exposure'
 
     o = toolkit.get_element('molecular function')
-    assert o and o.name == MA
+    assert o and o.name == MOLECULAR_ACTIVITY
 
     o = toolkit.get_element('RNA Product')
     assert o and o.name == 'RNA product'
@@ -136,7 +138,7 @@ def test_ancestors(toolkit):
     assert 'biolink:related_to' in toolkit.get_ancestors('causes', formatted=True)
     assert 'biolink:GeneOrGeneProduct' in toolkit.get_ancestors('gene', formatted=True)
     assert 'named thing' in toolkit.get_ancestors('gene')
-    assert GGP in toolkit.get_ancestors('gene')
+    assert GENE_OR_GENE_PRODUCT in toolkit.get_ancestors('gene')
     assert 'biolink:NamedThing' in toolkit.get_ancestors('gene', formatted=True)
     assert 'chemical entity' in toolkit.get_ancestors('gene')
     assert 'transcript' not in toolkit.get_ancestors('gene')
@@ -144,15 +146,15 @@ def test_ancestors(toolkit):
     assert 'causes' in toolkit.get_ancestors('causes', reflexive=True)
     assert 'causes' not in toolkit.get_ancestors('causes', reflexive=False)
     assert 'biolink:causes' in toolkit.get_ancestors('causes', reflexive=True, formatted=True)
-    assert 'genomic entity' in toolkit.get_ancestors('gene')
-    assert 'genomic entity' not in toolkit.get_ancestors('biological entity')
-    assert 'genomic entity' in toolkit.get_ancestors('genomic entity', reflexive=True)
-    assert 'genomic entity' not in toolkit.get_ancestors('genomic entity', reflexive=False)
+    assert GENOMIC_ENTITY in toolkit.get_ancestors('gene')
+    assert GENOMIC_ENTITY not in toolkit.get_ancestors(BIOLOGICAL_ENTITY)
+    assert GENOMIC_ENTITY in toolkit.get_ancestors(GENOMIC_ENTITY, reflexive=True)
+    assert GENOMIC_ENTITY not in toolkit.get_ancestors(GENOMIC_ENTITY, reflexive=False)
 
 
 def test_descendants(toolkit):
-    assert 'gene' in toolkit.get_descendants(GGP)
-    assert MA in toolkit.get_descendants('occurrent')
+    assert 'gene' in toolkit.get_descendants(GENE_OR_GENE_PRODUCT)
+    assert MOLECULAR_ACTIVITY in toolkit.get_descendants('occurrent')
     assert 'gene' not in toolkit.get_descendants('outcome')
     assert 'gene' in toolkit.get_descendants('named thing')
     assert 'causes' in toolkit.get_descendants('related to')
@@ -160,7 +162,7 @@ def test_descendants(toolkit):
     assert 'phenotypic feature' in toolkit.get_descendants('named thing')
     assert 'related to' not in toolkit.get_descendants('named thing')
     assert 'biolink:PhenotypicFeature' in toolkit.get_descendants('named thing', formatted=True)
-    assert 'molecular activity_has output' not in toolkit.get_descendants(MA, reflexive=True)
+    assert 'molecular activity_has output' not in toolkit.get_descendants(MOLECULAR_ACTIVITY, reflexive=True)
     assert 'molecular activity_has output' not in toolkit.get_descendants('has output', reflexive=True)
     assert 'gene' in toolkit.get_descendants('gene', reflexive=True)
 
@@ -168,14 +170,14 @@ def test_descendants(toolkit):
 def test_children(toolkit):
     assert 'causes' in toolkit.get_children('contributes to')
     assert 'physically interacts with' in toolkit.get_children('interacts with')
-    assert 'gene' in toolkit.get_children(NAE)
-    assert 'biolink:Gene' in toolkit.get_children(NAE, formatted=True)
+    assert 'gene' in toolkit.get_children(NUCLEIC_ACID_ENTITY)
+    assert 'biolink:Gene' in toolkit.get_children(NUCLEIC_ACID_ENTITY, formatted=True)
 
 
 def test_parent(toolkit):
     assert 'contributes to' in toolkit.get_parent('causes')
     assert 'interacts with' in toolkit.get_parent('physically interacts with')
-    assert NAE in toolkit.get_parent('gene')
+    assert NUCLEIC_ACID_ENTITY in toolkit.get_parent('gene')
     assert 'biolink:NucleicAcidEntity' in toolkit.get_parent('gene', formatted=True)
 
 
@@ -195,9 +197,9 @@ def test_mapping(toolkit):
 
 
 def test_get_slot_domain(toolkit):
-    assert 'biological entity' in toolkit.get_slot_domain('ameliorates')
+    assert BIOLOGICAL_ENTITY in toolkit.get_slot_domain('ameliorates')
     assert 'biological process or activity' in toolkit.get_slot_domain('enabled by')
-    assert 'biological entity' in toolkit.get_slot_domain('enabled by', include_ancestors=True)
+    assert BIOLOGICAL_ENTITY in toolkit.get_slot_domain('enabled by', include_ancestors=True)
     assert 'biolink:BiologicalEntity' in toolkit.get_slot_domain('enabled by', include_ancestors=True, formatted=True)
 
     assert 'entity' in toolkit.get_slot_domain('name')
@@ -207,7 +209,7 @@ def test_get_slot_domain(toolkit):
 
 def test_get_slot_range(toolkit):
     assert 'disease or phenotypic feature' in toolkit.get_slot_range('treats')
-    assert 'biological entity' in toolkit.get_slot_range('treats', include_ancestors=True)
+    assert BIOLOGICAL_ENTITY in toolkit.get_slot_range('treats', include_ancestors=True)
     assert 'biolink:BiologicalEntity' in toolkit.get_slot_range('treats', include_ancestors=True, formatted=True)
 
     assert 'label type' in toolkit.get_slot_range('name')
@@ -230,8 +232,8 @@ def test_get_all_predicates_with_class_domain(toolkit):
     assert 'interacts with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True)
     assert 'biolink:interacts_with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True, formatted=True)
 
-    assert 'in complex with' in toolkit.get_all_slots_with_class_domain(GGP)
-    assert 'expressed in' in toolkit.get_all_slots_with_class_domain(GGP)
+    assert 'in complex with' in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT)
+    assert 'expressed in' in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT)
 
 
 def test_get_all_predicates_with_class_range(toolkit):
