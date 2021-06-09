@@ -154,6 +154,7 @@ def test_ancestors():
 def test_descendants():
     toolkit = Toolkit()
     assert 'gene' in toolkit.get_descendants(GGP)
+    assert 'molecular activity' in toolkit.get_descendants('occurrent')
     assert 'gene' not in toolkit.get_descendants('outcome')
     assert 'gene' in toolkit.get_descendants('named thing')
     assert 'causes' in toolkit.get_descendants('related to')
