@@ -128,6 +128,7 @@ def test_category():
 def test_ancestors():
     toolkit = Toolkit()
     assert 'related to' in toolkit.get_ancestors('causes')
+    assert 'biolink:GenomicEntity' in toolkit.get_ancestors('gene', formatted=True)
     assert 'biolink:related_to' in toolkit.get_ancestors('causes', formatted=True)
     assert 'biolink:GeneOrGeneProduct' in toolkit.get_ancestors('gene', formatted=True)
     assert 'named thing' in toolkit.get_ancestors('gene')
@@ -143,7 +144,6 @@ def test_ancestors():
     assert 'genomic entity' in toolkit.get_ancestors('genomic entity')
     assert 'genomic entity' in toolkit.get_ancestors('genomic entity', reflexive=True)
     assert 'genomic entity' not in toolkit.get_ancestors('genomic entity', reflexive=False)
-    assert 'biolink:GenomicEntity' in toolkit.get_ancestors('gene', formatted=True)
     assert 'gross anatomical structure' in toolkit.get_ancestors('tissue', reflexive=True)
 
 
