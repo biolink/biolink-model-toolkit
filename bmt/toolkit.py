@@ -730,7 +730,7 @@ class Toolkit(object):
     def is_translator_canonical_predicate(self, name: str) -> bool:
         """
         Determines whether the given name is the name of a canonical relation/predicate
-        in the Biolink Model. An element is a predicate if it descends from
+        in the Biolink Model. An element is a canonical predicate if it descends from
         `related to` and is tagged with the annotation 'biolink:canonical_predicate'
 
         Parameters
