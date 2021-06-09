@@ -175,6 +175,8 @@ class ToolkitGenerator(Generator):
             An element
 
         """
+        if element is None:
+            return []
         if not element.mixins:
             return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
         else:

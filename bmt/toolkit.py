@@ -303,7 +303,6 @@ class Toolkit(object):
         desc = []
         filtered_desc = []
         element = self.get_element(name)
-        mixins = element.mixins
 
         if element:
             d = self.generator.descendants(element.name)
