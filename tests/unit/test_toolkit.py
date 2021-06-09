@@ -12,6 +12,11 @@ NAE = "nucleic acid entity"
 MA = "molecular activity"
 
 
+def test_get_model_version(toolkit):
+    version = toolkit.get_model_version()
+    assert version == '2.0.1'
+
+
 def test_get_all_elements(toolkit):
     elements = toolkit.get_all_elements()
     assert 'named thing' in elements

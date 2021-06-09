@@ -1078,6 +1078,21 @@ class Toolkit(object):
             formatted_elements = elements
         return formatted_elements
 
+    @lru_cache(CACHE_SIZE)
+    def get_model_version(self) -> str:
+        """
+        Return the version of the biolink-model in use.
+
+        Returns
+        -------
+        str
+            The biolink-model version
+
+        """
+        return self.generator.schema.version
+
+
+
     @deprecation.deprecated(deprecated_in='0.3.0', removed_in='1.0', details='Use get_all_elements method instead')
     def names(self, formatted: bool = False) -> List[str]:
         return self.get_all_elements(formatted)
