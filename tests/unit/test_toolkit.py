@@ -223,8 +223,8 @@ def test_get_all_slots_with_class_domain():
 
 def test_get_all_slots_with_class_range():
     toolkit = Toolkit()
-    assert 'treated by' in toolkit.get_all_slots_with_class_range('treatment')
-    assert 'biolink:treated_by' in toolkit.get_all_slots_with_class_range('treatment', formatted=True)
+    assert 'subject' in toolkit.get_all_slots_with_class_range('treatment')
+    assert 'biolink:subject' in toolkit.get_all_slots_with_class_range('treatment', formatted=True)
 
 
 def test_get_all_predicates_with_class_domain():
