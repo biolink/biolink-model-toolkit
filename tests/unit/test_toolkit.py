@@ -5,7 +5,7 @@ from bmt import Toolkit
 
 GGP = "gene or gene product"
 NAE = "nucleic acid entity"
-
+MA = "molecular activity"
 
 def test_get_all_elements():
     toolkit = Toolkit()
@@ -86,7 +86,7 @@ def test_get_element():
     assert o and o.name == 'drug exposure'
 
     o = toolkit.get_element('molecular function')
-    assert o and o.name == 'molecular activity'
+    assert o and o.name == MA
 
     o = toolkit.get_element('RNA Product')
     assert o and o.name == 'RNA product'
@@ -154,7 +154,7 @@ def test_ancestors():
 def test_descendants():
     toolkit = Toolkit()
     assert 'gene' in toolkit.get_descendants(GGP)
-    assert 'molecular activity' in toolkit.get_descendants('occurrent')
+    assert MA in toolkit.get_descendants('occurrent')
     assert 'gene' not in toolkit.get_descendants('outcome')
     assert 'gene' in toolkit.get_descendants('named thing')
     assert 'causes' in toolkit.get_descendants('related to')
@@ -162,7 +162,7 @@ def test_descendants():
     assert 'gene' in toolkit.get_descendants('named thing')
     assert 'phenotypic feature' in toolkit.get_descendants('named thing')
     assert 'biolink:PhenotypicFeature' in toolkit.get_descendants('named thing', formatted=True)
-    assert 'molecular activity_has output' not in toolkit.get_descendants('molecular activity', reflexive=True)
+    assert 'molecular activity_has output' not in toolkit.get_descendants(MA, reflexive=True)
     assert 'molecular activity_has output' not in toolkit.get_descendants('has output', reflexive=True)
     assert 'gene' in toolkit.get_descendants('gene', reflexive=True)
 
