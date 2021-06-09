@@ -506,8 +506,6 @@ class Toolkit(object):
         element = self.get_element(class_name)
         slots = self._get_all_slots_with_class_range(element, check_ancestors)
         slot_names = [x.name for x in slots]
-        print("slot names")
-        print(slot_names)
         return self._format_all_elements(slot_names, formatted)
 
     def get_all_predicates_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
@@ -707,8 +705,6 @@ class Toolkit(object):
                 if v.range:
                     if element.name == v.range:
                         slots.append(v)
-        print("first slots")
-        print(slots)
         return slots
 
     @lru_cache(CACHE_SIZE)
