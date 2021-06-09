@@ -1,4 +1,5 @@
 from bmt import Toolkit
+GGP = "gene or gene product"
 
 
 def test_get_all_elements():
@@ -132,7 +133,7 @@ def test_ancestors():
     assert 'biolink:related_to' in toolkit.get_ancestors('causes', formatted=True)
     assert 'biolink:GeneOrGeneProduct' in toolkit.get_ancestors('gene', formatted=True)
     assert 'named thing' in toolkit.get_ancestors('gene')
-    assert 'gene or gene product' in toolkit.get_ancestors('gene')
+    assert GGP in toolkit.get_ancestors('gene')
     assert 'biolink:NamedThing' in toolkit.get_ancestors('gene', formatted=True)
     assert 'chemical entity' in toolkit.get_ancestors('gene')
     assert 'transcript' not in toolkit.get_ancestors('gene')
@@ -147,7 +148,7 @@ def test_ancestors():
 
 def test_descendants():
     toolkit = Toolkit()
-    assert 'gene' in toolkit.get_descendants('gene or gene product')
+    assert 'gene' in toolkit.get_descendants(GGP)
     assert 'gene' not in toolkit.get_descendants('outcome')
     assert 'gene' in toolkit.get_descendants('named thing')
     assert 'causes' in toolkit.get_descendants('related to')
@@ -233,8 +234,8 @@ def test_get_all_predicates_with_class_domain():
     assert 'interacts with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True)
     assert 'biolink:interacts_with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True, formatted=True)
 
-    assert 'in complex with' in toolkit.get_all_slots_with_class_domain('gene or gene product')
-    assert 'expressed in' in toolkit.get_all_slots_with_class_domain('gene or gene product')
+    assert 'in complex with' in toolkit.get_all_slots_with_class_domain(GGP)
+    assert 'expressed in' in toolkit.get_all_slots_with_class_domain(GGP)
 
 
 def test_get_all_predicates_with_class_range():
