@@ -762,9 +762,8 @@ class Toolkit(object):
                 if v.range == element.name or v.range in self.get_ancestors(element.name, mixin):
                     slots.append(v)
             else:
-                if v.range:
-                    if element.name == v.range:
-                        slots.append(v)
+                if v.range and element.name == v.range:
+                    slots.append(v)
         return slots
 
     @lru_cache(CACHE_SIZE)
