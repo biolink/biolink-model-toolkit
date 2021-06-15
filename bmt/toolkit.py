@@ -316,7 +316,6 @@ class Toolkit(object):
 
         if element:
             d = self.generator.descendants(element.name, mixin)
-            print(d)
             if reflexive:
                 desc.append(element.name)
             desc += d
