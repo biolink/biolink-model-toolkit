@@ -1,7 +1,7 @@
 from functools import lru_cache, reduce
 from typing import List, Union, TextIO, Optional
 import deprecation
-from linkml_model.meta import SchemaDefinition, Element, Definition, ClassDefinition, SlotDefinition
+from linkml_runtime.linkml_model.meta import SchemaDefinition, Element, Definition, ClassDefinition, SlotDefinition
 
 from bmt.toolkit_generator import ToolkitGenerator
 from bmt.utils import format_element, parse_name
@@ -434,19 +434,18 @@ class Toolkit(object):
         slot_domain = []
         domain_classes = set()
         element = self.get_element(slot_name)
-        if element:
-            if element.domain:
-                domain_classes.add(element.domain)
+        if element and element.domain:
+            domain_classes.add(element.domain)
+            if include_ancestors:
+                slot_domain.extend(self.get_ancestors(element.domain, reflexive=True, mixin=mixin))
+            else:
+                slot_domain.append(element.domain)
+        for d in element.domain_of:
+            if d not in domain_classes:
                 if include_ancestors:
-                    slot_domain.extend(self.get_ancestors(element.domain, reflexive=True, mixin=mixin))
+                    slot_domain.extend(self.get_ancestors(d, reflexive=True, mixin=mixin))
                 else:
-                    slot_domain.append(element.domain)
-            for d in element.domain_of:
-                if d not in domain_classes:
-                    if include_ancestors:
-                        slot_domain.extend(self.get_ancestors(d, reflexive=True, mixin=mixin))
-                    else:
-                        slot_domain.append(d)
+                    slot_domain.append(d)
         return self._format_all_elements(slot_domain, formatted)
 
     def get_slot_range(self, slot_name,

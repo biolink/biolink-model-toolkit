@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import Union, Dict, Set, Optional, List
 
-from linkml_model.meta import ClassDefinition, SlotDefinition, TypeDefinition, Element, \
+from linkml_runtime.linkml_model.meta import ClassDefinition, SlotDefinition, TypeDefinition, Element, \
     SubsetDefinition, ElementName
 from linkml.utils.generator import Generator
 from linkml.utils.typereferences import References
@@ -39,7 +39,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        element: linkml_model.meta.Element
+        element: linkml_runtime.linkml_model.meta.Element
             The element to access
         element_uri: Optional[str]
             The URI for the element
@@ -70,7 +70,7 @@ class ToolkitGenerator(Generator):
         ----------
         aliased_slot_name: str
             Alias name of the slot
-        slot: linkml_model.meta.SlotDefinition
+        slot: linkml_runtime.linkml_model.meta.SlotDefinition
             The slot definition
 
         """
@@ -84,7 +84,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        typ: linkml_model.meta.TypeDefinition
+        typ: linkml_runtime.linkml_model.meta.TypeDefinition
             The type definition
 
         """
@@ -97,7 +97,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        cls: linkml_model.meta.ClassDefinition
+        cls: linkml_runtime.linkml_model.meta.ClassDefinition
             The class definition
 
         """
@@ -111,7 +111,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        subset: linkml_model.meta.SubsetDefinition
+        subset: linkml_runtime.linkml_model.meta.SubsetDefinition
             The subset definition
         """
         self.visit_element(subset, None)
