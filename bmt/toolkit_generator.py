@@ -165,7 +165,7 @@ class ToolkitGenerator(Generator):
 
         return element_obj
 
-    def ancestors(self, element: Union[ClassDefinition, SlotDefinition]) -> List[ElementName]:
+    def ancestors(self, element: Union[ClassDefinition, SlotDefinition], mixin: bool = True) -> List[ElementName]:
         """
         Return an ordered list of ancestor names for the supplied slot or class.
 
@@ -173,11 +173,13 @@ class ToolkitGenerator(Generator):
         ----------
         element: Union[ClassDefinition, SlotDefinition]
             An element
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         """
         if element is None:
             return []
-        if not element.mixins:
+        if not element.mixins or not mixin:
             return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
         else:
             for mixin in element.mixins:
@@ -186,7 +188,7 @@ class ToolkitGenerator(Generator):
                                                                 self.ancestors(self.parent(element)) +
                                                                 self.ancestors(self.parent(mixin_element)))
 
-    def descendants(self, element_name: str):
+    def descendants(self, element_name: str, mixin: bool = True):
         """
         Return an ordered list of descendant names for the supplied slot or class.
 
@@ -194,15 +196,17 @@ class ToolkitGenerator(Generator):
         ----------
         element_name: Union[ClassDefinition, SlotDefinition]
             An element
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         """
         c = []
-        for child in self.children(element_name):
+        for child in self.children(element_name, mixin):
             c.append(child)
-            c += self.descendants(child)
+            c += self.descendants(child, mixin)
         return c
 
-    def children(self, name: str) -> List[str]:
+    def children(self, name: str, mixin: bool = True) -> List[str]:
         """
         Gets a list of names of children.
 
@@ -210,6 +214,8 @@ class ToolkitGenerator(Generator):
         ----------
         name: str
             The name of an element in the Biolink Model.
+        mixin: bool
+            If True, then that means we want to find mixin children as well as is_a children
 
         Returns
         -------
@@ -218,10 +224,12 @@ class ToolkitGenerator(Generator):
 
         """
         kids_or_mixin_kids = []
-        for mixin in self._union_of(self.synopsis.mixinrefs.get(name, References())):
-            kids_or_mixin_kids.append(mixin)
-        for kid in self._union_of(self.synopsis.isarefs.get(name, References())):
-            kids_or_mixin_kids.append(kid)
+        if mixin:
+            for mixin in self._union_of(self.synopsis.mixinrefs.get(name, References())):
+                kids_or_mixin_kids.append(mixin)
+        else:
+            for kid in self._union_of(self.synopsis.isarefs.get(name, References())):
+                kids_or_mixin_kids.append(kid)
         return kids_or_mixin_kids
 
     @staticmethod

@@ -249,7 +249,10 @@ class Toolkit(object):
         return filtered_elements
 
     @lru_cache(CACHE_SIZE)
-    def get_ancestors(self, name: str, reflexive: bool = True, formatted: bool = False) -> List[str]:
+    def get_ancestors(self, name: str,
+                      reflexive: bool = True,
+                      formatted: bool = False,
+                      mixin: bool = True) -> List[str]:
         """
         Gets a list of names of ancestors.
 
@@ -261,6 +264,8 @@ class Toolkit(object):
             Whether to include the query element in the list of ancestors
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -272,7 +277,7 @@ class Toolkit(object):
         ancs = []
 
         if isinstance(element, (ClassDefinition, SlotDefinition)):
-            a = self.generator.ancestors(element)
+            a = self.generator.ancestors(element, mixin)
             ancs = a if reflexive else a[1:]
         if isinstance(element, SlotDefinition):
             filtered_ancs = self._filter_secondary(ancs)
@@ -281,7 +286,10 @@ class Toolkit(object):
         return self._format_all_elements(filtered_ancs, formatted)
 
     @lru_cache(CACHE_SIZE)
-    def get_descendants(self, name: str, reflexive: bool = True, formatted: bool = False) -> List[str]:
+    def get_descendants(self, name: str,
+                        reflexive: bool = True,
+                        formatted: bool = False,
+                        mixin: bool = True) -> List[str]:
         """
         Gets a list of names of descendants.
 
@@ -293,6 +301,8 @@ class Toolkit(object):
             Whether to include the query element in the list of ancestors
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -305,7 +315,7 @@ class Toolkit(object):
         element = self.get_element(name)
 
         if element:
-            d = self.generator.descendants(element.name)
+            d = self.generator.descendants(element.name, mixin)
             if reflexive:
                 desc.append(element.name)
             desc += d
@@ -316,7 +326,7 @@ class Toolkit(object):
         return self._format_all_elements(filtered_desc, formatted)
 
     @lru_cache(CACHE_SIZE)
-    def get_children(self, name: str, formatted: bool = False) -> List[str]:
+    def get_children(self, name: str, formatted: bool = False, mixin: bool = True) -> List[str]:
         """
         Gets a list of names of children.
 
@@ -326,6 +336,8 @@ class Toolkit(object):
             The name of an element in the Biolink Model
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -336,7 +348,7 @@ class Toolkit(object):
         children = []
         element = self.get_element(name)
         if element:
-            children = self.generator.children(element.name)
+            children = self.generator.children(element.name, mixin)
         return self._format_all_elements(children, formatted)
 
     @lru_cache(CACHE_SIZE)
@@ -394,7 +406,11 @@ class Toolkit(object):
                 element = self.get_element(name.replace('_', ' '))
         return element
 
-    def get_slot_domain(self, slot_name, include_ancestors: bool = False, formatted: bool = False) -> List[str]:
+    def get_slot_domain(self,
+                        slot_name,
+                        include_ancestors: bool = False,
+                        formatted: bool = False,
+                        mixin: bool = True) -> List[str]:
         """
         Get the domain for a given slot.
 
@@ -406,6 +422,8 @@ class Toolkit(object):
             Whether or not to include ancestors of the domain class
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -420,18 +438,21 @@ class Toolkit(object):
             if element.domain:
                 domain_classes.add(element.domain)
                 if include_ancestors:
-                    slot_domain.extend(self.get_ancestors(element.domain, reflexive=True))
+                    slot_domain.extend(self.get_ancestors(element.domain, reflexive=True, mixin=mixin))
                 else:
                     slot_domain.append(element.domain)
             for d in element.domain_of:
                 if d not in domain_classes:
                     if include_ancestors:
-                        slot_domain.extend(self.get_ancestors(d, reflexive=True))
+                        slot_domain.extend(self.get_ancestors(d, reflexive=True, mixin=mixin))
                     else:
                         slot_domain.append(d)
         return self._format_all_elements(slot_domain, formatted)
 
-    def get_slot_range(self, slot_name, include_ancestors: bool = False, formatted: bool = False) -> List[str]:
+    def get_slot_range(self, slot_name,
+                       include_ancestors: bool = False,
+                       formatted: bool = False,
+                       mixin: bool = True) -> List[str]:
         """
         Get the range for a given slot.
 
@@ -443,6 +464,9 @@ class Toolkit(object):
             Whether or not to include ancestors of the range class
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
+
 
         Returns
         -------
@@ -456,11 +480,14 @@ class Toolkit(object):
             if element.range:
                 range.append(element.range)
             if include_ancestors:
-                ancs = self.get_ancestors(element.range, reflexive=False)
+                ancs = self.get_ancestors(element.range, reflexive=False, mixin=mixin)
                 range.extend(ancs)
         return self._format_all_elements(range, formatted)
 
-    def get_all_slots_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+    def get_all_slots_with_class_domain(self, class_name,
+                                        check_ancestors: bool = False,
+                                        formatted: bool = False,
+                                        mixin: bool = True) -> List[str]:
         """
         Given a class, get all the slots where the class is the domain.
 
@@ -472,6 +499,8 @@ class Toolkit(object):
             Whether or not to lookup slots that include ancestors of the given class as its domain
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -480,11 +509,14 @@ class Toolkit(object):
 
         """
         element = self.get_element(class_name)
-        slots = self._get_all_slots_with_class_domain(element, check_ancestors)
+        slots = self._get_all_slots_with_class_domain(element, check_ancestors, mixin)
         slot_names = [x.name for x in slots]
         return self._format_all_elements(slot_names, formatted)
 
-    def get_all_slots_with_class_range(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+    def get_all_slots_with_class_range(self, class_name,
+                                       check_ancestors: bool = False,
+                                       formatted: bool = False,
+                                       mixin: bool = True) -> List[str]:
         """
         Given a class, get all the slots where the class is the range.
 
@@ -496,6 +528,8 @@ class Toolkit(object):
             Whether or not to lookup slots that include ancestors of the given class as its range
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -504,11 +538,14 @@ class Toolkit(object):
 
         """
         element = self.get_element(class_name)
-        slots = self._get_all_slots_with_class_range(element, check_ancestors)
+        slots = self._get_all_slots_with_class_range(element, check_ancestors, mixin)
         slot_names = [x.name for x in slots]
         return self._format_all_elements(slot_names, formatted)
 
-    def get_all_predicates_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+    def get_all_predicates_with_class_domain(self, class_name,
+                                             check_ancestors: bool = False,
+                                             formatted: bool = False,
+                                             mixin: bool = True) -> List[str]:
         """
         Given a class, get all Biolink predicates where the class is the domain.
 
@@ -520,6 +557,8 @@ class Toolkit(object):
             Whether or not to lookup slots that include ancestors of the given class as its domain
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -530,13 +569,16 @@ class Toolkit(object):
         filtered_slots = []
         element = self.get_element(class_name)
         if element:
-            slots = self._get_all_slots_with_class_domain(element, check_ancestors)
+            slots = self._get_all_slots_with_class_domain(element, check_ancestors, mixin)
             for s in slots:
-                if not s.alias and 'related to' in self.get_ancestors(s.name):
+                if not s.alias and 'related to' in self.get_ancestors(s.name, mixin):
                     filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
-    def get_all_predicates_with_class_range(self, class_name, check_ancestors: bool = False, formatted: bool = False):
+    def get_all_predicates_with_class_range(self, class_name,
+                                            check_ancestors: bool = False,
+                                            formatted: bool = False,
+                                            mixin: bool = True):
         """
         Given a class, get all Biolink predicates where the class is the range.
 
@@ -548,6 +590,8 @@ class Toolkit(object):
             Whether or not to lookup slots that include ancestors of the given class as its range
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -558,13 +602,16 @@ class Toolkit(object):
         filtered_slots = []
         element = self.get_element(class_name)
         if element:
-            slots = self._get_all_slots_with_class_range(element, check_ancestors)
+            slots = self._get_all_slots_with_class_range(element, check_ancestors, mixin)
             for s in slots:
-                if not s.alias and 'related to' in self.get_ancestors(s.name):
+                if not s.alias and 'related to' in self.get_ancestors(s.name, mixin):
                     filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
-    def get_all_properties_with_class_domain(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+    def get_all_properties_with_class_domain(self, class_name,
+                                             check_ancestors: bool = False,
+                                             formatted: bool = False,
+                                             mixin: bool = True) -> List[str]:
         """
         Given a class, get all Biolink properties where the class is the domain.
 
@@ -576,6 +623,8 @@ class Toolkit(object):
             Whether or not to lookup slots that include ancestors of the given class as its domain
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -586,13 +635,16 @@ class Toolkit(object):
         filtered_slots = []
         element = self.get_element(class_name)
         if element:
-            slots = self._get_all_slots_with_class_domain(element, check_ancestors)
+            slots = self._get_all_slots_with_class_domain(element, check_ancestors, mixin)
             for s in slots:
-                if not s.alias and 'related to' not in self.get_ancestors(s.name):
+                if not s.alias and 'related to' not in self.get_ancestors(s.name, mixin):
                     filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
-    def get_all_properties_with_class_range(self, class_name, check_ancestors: bool = False, formatted: bool = False) -> List[str]:
+    def get_all_properties_with_class_range(self, class_name,
+                                            check_ancestors: bool = False,
+                                            formatted: bool = False,
+                                            mixin: bool = True) -> List[str]:
         """
         Given a class, get all Biolink properties where the class is the range.
 
@@ -604,6 +656,8 @@ class Toolkit(object):
             Whether or not to lookup slots that include ancestors of the given class as its range
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -614,13 +668,14 @@ class Toolkit(object):
         filtered_slots = []
         element = self.get_element(class_name)
         if element:
-            slots = self._get_all_slots_with_class_range(element, check_ancestors)
+            slots = self._get_all_slots_with_class_range(element, check_ancestors, mixin)
             for s in slots:
-                if not s.alias and 'related to' not in self.get_ancestors(s.name):
+                if not s.alias and 'related to' not in self.get_ancestors(s.name, mixin):
                     filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
-    def get_value_type_for_slot(self, slot_name, formatted: bool = False) -> str:
+    def get_value_type_for_slot(self, slot_name,
+                                formatted: bool = False) -> str:
         """
         Get the value type for a given slot.
 
@@ -651,7 +706,9 @@ class Toolkit(object):
                 element_type = et
         return element_type
 
-    def _get_all_slots_with_class_domain(self, element: Element, check_ancestors: bool) -> List[Element]:
+    def _get_all_slots_with_class_domain(self, element: Element,
+                                         check_ancestors: bool,
+                                         mixin: bool = True) -> List[Element]:
         """
         Given a class, get all the slots where the class is the domain.
 
@@ -661,6 +718,8 @@ class Toolkit(object):
             An element
         check_ancestors: bool
             Whether or not to lookup slots that include ancestors of the given class as its domain
+        mixin:
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -671,15 +730,18 @@ class Toolkit(object):
         slots = []
         for k, v in self.generator.schema.slots.items():
             if check_ancestors:
-                if v.domain == element.name or v.domain in self.get_ancestors(element.name) \
-                        or element.name in v.domain_of or any(v.domain_of) in self.get_ancestors(element.name):
+                if v.domain == element.name or v.domain in self.get_ancestors(element.name, mixin) \
+                        or element.name in v.domain_of \
+                        or any(v.domain_of) in self.get_ancestors(element.name, mixin):
                     slots.append(v)
             else:
                 if element.name == v.domain or element.name in v.domain_of:
                     slots.append(v)
         return slots
 
-    def _get_all_slots_with_class_range(self, element: Element, check_ancestors: bool) -> List[Element]:
+    def _get_all_slots_with_class_range(self, element: Element,
+                                        check_ancestors: bool,
+                                        mixin: bool = True) -> List[Element]:
         """
         Given a class, get all the slots where the class is the range.
 
@@ -689,6 +751,8 @@ class Toolkit(object):
             An element
         check_ancestors: bool
             Whether or not to lookup slots that include ancestors of the given class as its range
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -699,7 +763,7 @@ class Toolkit(object):
         slots = []
         for k, v in self.generator.schema.slots.items():
             if check_ancestors:
-                if v.range == element.name or v.range in self.get_ancestors(element.name):
+                if v.range == element.name or v.range in self.get_ancestors(element.name, mixin):
                     slots.append(v)
             else:
                 if v.range:
@@ -708,7 +772,7 @@ class Toolkit(object):
         return slots
 
     @lru_cache(CACHE_SIZE)
-    def is_predicate(self, name: str) -> bool:
+    def is_predicate(self, name: str, mixin: bool = True) -> bool:
         """
         Determines whether the given name is the name of an relation/predicate
         in the Biolink Model. An element is a predicate if it descends from
@@ -718,16 +782,18 @@ class Toolkit(object):
         ----------
         name: str
             The name or alias of an element in the Biolink Model
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
         bool
             That the named element is a valid relation/predicate in Biolink Model
         """
-        return 'related to' in self.get_ancestors(name)
+        return 'related to' in self.get_ancestors(name, mixin)
 
     @lru_cache(CACHE_SIZE)
-    def is_translator_canonical_predicate(self, name: str) -> bool:
+    def is_translator_canonical_predicate(self, name: str, mixin: bool = True) -> bool:
         """
         Determines whether the given name is the name of a canonical relation/predicate
         in the Biolink Model. An element is a canonical predicate if it descends from
@@ -737,6 +803,8 @@ class Toolkit(object):
         ----------
         name: str
             The name or alias of an element in the Biolink Model
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -749,8 +817,7 @@ class Toolkit(object):
             for annotation in element.annotations:
                 annotation_tags.append(annotation.tag)
         is_canonical = True if element is not None and 'biolink:canonical_predicate' in annotation_tags else False
-
-        return is_canonical
+        return True if 'related to' in self.get_ancestors(name, mixin) and is_canonical else False
 
     @lru_cache(CACHE_SIZE)
     def is_mixin(self, name: str) -> bool:
@@ -817,7 +884,7 @@ class Toolkit(object):
         return subset in element.in_subset
 
     @lru_cache(CACHE_SIZE)
-    def is_category(self, name: str) -> bool:
+    def is_category(self, name: str, mixin: bool = True) -> bool:
         """
         Determines whether the given name is the name of a category in the
         Biolink Model. An element is a category if it descends from
@@ -827,17 +894,21 @@ class Toolkit(object):
         ----------
         name : str
             The name or alias of an element in the Biolink Model
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
         bool
             That the named element is a valid category in Biolink Model
-
         """
-        return 'named thing' in self.get_ancestors(name)
+        return 'named thing' in self.get_ancestors(name, mixin)
 
     @lru_cache(CACHE_SIZE)
-    def get_element_by_mapping(self, identifier: str, most_specific: bool = False, formatted: bool = False) -> Optional[str]:
+    def get_element_by_mapping(self, identifier: str,
+                               most_specific: bool = False,
+                               formatted: bool = False,
+                               mixin: bool = True) -> Optional[str]:
         """
         Get a Biolink Model element by mapping.
         This method return the common ancestor of the set of elements referenced by uriorcurie.
@@ -851,6 +922,8 @@ class Toolkit(object):
             or to get all mappings of varying specificity
         formatted: bool
             Whether to format element names as CURIEs
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
         -------
@@ -865,7 +938,7 @@ class Toolkit(object):
         if mappings:
             ancestors: List[List[str]] = []
             for m in mappings:
-                ancestors.append([x for x in self.get_ancestors(m)[::-1] if x in mappings])
+                ancestors.append([x for x in self.get_ancestors(m, mixin)[::-1] if x in mappings])
             common_ancestors = reduce(lambda s, l: s.intersection(set(l)), ancestors[1:], set(ancestors[0]))
             for a in ancestors[0]:
                 if a in common_ancestors:
@@ -1098,24 +1171,24 @@ class Toolkit(object):
         return self.get_all_elements(formatted)
 
     @deprecation.deprecated(deprecated_in='0.2.0', removed_in='1.0', details='Use get_descendants method instead')
-    def descendents(self, name: str) -> List[str]:
-        return self.get_descendants(name)
+    def descendents(self, name: str, mixin: bool = True) -> List[str]:
+        return self.get_descendants(name, mixin)
 
     @deprecation.deprecated(deprecated_in='0.2.0', removed_in='1.0', details='Use get_ancestors method instead')
-    def ancestors(self, name: str) -> List[str]:
-        return self.get_ancestors(name)
+    def ancestors(self, name: str, mixin: bool = True) -> List[str]:
+        return self.get_ancestors(name, mixin)
 
     @deprecation.deprecated(deprecated_in='0.2.0', removed_in='1.0', details='Use get_children method instead')
-    def children(self, name: str) -> List[str]:
-        return self.get_children(name)
+    def children(self, name: str, mixin: bool = True) -> List[str]:
+        return self.get_children(name, mixin)
 
     @deprecation.deprecated(deprecated_in='0.2.0', removed_in='1.0', details='Use get_parent method instead')
-    def parent(self, name: str) -> Optional[str]:
-        return self.get_parent(name)
+    def parent(self, name: str, mixin: bool = True) -> Optional[str]:
+        return self.get_parent(name, mixin)
 
     @deprecation.deprecated(deprecated_in='0.1.1', removed_in='1.0', details='Use is_predicate method instead')
-    def is_edgelabel(self, name: str) -> bool:
-        return self.is_predicate(name)
+    def is_edgelabel(self, name: str, mixin: bool = True) -> bool:
+        return self.is_predicate(name, mixin)
 
     @deprecation.deprecated(deprecated_in='0.1.1', removed_in='1.0', details='Use get_all_elements_by_mapping method instead')
     def get_all_by_mapping(self, uriorcurie: str) -> List[str]:
