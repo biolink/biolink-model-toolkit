@@ -814,7 +814,8 @@ class Toolkit(object):
         annotation_tags = []
         if element:
             for annotation in element.annotations:
-                annotation_tags.append(annotation.tag)
+                print(annotation)
+                annotation_tags.append(annotation)
         is_canonical = True if element is not None and 'biolink:canonical_predicate' in annotation_tags else False
         return True if 'related to' in self.get_ancestors(name, mixin) and is_canonical else False
 
