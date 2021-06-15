@@ -13,6 +13,7 @@ MOLECULAR_ACTIVITY = "molecular activity"
 GENOMIC_ENTITY = "genomic entity"
 BIOLOGICAL_ENTITY = "biological entity"
 RELATED_TO = "related to"
+INTERACTS_WITH = "interacts with"
 
 
 def test_get_model_version(toolkit):
@@ -159,7 +160,7 @@ def test_descendants(toolkit):
     assert 'gene' not in toolkit.get_descendants('outcome')
     assert 'gene' in toolkit.get_descendants('named thing')
     assert 'causes' in toolkit.get_descendants(RELATED_TO)
-    assert 'interacts with' in toolkit.get_descendants(RELATED_TO)
+    assert INTERACTS_WITH in toolkit.get_descendants(RELATED_TO)
     assert 'phenotypic feature' in toolkit.get_descendants('named thing')
     assert RELATED_TO not in toolkit.get_descendants('named thing')
     assert 'biolink:PhenotypicFeature' in toolkit.get_descendants('named thing', formatted=True)
@@ -170,14 +171,14 @@ def test_descendants(toolkit):
 
 def test_children(toolkit):
     assert 'causes' in toolkit.get_children('contributes to')
-    assert 'physically interacts with' in toolkit.get_children('interacts with')
+    assert 'physically interacts with' in toolkit.get_children(INTERACTS_WITH)
     assert 'gene' in toolkit.get_children(NUCLEIC_ACID_ENTITY)
     assert 'biolink:Gene' in toolkit.get_children(NUCLEIC_ACID_ENTITY, formatted=True)
 
 
 def test_parent(toolkit):
     assert 'contributes to' in toolkit.get_parent('causes')
-    assert 'interacts with' in toolkit.get_parent('physically interacts with')
+    assert INTERACTS_WITH in toolkit.get_parent('physically interacts with')
     assert NUCLEIC_ACID_ENTITY in toolkit.get_parent('gene')
     assert 'biolink:NucleicAcidEntity' in toolkit.get_parent('gene', formatted=True)
 
@@ -230,7 +231,7 @@ def test_get_all_slots_with_class_range(toolkit):
 
 def test_get_all_predicates_with_class_domain(toolkit):
     assert 'genetically interacts with' in toolkit.get_all_slots_with_class_domain('gene')
-    assert 'interacts with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True)
+    assert INTERACTS_WITH in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True)
     assert 'biolink:interacts_with' in toolkit.get_all_slots_with_class_domain('gene', check_ancestors=True, formatted=True)
 
     assert 'in complex with' in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT)
