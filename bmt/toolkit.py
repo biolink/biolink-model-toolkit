@@ -10,7 +10,7 @@ Url = str
 Path = str
 
 REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/2.0.1/biolink-model.yaml'
-
+RELATED_TO = 'related to'
 CACHE_SIZE = 1024
 
 
@@ -570,7 +570,7 @@ class Toolkit(object):
         if element:
             slots = self._get_all_slots_with_class_domain(element, check_ancestors, mixin)
             for s in slots:
-                if not s.alias and 'related to' in self.get_ancestors(s.name, mixin):
+                if not s.alias and RELATED_TO in self.get_ancestors(s.name, mixin):
                     filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
@@ -603,7 +603,7 @@ class Toolkit(object):
         if element:
             slots = self._get_all_slots_with_class_range(element, check_ancestors, mixin)
             for s in slots:
-                if not s.alias and 'related to' in self.get_ancestors(s.name, mixin):
+                if not s.alias and RELATED_TO in self.get_ancestors(s.name, mixin):
                     filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
@@ -636,7 +636,7 @@ class Toolkit(object):
         if element:
             slots = self._get_all_slots_with_class_domain(element, check_ancestors, mixin)
             for s in slots:
-                if not s.alias and 'related to' not in self.get_ancestors(s.name, mixin):
+                if not s.alias and RELATED_TO not in self.get_ancestors(s.name, mixin):
                     filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
@@ -669,7 +669,7 @@ class Toolkit(object):
         if element:
             slots = self._get_all_slots_with_class_range(element, check_ancestors, mixin)
             for s in slots:
-                if not s.alias and 'related to' not in self.get_ancestors(s.name, mixin):
+                if not s.alias and RELATED_TO not in self.get_ancestors(s.name, mixin):
                     filtered_slots.append(s.name)
         return self._format_all_elements(filtered_slots, formatted)
 
@@ -775,7 +775,7 @@ class Toolkit(object):
         """
         Determines whether the given name is the name of an relation/predicate
         in the Biolink Model. An element is a predicate if it descends from
-        `related to`
+        `RELATED_TO`
 
         Parameters
         ----------
@@ -789,14 +789,14 @@ class Toolkit(object):
         bool
             That the named element is a valid relation/predicate in Biolink Model
         """
-        return 'related to' in self.get_ancestors(name, mixin)
+        return RELATED_TO in self.get_ancestors(name, mixin)
 
     @lru_cache(CACHE_SIZE)
     def is_translator_canonical_predicate(self, name: str, mixin: bool = True) -> bool:
         """
         Determines whether the given name is the name of a canonical relation/predicate
         in the Biolink Model. An element is a canonical predicate if it descends from
-        `related to` and is tagged with the annotation 'biolink:canonical_predicate'
+        `RELATED_TO` and is tagged with the annotation 'biolink:canonical_predicate'
 
         Parameters
         ----------
@@ -817,7 +817,7 @@ class Toolkit(object):
                 print(annotation)
                 annotation_tags.append(annotation)
         is_canonical = True if element is not None and 'biolink:canonical_predicate' in annotation_tags else False
-        return True if 'related to' in self.get_ancestors(name, mixin) and is_canonical else False
+        return True if RELATED_TO in self.get_ancestors(name, mixin) and is_canonical else False
 
     @lru_cache(CACHE_SIZE)
     def is_mixin(self, name: str) -> bool:
@@ -844,7 +844,7 @@ class Toolkit(object):
         """
         Determines whether the given name is a predicate and if that predicate has an inverse defined
         in the Biolink Model. An element is a predicate if it descends from
-        `related to`
+        `RELATED_TO`
 
         Parameters
         ----------
