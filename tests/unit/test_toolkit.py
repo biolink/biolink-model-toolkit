@@ -12,6 +12,7 @@ NUCLEIC_ACID_ENTITY = "nucleic acid entity"
 MOLECULAR_ACTIVITY = "molecular activity"
 GENOMIC_ENTITY = "genomic entity"
 BIOLOGICAL_ENTITY = "biological entity"
+RELATED_TO = "related to"
 
 
 def test_get_model_version(toolkit):
@@ -23,7 +24,7 @@ def test_get_all_elements(toolkit):
     elements = toolkit.get_all_elements()
     assert 'named thing' in elements
     assert 'association' in elements
-    assert 'related to' in elements
+    assert RELATED_TO in elements
     assert 'uriorcurie' in elements
 
     elements = toolkit.get_all_elements(formatted=True)
@@ -40,7 +41,7 @@ def test_get_all_entities(toolkit):
     assert 'gene' in entities
     assert 'disease' in entities
     assert 'association' not in entities
-    assert 'related to' not in entities
+    assert RELATED_TO not in entities
 
     entities = toolkit.get_all_entities(formatted=True)
     assert 'biolink:NamedThing' in entities
@@ -133,7 +134,7 @@ def test_category(toolkit):
 
 
 def test_ancestors(toolkit):
-    assert 'related to' in toolkit.get_ancestors('causes')
+    assert RELATED_TO in toolkit.get_ancestors('causes')
     assert 'biolink:GenomicEntity' in toolkit.get_ancestors('gene', formatted=True)
     assert 'biolink:related_to' in toolkit.get_ancestors('causes', formatted=True)
     assert 'biolink:GeneOrGeneProduct' in toolkit.get_ancestors('gene', formatted=True)
@@ -157,10 +158,10 @@ def test_descendants(toolkit):
     assert MOLECULAR_ACTIVITY in toolkit.get_descendants('occurrent')
     assert 'gene' not in toolkit.get_descendants('outcome')
     assert 'gene' in toolkit.get_descendants('named thing')
-    assert 'causes' in toolkit.get_descendants('related to')
-    assert 'interacts with' in toolkit.get_descendants('related to')
+    assert 'causes' in toolkit.get_descendants(RELATED_TO)
+    assert 'interacts with' in toolkit.get_descendants(RELATED_TO)
     assert 'phenotypic feature' in toolkit.get_descendants('named thing')
-    assert 'related to' not in toolkit.get_descendants('named thing')
+    assert RELATED_TO not in toolkit.get_descendants('named thing')
     assert 'biolink:PhenotypicFeature' in toolkit.get_descendants('named thing', formatted=True)
     assert 'molecular activity_has output' not in toolkit.get_descendants(MOLECULAR_ACTIVITY, reflexive=True)
     assert 'molecular activity_has output' not in toolkit.get_descendants('has output', reflexive=True)
