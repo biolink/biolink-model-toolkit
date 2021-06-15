@@ -227,6 +227,8 @@ class ToolkitGenerator(Generator):
         if mixin:
             for mixin in self._union_of(self.synopsis.mixinrefs.get(name, References())):
                 kids_or_mixin_kids.append(mixin)
+            for kid in self._union_of(self.synopsis.isarefs.get(name, References())):
+                kids_or_mixin_kids.append(kid)
         else:
             for kid in self._union_of(self.synopsis.isarefs.get(name, References())):
                 kids_or_mixin_kids.append(kid)

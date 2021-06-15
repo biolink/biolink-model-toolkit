@@ -36,6 +36,7 @@ def test_get_all_elements(toolkit):
 
 def test_get_all_entities(toolkit):
     entities = toolkit.get_all_entities()
+    print(entities)
     assert 'named thing' in entities
     assert 'gene' in entities
     assert 'disease' in entities
