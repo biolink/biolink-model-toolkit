@@ -8,7 +8,7 @@ VERSION = '0.7.0'
 DESCRIPTION = 'Biolink Model Toolkit: A Python API for working with the Biolink Model'
 URL = 'https://github.com/biolink/biolink-model-toolkit'
 AUTHOR = 'Deepak Unni', 'Sierra Moxon'
-EMAIL = 'deepak.unni3@gmail.com', 'smoxon@lbl.gov'
+EMAIL = 'smoxon@lbl.gov'
 REQUIRES_PYTHON = '>=3.7'
 LICENSE = 'BSD'
 
