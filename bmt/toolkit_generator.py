@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import Union, Dict, Set, Optional, List
 
-from linkml_model.meta import ClassDefinition, SlotDefinition, TypeDefinition, Element, \
+from linkml_runtime.linkml_model.meta import ClassDefinition, SlotDefinition, TypeDefinition, Element, \
     SubsetDefinition, ElementName
 from linkml.utils.generator import Generator
 from linkml.utils.typereferences import References
@@ -39,7 +39,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        element: linkml_model.meta.Element
+        element: linkml_runtime.linkml_model.meta.Element
             The element to access
         element_uri: Optional[str]
             The URI for the element
@@ -70,7 +70,7 @@ class ToolkitGenerator(Generator):
         ----------
         aliased_slot_name: str
             Alias name of the slot
-        slot: linkml_model.meta.SlotDefinition
+        slot: linkml_runtime.linkml_model.meta.SlotDefinition
             The slot definition
 
         """
@@ -84,7 +84,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        typ: linkml_model.meta.TypeDefinition
+        typ: linkml_runtime.linkml_model.meta.TypeDefinition
             The type definition
 
         """
@@ -97,7 +97,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        cls: linkml_model.meta.ClassDefinition
+        cls: linkml_runtime.linkml_model.meta.ClassDefinition
             The class definition
 
         """
@@ -111,7 +111,7 @@ class ToolkitGenerator(Generator):
 
         Parameters
         ----------
-        subset: linkml_model.meta.SubsetDefinition
+        subset: linkml_runtime.linkml_model.meta.SubsetDefinition
             The subset definition
         """
         self.visit_element(subset, None)
@@ -147,7 +147,7 @@ class ToolkitGenerator(Generator):
 
         if not element_obj:
             # try case-insensitive match
-            classes = {k.lower(): v for k,v in self.schema.classes.items()}
+            classes = {k.lower(): v for k, v in self.schema.classes.items()}
             slots = {k.lower(): v for k, v in self.schema.slots.items()}
             types = {k.lower(): v for k, v in self.schema.types.items()}
             subsets = {k.lower(): v for k, v in self.schema.subsets.items()}
@@ -165,7 +165,7 @@ class ToolkitGenerator(Generator):
 
         return element_obj
 
-    def ancestors(self, element: Union[ClassDefinition, SlotDefinition]) -> List[ElementName]:
+    def ancestors(self, element: Union[ClassDefinition, SlotDefinition], mixin: bool = True) -> List[ElementName]:
         """
         Return an ordered list of ancestor names for the supplied slot or class.
 
@@ -173,11 +173,22 @@ class ToolkitGenerator(Generator):
         ----------
         element: Union[ClassDefinition, SlotDefinition]
             An element
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         """
-        return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
+        if element is None:
+            return []
+        if not element.mixins or not mixin:
+            return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
+        else:
+            for mixin in element.mixins:
+                mixin_element = self.obj_for(mixin)
+                return [element.name] + [mixin_element.name] + ([] if element.is_a is None else
+                                                                self.ancestors(self.parent(element)) +
+                                                                self.ancestors(self.parent(mixin_element)))
 
-    def descendants(self, element_name: str):
+    def descendants(self, element_name: str, mixin: bool = True):
         """
         Return an ordered list of descendant names for the supplied slot or class.
 
@@ -185,15 +196,17 @@ class ToolkitGenerator(Generator):
         ----------
         element_name: Union[ClassDefinition, SlotDefinition]
             An element
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         """
         c = []
-        for child in self.children(element_name):
+        for child in self.children(element_name, mixin):
             c.append(child)
-            c += self.descendants(child)
+            c += self.descendants(child, mixin)
         return c
 
-    def children(self, name: str) -> List[str]:
+    def children(self, name: str, mixin: bool = True) -> List[str]:
         """
         Gets a list of names of children.
 
@@ -201,6 +214,8 @@ class ToolkitGenerator(Generator):
         ----------
         name: str
             The name of an element in the Biolink Model.
+        mixin: bool
+            If True, then that means we want to find mixin children as well as is_a children
 
         Returns
         -------
@@ -208,7 +223,16 @@ class ToolkitGenerator(Generator):
             The names of the given elements children.
 
         """
-        return self._union_of(self.synopsis.isarefs.get(name, References()))
+        kids_or_mixin_kids = []
+        if mixin:
+            for mixin in self._union_of(self.synopsis.mixinrefs.get(name, References())):
+                kids_or_mixin_kids.append(mixin)
+            for kid in self._union_of(self.synopsis.isarefs.get(name, References())):
+                kids_or_mixin_kids.append(kid)
+        else:
+            for kid in self._union_of(self.synopsis.isarefs.get(name, References())):
+                kids_or_mixin_kids.append(kid)
+        return kids_or_mixin_kids
 
     @staticmethod
     def _union_of(r: References) -> List[str]:

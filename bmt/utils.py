@@ -1,7 +1,7 @@
 import re
 
 import stringcase
-from linkml_model.meta import ClassDefinition, SlotDefinition, Element, ClassDefinitionName, \
+from linkml_runtime.linkml_model.meta import ClassDefinition, SlotDefinition, Element, ClassDefinitionName, \
     SlotDefinitionName, ElementName, TypeDefinition
 
 
@@ -74,7 +74,7 @@ def format_element(element: Element) -> str:
 
     Parameters
     ----------
-    element: linkml_model.meta.Element
+    element: linkml_runtime.linkml_model.meta.Element
         An element
 
     Returns
