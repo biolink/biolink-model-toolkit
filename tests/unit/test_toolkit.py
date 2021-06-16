@@ -247,10 +247,11 @@ def test_get_all_slots_with_class_domain(toolkit):
     assert 'has drug' in toolkit.get_all_slots_with_class_domain(TREATMENT)
     assert 'name' in toolkit.get_all_slots_with_class_domain('entity', check_ancestors=True, mixin=True)
     assert 'name' not in toolkit.get_all_slots_with_class_domain(TREATMENT, check_ancestors=False, mixin=False)
+    assert 'name' not in toolkit.get_all_slots_with_class_domain(TREATMENT, check_ancestors=True, mixin=True)
     # we don't really have this use case in the model right now - where a domain's mixin has an attribute
     assert 'has unit' in toolkit.get_all_slots_with_class_domain('quantity value',
-                                                                  check_ancestors=False,
-                                                                  mixin=True)
+                                                                 check_ancestors=False,
+                                                                 mixin=True)
     assert 'name' in toolkit.get_all_slots_with_class_domain('entity', check_ancestors=True, mixin=False)
     assert 'biolink:has_drug' in toolkit.get_all_slots_with_class_domain(TREATMENT, formatted=True)
 
@@ -273,6 +274,10 @@ def test_get_all_predicates_with_class_domain(toolkit):
                                                                                formatted=True)
     assert 'in complex with' in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT)
     assert 'expressed in' in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT)
+    assert 'related to' not in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT, check_ancestors=False,
+                                                                       mixin=False)
+    assert 'related to' not in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT, check_ancestors=True,
+                                                                       mixin=True)
 
 
 def test_get_all_predicates_with_class_range(toolkit):
@@ -282,6 +287,9 @@ def test_get_all_predicates_with_class_range(toolkit):
     assert 'biolink:disease_has_basis_in' in toolkit.get_all_predicates_with_class_range('disease',
                                                                                          check_ancestors=True,
                                                                                          formatted=True)
+    assert RELATED_TO not in toolkit.get_all_predicates_with_class_range('disease',
+                                                                         check_ancestors=True,
+                                                                         formatted=True)
 
 
 def test_get_all_properties_with_class_domain(toolkit):
@@ -291,7 +299,8 @@ def test_get_all_properties_with_class_domain(toolkit):
 
     assert SUBJECT in toolkit.get_all_properties_with_class_domain('association')
     assert SUBJECT in toolkit.get_all_properties_with_class_domain('association', check_ancestors=True)
-    assert 'biolink:subject' in toolkit.get_all_properties_with_class_domain('association', check_ancestors=True, formatted=True)
+    assert 'biolink:subject' in toolkit.get_all_properties_with_class_domain('association', check_ancestors=True,
+                                                                             formatted=True)
 
 
 def test_get_all_properties_with_class_range(toolkit):
