@@ -21,6 +21,9 @@ CAUSES = "causes"
 GENE = "gene"
 TREATMENT = 'treatment'
 ORGANISM_TAXON = 'organism taxon'
+BIOLINK_RELATED_TO = 'biolink:related_to'
+BIOLINK_SUBJECT = 'biolink:subject'
+ASSOCIATION = 'association'
 
 
 def test_get_model_version(toolkit):
@@ -31,7 +34,7 @@ def test_get_model_version(toolkit):
 def test_get_all_elements(toolkit):
     elements = toolkit.get_all_elements()
     assert NAMED_THING in elements
-    assert 'association' in elements
+    assert ASSOCIATION in elements
     assert RELATED_TO in elements
     assert 'uriorcurie' in elements
     assert 'thing does not exist' not in elements
@@ -40,7 +43,7 @@ def test_get_all_elements(toolkit):
     assert 'biolink:ThingDoesNotExist' not in elements
     assert 'biolink:NamedThing' in elements
     assert 'biolink:GeneToGeneAssociation' in elements
-    assert 'biolink:related_to' in elements
+    assert BIOLINK_RELATED_TO in elements
     assert 'metatype:Uriorcurie' in elements
     assert 'biolink:FrequencyValue' in elements
 
@@ -50,7 +53,7 @@ def test_get_all_entities(toolkit):
     assert NAMED_THING in entities
     assert GENE in entities
     assert 'disease' in entities
-    assert 'association' not in entities
+    assert ASSOCIATION not in entities
     assert RELATED_TO not in entities
 
     entities = toolkit.get_all_entities(formatted=True)
@@ -62,7 +65,7 @@ def test_get_all_entities(toolkit):
 
 def test_get_all_associations(toolkit):
     associations = toolkit.get_all_associations()
-    assert 'association' in associations
+    assert ASSOCIATION in associations
     assert 'gene to gene association' in associations
     assert NAMED_THING not in associations
 
@@ -84,8 +87,8 @@ def test_get_all_node_properties(toolkit):
     assert 'biolink:name' in properties
     assert 'biolink:category' in properties
     assert 'biolink:has_gene' in properties
-    assert 'biolink:subject' not in properties
-    assert 'biolink:related_to' not in properties
+    assert BIOLINK_SUBJECT not in properties
+    assert BIOLINK_RELATED_TO not in properties
 
 
 def test_get_all_edge_properties(toolkit):
@@ -96,7 +99,7 @@ def test_get_all_edge_properties(toolkit):
     assert 'not in the model' not in properties
 
     properties = toolkit.get_all_edge_properties(formatted=True)
-    assert 'biolink:subject' in properties
+    assert BIOLINK_SUBJECT in properties
     assert 'biolink:object' in properties
     assert 'biolink:frequency_qualifier' in properties
 
@@ -157,7 +160,7 @@ def test_category(toolkit):
 def test_ancestors(toolkit):
     assert RELATED_TO in toolkit.get_ancestors(CAUSES)
     assert 'biolink:GenomicEntity' in toolkit.get_ancestors(GENE, formatted=True)
-    assert 'biolink:related_to' in toolkit.get_ancestors(CAUSES, formatted=True)
+    assert BIOLINK_RELATED_TO in toolkit.get_ancestors(CAUSES, formatted=True)
     assert 'biolink:GeneOrGeneProduct' in toolkit.get_ancestors(GENE, formatted=True)
     assert 'biolink:GeneOrGeneProduct' not in toolkit.get_ancestors(GENE, formatted=True, mixin=False)
     assert NAMED_THING in toolkit.get_ancestors(GENE)
@@ -231,7 +234,7 @@ def test_get_slot_domain(toolkit):
 
     assert 'entity' in toolkit.get_slot_domain('name')
     assert 'entity' in toolkit.get_slot_domain('category')
-    assert 'association' in toolkit.get_slot_domain('relation')
+    assert ASSOCIATION in toolkit.get_slot_domain('relation')
 
 
 def test_get_slot_range(toolkit):
@@ -298,10 +301,10 @@ def test_get_all_properties_with_class_domain(toolkit):
     assert 'category' in toolkit.get_all_properties_with_class_domain(GENE, check_ancestors=True)
     assert 'biolink:category' in toolkit.get_all_properties_with_class_domain(GENE, check_ancestors=True, formatted=True)
 
-    assert SUBJECT in toolkit.get_all_properties_with_class_domain('association')
-    assert SUBJECT in toolkit.get_all_properties_with_class_domain('association', check_ancestors=True)
-    assert 'biolink:subject' in toolkit.get_all_properties_with_class_domain('association', check_ancestors=True,
-                                                                             formatted=True)
+    assert SUBJECT in toolkit.get_all_properties_with_class_domain(ASSOCIATION)
+    assert SUBJECT in toolkit.get_all_properties_with_class_domain(ASSOCIATION, check_ancestors=True)
+    assert BIOLINK_SUBJECT in toolkit.get_all_properties_with_class_domain(ASSOCIATION, check_ancestors=True,
+                                                                           formatted=True)
 
 
 def test_get_all_properties_with_class_range(toolkit):
