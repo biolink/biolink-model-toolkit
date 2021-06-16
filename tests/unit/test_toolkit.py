@@ -20,6 +20,7 @@ ENABLED_BY = "enabled by"
 CAUSES = "causes"
 GENE = "gene"
 TREATMENT = 'treatment'
+ORGANISM_TAXON = 'organism taxon'
 
 
 def test_get_model_version(toolkit):
@@ -257,9 +258,9 @@ def test_get_all_slots_with_class_domain(toolkit):
 
 
 def test_get_all_slots_with_class_range(toolkit):
-    assert 'in taxon' in toolkit.get_all_slots_with_class_range('organism taxon')
-    assert 'biolink:in_taxon' in toolkit.get_all_slots_with_class_range('organism taxon', formatted=True)
-    assert 'subject' in toolkit.get_all_slots_with_class_range('organism taxon', check_ancestors=True, mixin=False)
+    assert 'in taxon' in toolkit.get_all_slots_with_class_range(ORGANISM_TAXON)
+    assert 'biolink:in_taxon' in toolkit.get_all_slots_with_class_range(ORGANISM_TAXON, formatted=True)
+    assert SUBJECT in toolkit.get_all_slots_with_class_range(ORGANISM_TAXON, check_ancestors=True, mixin=False)
     assert 'primary knowledge source' in toolkit.get_all_slots_with_class_range('information resource',
                                                                                 check_ancestors=True,
                                                                                 mixin=False)
@@ -274,9 +275,9 @@ def test_get_all_predicates_with_class_domain(toolkit):
                                                                                formatted=True)
     assert 'in complex with' in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT)
     assert 'expressed in' in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT)
-    assert 'related to' not in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT, check_ancestors=False,
+    assert RELATED_TO not in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT, check_ancestors=False,
                                                                        mixin=False)
-    assert 'related to' not in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT, check_ancestors=True,
+    assert RELATED_TO not in toolkit.get_all_slots_with_class_domain(GENE_OR_GENE_PRODUCT, check_ancestors=True,
                                                                        mixin=True)
 
 
