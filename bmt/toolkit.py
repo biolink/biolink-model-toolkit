@@ -401,7 +401,7 @@ class Toolkit(object):
         if element is None and '_' in name:
             remove_underscore = name.replace('_', ' ')
             if remove_underscore in self.generator.aliases:
-                element = self.get_element(self.generator.aliases[name])
+                element = self.get_element(self.generator.aliases[remove_underscore])
         if element is None and name in self.generator.aliases:
             element = self.get_element(self.generator.aliases[name])
         if element and '_' in name:
