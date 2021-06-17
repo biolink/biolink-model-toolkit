@@ -564,7 +564,7 @@ class Toolkit(object):
         List[str]
             A list of slots
 
-        """f
+        """
         filtered_slots = []
         element = self.get_element(class_name)
         if element:
