@@ -399,7 +399,9 @@ class Toolkit(object):
         parsed_name = parse_name(name)
         element = self.generator.obj_for(parsed_name)
         if element is None and '_' in name:
-            element = self.get_element(self.generator.aliases[name.replace('_', ' ')])
+            remove_underscore = name.replace('_', ' ')
+            if remove_underscore in self.generator.aliases:
+                element = self.get_element(self.generator.aliases[name])
         if element is None and name in self.generator.aliases:
             element = self.get_element(self.generator.aliases[name])
         if element and '_' in name:
