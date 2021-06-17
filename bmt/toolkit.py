@@ -397,21 +397,13 @@ class Toolkit(object):
 
         """
         parsed_name = parse_name(name)
+        print(name)
         element = self.generator.obj_for(parsed_name)
-        if element is None:
-            print(name)
-            if 'molecular function' in self.generator.aliases:
-                print("alias exists for molecular function")
-                print(self.generator.aliases[name])
-                element = self.get_element(self.generator.aliases[name])
-                "got the element from the alias"
-                print(element.name)
+        if element is None and '_' in name:
+            element = self.get_element(self.generator.aliases[name.replace('_', ' ')])
         if element is None and name in self.generator.aliases:
-            print("element is none in name is in aliases")
             element = self.get_element(self.generator.aliases[name])
         if element and '_' in name:
-            print("found a _ in the name)")
-            print(element.name)
             element = self.get_element(name.replace('_', ' '))
         return element
 

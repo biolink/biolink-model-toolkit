@@ -106,7 +106,6 @@ def test_get_all_edge_properties(toolkit):
 
 def test_get_element(toolkit):
     gene = toolkit.get_element(GENE)
-    molecular_function = toolkit.get_element('molecular function')
     locus = toolkit.get_element('locus')
     assert gene == locus
 
@@ -114,6 +113,9 @@ def test_get_element(toolkit):
     assert o and o.name == 'drug exposure'
 
     o = toolkit.get_element('molecular function')
+    assert o and o.name == MOLECULAR_ACTIVITY
+
+    o = toolkit.get_element('molecular_function')
     assert o and o.name == MOLECULAR_ACTIVITY
 
     o = toolkit.get_element('RNA Product')
