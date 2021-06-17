@@ -399,8 +399,11 @@ class Toolkit(object):
         parsed_name = parse_name(name)
         element = self.generator.obj_for(parsed_name)
         if element is None and name in self.generator.aliases:
+            print("element is none in name is in aliases")
             element = self.get_element(self.generator.aliases[name])
         if element and '_' in name:
+            print("found a _ in the name)")
+            print(element.name)
             element = self.get_element(name.replace('_', ' '))
         return element
 
@@ -561,7 +564,7 @@ class Toolkit(object):
         List[str]
             A list of slots
 
-        """
+        """f
         filtered_slots = []
         element = self.get_element(class_name)
         if element:
