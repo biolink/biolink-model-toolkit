@@ -24,6 +24,7 @@ ORGANISM_TAXON = 'organism taxon'
 BIOLINK_RELATED_TO = 'biolink:related_to'
 BIOLINK_SUBJECT = 'biolink:subject'
 ASSOCIATION = 'association'
+THING_WITH_TAXON = 'thing with taxon'
 
 
 def test_get_model_version(toolkit):
@@ -183,6 +184,18 @@ def test_ancestors(toolkit):
     assert GENOMIC_ENTITY not in toolkit.get_ancestors(BIOLOGICAL_ENTITY)
     assert GENOMIC_ENTITY in toolkit.get_ancestors(GENOMIC_ENTITY, reflexive=True)
     assert GENOMIC_ENTITY not in toolkit.get_ancestors(GENOMIC_ENTITY, reflexive=False)
+    assert THING_WITH_TAXON not in toolkit.get_ancestors('phenotypic feature', mixin=False)
+    assert THING_WITH_TAXON in toolkit.get_ancestors('phenotypic feature')
+    assert THING_WITH_TAXON in toolkit.get_ancestors('phenotypic feature')
+
+
+def test_ancestors_for_kgx(toolkit):
+    ancestors1 = toolkit.get_ancestors('phenotypic feature', formatted=True, mixin=False)
+    assert ancestors1 is not None
+    assert len(ancestors1) == 5
+    ancestors2 = toolkit.get_ancestors('phenotypic feature', formatted=True)
+    assert ancestors2 is not None
+    assert len(ancestors2) == 6
 
 
 def test_descendants(toolkit):
