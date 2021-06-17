@@ -398,17 +398,15 @@ class Toolkit(object):
         """
         parsed_name = parse_name(name)
         element = self.generator.obj_for(parsed_name)
-        if element is None and name in self.generator.aliases:
-            print("aliases")
+        if element is None:
             print(self.generator.aliases)
+        if element is None and name in self.generator.aliases:
             print("element is none in name is in aliases")
             element = self.get_element(self.generator.aliases[name])
         if element and '_' in name:
             print("found a _ in the name)")
             print(element.name)
             element = self.get_element(name.replace('_', ' '))
-        print("just print the element name")
-        print(element.name)
         return element
 
     def get_slot_domain(self,
