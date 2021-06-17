@@ -397,7 +397,6 @@ class Toolkit(object):
 
         """
         parsed_name = parse_name(name)
-        print(name)
         element = self.generator.obj_for(parsed_name)
         if element is None and '_' in name:
             element = self.get_element(self.generator.aliases[name.replace('_', ' ')])
