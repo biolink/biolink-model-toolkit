@@ -134,6 +134,4 @@ def parse_name(name) -> str:
         actual_name = name
     else:
         actual_name = camelcase_to_sentencecase(name)
-    print("this is the actual name")
-    print(actual_name)
     return actual_name
