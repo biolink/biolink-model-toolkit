@@ -186,7 +186,6 @@ def test_ancestors(toolkit):
     assert GENOMIC_ENTITY not in toolkit.get_ancestors(GENOMIC_ENTITY, reflexive=False)
     assert THING_WITH_TAXON not in toolkit.get_ancestors('phenotypic feature', mixin=False)
     assert THING_WITH_TAXON in toolkit.get_ancestors('phenotypic feature')
-    assert THING_WITH_TAXON in toolkit.get_ancestors('phenotypic feature')
 
 
 def test_ancestors_for_kgx(toolkit):
