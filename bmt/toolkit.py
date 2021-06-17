@@ -398,10 +398,12 @@ class Toolkit(object):
         """
         parsed_name = parse_name(name)
         element = self.generator.obj_for(parsed_name)
-        if element is None and name in self.generator.aliases:
-            element = self.get_element(self.generator.aliases[name])
-        if element and '_' in name:
-            element = self.get_element(name.replace('_', ' '))
+        if element is None:
+            if name in self.generator.aliases:
+                element = self.get_element(self.generator.aliases[name])
+        if element is None:
+            if '_' in name:
+                element = self.get_element(name.replace('_', ' '))
         return element
 
     def get_slot_domain(self,
@@ -810,7 +812,6 @@ class Toolkit(object):
         annotation_tags = []
         if element:
             for annotation in element.annotations:
-                print(annotation)
                 annotation_tags.append(annotation)
         is_canonical = True if element is not None and 'biolink:canonical_predicate' in annotation_tags else False
         return True if RELATED_TO in self.get_ancestors(name, mixin) and is_canonical else False
