@@ -397,13 +397,10 @@ class Toolkit(object):
 
         """
         parsed_name = parse_name(name)
-        print("just the parsed name")
-        print(parsed_name)
         element = self.generator.obj_for(parsed_name)
-        if element:
-            print("I found an element here - when I expected not to")
-            print(element.name)
         if element is None and name in self.generator.aliases:
+            print("aliases")
+            print(self.generator.aliases)
             print("element is none in name is in aliases")
             element = self.get_element(self.generator.aliases[name])
         if element and '_' in name:
