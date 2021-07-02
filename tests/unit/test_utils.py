@@ -18,6 +18,7 @@ from bmt.utils import parse_name
     ('RNA product', 'RNA product'),
     ('RNA Product', 'RNA Product'),
     ('Rna Product', 'Rna Product'),
+    ('biolink:RNAProduct', 'RNA product'),
 ])
 def test_parse_name(query):
     n = parse_name(query[0])
