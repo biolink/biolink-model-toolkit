@@ -65,7 +65,11 @@ def sentencecase_to_camelcase(s: str) -> str:
     str
         string in CamelCase form
     """
-    return stringcase.pascalcase(stringcase.snakecase(s))
+    return re.sub(
+        r"(?:^| )([a-zA-Z])",
+        lambda match: match.group(1).upper(),
+        s
+    )
 
 
 def format_element(element: Element) -> str:
