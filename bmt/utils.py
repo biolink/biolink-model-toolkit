@@ -8,7 +8,7 @@ lowercase_pattern = re.compile(r"[a-zA-Z]*[a-z][a-zA-Z]*")
 underscore_pattern = re.compile(r"(?<!^)(?=[A-Z][a-z])")
 
 
-def from_camel(s, sep=" "):
+def from_camel(s: str, sep: str = " ") -> str:
     underscored = underscore_pattern.sub(sep, s)
     lowercased = lowercase_pattern.sub(
         lambda match: match.group(0).lower(),
