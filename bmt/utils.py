@@ -4,6 +4,18 @@ import stringcase
 from linkml_runtime.linkml_model.meta import ClassDefinition, SlotDefinition, Element, ClassDefinitionName, \
     SlotDefinitionName, ElementName, TypeDefinition
 
+lowercase_pattern = re.compile(r"[a-zA-Z]*[a-z][a-zA-Z]*")
+underscore_pattern = re.compile(r"(?<!^)(?=[A-Z][a-z])")
+
+
+def from_camel(s: str, sep: str = " ") -> str:
+    underscored = underscore_pattern.sub(sep, s)
+    lowercased = lowercase_pattern.sub(
+        lambda match: match.group(0).lower(),
+        underscored,
+    )
+    return lowercased
+
 
 def camelcase_to_sentencecase(s: str) -> str:
     """
@@ -18,7 +30,7 @@ def camelcase_to_sentencecase(s: str) -> str:
     str
         string in sentence case form
     """
-    return stringcase.sentencecase(s).lower()
+    return from_camel(s, sep=" ")
 
 
 def snakecase_to_sentencecase(s: str) -> str:
