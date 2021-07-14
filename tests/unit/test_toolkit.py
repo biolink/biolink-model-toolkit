@@ -7,26 +7,26 @@ def toolkit():
     return Toolkit()
 
 
-GENE_OR_GENE_PRODUCT = "gene or gene product"
-NUCLEIC_ACID_ENTITY = "nucleic acid entity"
-MOLECULAR_ACTIVITY = "molecular activity"
-GENOMIC_ENTITY = "genomic entity"
-BIOLOGICAL_ENTITY = "biological entity"
-RELATED_TO = "related to"
-INTERACTS_WITH = "interacts with"
-NAMED_THING = "named thing"
-SUBJECT = "subject"
-ENABLED_BY = "enabled by"
-CAUSES = "causes"
-GENE = "gene"
-TREATMENT = 'treatment'
-ORGANISM_TAXON = 'organism taxon'
-BIOLINK_RELATED_TO = 'biolink:related_to'
-BIOLINK_SUBJECT = 'biolink:subject'
 ASSOCIATION = 'association'
-THING_WITH_TAXON = 'thing with taxon'
+BIOLOGICAL_ENTITY = "biological entity"
+BIOLINK_BIOLOGICAL_ENTITY = "biolink:BiologicalEntity"
+BIOLINK_SUBJECT = 'biolink:subject'
+BIOLINK_RELATED_TO = 'biolink:related_to'
+CAUSES = "causes"
+ENABLED_BY = "enabled by"
+GENE = "gene"
+GENE_OR_GENE_PRODUCT = "gene or gene product"
+GENOMIC_ENTITY = "genomic entity"
+INTERACTS_WITH = "interacts with"
+MOLECULAR_ACTIVITY = "molecular activity"
+NUCLEIC_ACID_ENTITY = "nucleic acid entity"
+NAMED_THING = "named thing"
+ORGANISM_TAXON = 'organism taxon'
 PHENOTYPIC_FEATURE = 'phenotypic feature'
-
+RELATED_TO = "related to"
+SUBJECT = "subject"
+THING_WITH_TAXON = 'thing with taxon'
+TREATMENT = 'treatment'
 
 
 def test_get_model_version(toolkit):
@@ -229,7 +229,7 @@ def test_parent(toolkit):
     assert 'contributes to' in toolkit.get_parent(CAUSES)
     assert INTERACTS_WITH in toolkit.get_parent('physically interacts with')
     assert BIOLOGICAL_ENTITY in toolkit.get_parent(GENE)
-    assert 'biolink:BiologicalEntity' in toolkit.get_parent(GENE, formatted=True)
+    assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_parent(GENE, formatted=True)
 
 
 def test_mapping(toolkit):
@@ -251,7 +251,7 @@ def test_get_slot_domain(toolkit):
     assert BIOLOGICAL_ENTITY in toolkit.get_slot_domain('ameliorates')
     assert 'biological process or activity' in toolkit.get_slot_domain(ENABLED_BY)
     assert BIOLOGICAL_ENTITY in toolkit.get_slot_domain(ENABLED_BY, include_ancestors=True)
-    assert 'biolink:BiologicalEntity' in toolkit.get_slot_domain(ENABLED_BY, include_ancestors=True, formatted=True)
+    assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_slot_domain(ENABLED_BY, include_ancestors=True, formatted=True)
     assert 'entity' in toolkit.get_slot_domain('name')
     assert 'entity' in toolkit.get_slot_domain('category')
     assert ASSOCIATION in toolkit.get_slot_domain('relation')
@@ -260,7 +260,7 @@ def test_get_slot_domain(toolkit):
 def test_get_slot_range(toolkit):
     assert 'disease or phenotypic feature' in toolkit.get_slot_range('treats')
     assert BIOLOGICAL_ENTITY in toolkit.get_slot_range('treats', include_ancestors=True)
-    assert 'biolink:BiologicalEntity' in toolkit.get_slot_range('treats', include_ancestors=True, formatted=True)
+    assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_slot_range('treats', include_ancestors=True, formatted=True)
     assert 'label type' in toolkit.get_slot_range('name')
     assert 'uriorcurie' in toolkit.get_slot_range('relation')
     assert 'metatype:Uriorcurie' in toolkit.get_slot_range('relation', formatted=True)
