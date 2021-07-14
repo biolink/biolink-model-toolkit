@@ -30,7 +30,7 @@ PHENOTYPIC_FEATURE = 'phenotypic feature'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == '2.0.2'
+    assert version == '2.1.0'
 
 
 def test_get_all_elements(toolkit):
@@ -167,15 +167,16 @@ def test_category(toolkit):
 
 def test_ancestors(toolkit):
     assert RELATED_TO in toolkit.get_ancestors(CAUSES)
+    assert 'biolink:ChemicalEntityOrGeneOrGeneProduct' in toolkit.get_ancestors(GENE, formatted=True)
     assert 'biolink:GenomicEntity' in toolkit.get_ancestors(GENE, formatted=True)
     assert BIOLINK_RELATED_TO in toolkit.get_ancestors(CAUSES, formatted=True)
     assert 'biolink:GeneOrGeneProduct' in toolkit.get_ancestors(GENE, formatted=True)
-    assert 'biolink:GeneOrGeneProduct' not in toolkit.get_ancestors(GENE, formatted=True, mixin=False)
+    assert 'biolink:GeneOrGeneProduct' not in toolkit.get_ancestors(GENE, formatted=True, mixins_included=False)
     assert NAMED_THING in toolkit.get_ancestors(GENE)
     assert GENE_OR_GENE_PRODUCT in toolkit.get_ancestors(GENE)
-    assert GENE_OR_GENE_PRODUCT not in toolkit.get_ancestors(GENE, mixin=False)
+    assert GENE_OR_GENE_PRODUCT not in toolkit.get_ancestors(GENE, mixins_included=False)
     assert 'biolink:NamedThing' in toolkit.get_ancestors(GENE, formatted=True)
-    assert 'chemical entity' in toolkit.get_ancestors(GENE)
+    assert 'biological entity' in toolkit.get_ancestors(GENE)
     assert 'transcript' not in toolkit.get_ancestors(GENE)
     assert CAUSES in toolkit.get_ancestors(CAUSES)
     assert CAUSES in toolkit.get_ancestors(CAUSES, reflexive=True)
@@ -185,12 +186,12 @@ def test_ancestors(toolkit):
     assert GENOMIC_ENTITY not in toolkit.get_ancestors(BIOLOGICAL_ENTITY)
     assert GENOMIC_ENTITY in toolkit.get_ancestors(GENOMIC_ENTITY, reflexive=True)
     assert GENOMIC_ENTITY not in toolkit.get_ancestors(GENOMIC_ENTITY, reflexive=False)
-    assert THING_WITH_TAXON not in toolkit.get_ancestors(PHENOTYPIC_FEATURE, mixin=False)
+    assert THING_WITH_TAXON not in toolkit.get_ancestors(PHENOTYPIC_FEATURE, mixins_included=False)
     assert THING_WITH_TAXON in toolkit.get_ancestors(PHENOTYPIC_FEATURE)
 
 
 def test_ancestors_for_kgx(toolkit):
-    ancestors1 = toolkit.get_ancestors(PHENOTYPIC_FEATURE, formatted=True, mixin=False)
+    ancestors1 = toolkit.get_ancestors(PHENOTYPIC_FEATURE, formatted=True, mixins_included=False)
     assert ancestors1 is not None
     assert len(ancestors1) == 5
     ancestors2 = toolkit.get_ancestors(PHENOTYPIC_FEATURE, formatted=True)
@@ -217,17 +218,17 @@ def test_descendants(toolkit):
 def test_children(toolkit):
     assert CAUSES in toolkit.get_children('contributes to')
     assert 'physically interacts with' in toolkit.get_children(INTERACTS_WITH)
-    assert GENE in toolkit.get_children(NUCLEIC_ACID_ENTITY)
+    assert 'transcript' in toolkit.get_children(NUCLEIC_ACID_ENTITY)
     assert GENE in toolkit.get_children(GENE_OR_GENE_PRODUCT)
     assert GENE not in toolkit.get_children(GENE_OR_GENE_PRODUCT, mixin=False)
-    assert 'biolink:Gene' in toolkit.get_children(NUCLEIC_ACID_ENTITY, formatted=True)
+    assert 'biolink:Transcript' in toolkit.get_children(NUCLEIC_ACID_ENTITY, formatted=True)
 
 
 def test_parent(toolkit):
     assert 'contributes to' in toolkit.get_parent(CAUSES)
     assert INTERACTS_WITH in toolkit.get_parent('physically interacts with')
-    assert NUCLEIC_ACID_ENTITY in toolkit.get_parent(GENE)
-    assert 'biolink:NucleicAcidEntity' in toolkit.get_parent(GENE, formatted=True)
+    assert BIOLOGICAL_ENTITY in toolkit.get_parent(GENE)
+    assert 'biolink:BiologicalEntity' in toolkit.get_parent(GENE, formatted=True)
 
 
 def test_mapping(toolkit):

@@ -9,7 +9,7 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/2.0.2/biolink-model.yaml'
+REMOTE_PATH = 'https://raw.githubusercontent.com/biolink/biolink-model/2.1.0/biolink-model.yaml'
 RELATED_TO = 'related to'
 CACHE_SIZE = 1024
 
@@ -252,7 +252,7 @@ class Toolkit(object):
     def get_ancestors(self, name: str,
                       reflexive: bool = True,
                       formatted: bool = False,
-                      mixin: bool = True) -> List[str]:
+                      mixins_included: bool = True) -> List[str]:
         """
         Gets a list of names of ancestors.
 
@@ -264,7 +264,7 @@ class Toolkit(object):
             Whether to include the query element in the list of ancestors
         formatted: bool
             Whether to format element names as CURIEs
-        mixin: bool
+        mixins_included: bool
             If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
@@ -275,10 +275,21 @@ class Toolkit(object):
         """
         element = self.get_element(name)
         ancs = []
-
+        mixins_parents = []
         if isinstance(element, (ClassDefinition, SlotDefinition)):
-            a = self.generator.ancestors(element, mixin)
-            ancs = a if reflexive else a[1:]
+            a = self.generator.ancestors(element)
+            if mixins_included:
+                for ancestor in a:
+                    a_element = self.get_element(ancestor)
+                    if a_element.mixins:
+                        for mixin in a_element.mixins:
+                            mixin_element = self.get_element(mixin)
+                            mixin_parents = self.generator.ancestors(mixin_element)
+                            mixins_parents = mixins_parents + mixin_parents
+                a = a + mixins_parents
+                ancs = a if reflexive else a[1:]
+            else:
+                ancs = a if reflexive else a[1:]
         if isinstance(element, SlotDefinition):
             filtered_ancs = self._filter_secondary(ancs)
         else:
@@ -437,13 +448,13 @@ class Toolkit(object):
         if element and element.domain:
             domain_classes.add(element.domain)
             if include_ancestors:
-                slot_domain.extend(self.get_ancestors(element.domain, reflexive=True, mixin=mixin))
+                slot_domain.extend(self.get_ancestors(element.domain, reflexive=True, mixins_included=mixin))
             else:
                 slot_domain.append(element.domain)
         for d in element.domain_of:
             if d not in domain_classes:
                 if include_ancestors:
-                    slot_domain.extend(self.get_ancestors(d, reflexive=True, mixin=mixin))
+                    slot_domain.extend(self.get_ancestors(d, reflexive=True, mixins_included=mixin))
                 else:
                     slot_domain.append(d)
         return self._format_all_elements(slot_domain, formatted)
@@ -478,7 +489,7 @@ class Toolkit(object):
         if element and element.range:
             slot_range.append(element.range)
             if include_ancestors:
-                ancs = self.get_ancestors(element.range, reflexive=False, mixin=mixin)
+                ancs = self.get_ancestors(element.range, reflexive=False, mixins_included=mixin)
                 slot_range.extend(ancs)
         return self._format_all_elements(slot_range, formatted)
 
