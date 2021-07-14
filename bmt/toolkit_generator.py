@@ -179,7 +179,7 @@ class ToolkitGenerator(Generator):
         """
         return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
 
-    def descendants(self, element_name: str, mixins_included: bool = True):
+    def descendants(self, element_name: str, mixin: bool = True):
         """
         Return an ordered list of descendant names for the supplied slot or class.
 
@@ -187,17 +187,17 @@ class ToolkitGenerator(Generator):
         ----------
         element_name: Union[ClassDefinition, SlotDefinition]
             An element
-        mixins_included: bool
+        mixin: bool
             If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         """
         c = []
-        for child in self.children(element_name, mixins_included):
+        for child in self.children(element_name, mixin):
             c.append(child)
-            c += self.descendants(child, mixins_included)
+            c += self.descendants(child, mixin)
         return c
 
-    def children(self, name: str, mixins_included: bool = True) -> List[str]:
+    def children(self, name: str, mixin: bool = True) -> List[str]:
         """
         Gets a list of names of children.
 
@@ -205,7 +205,7 @@ class ToolkitGenerator(Generator):
         ----------
         name: str
             The name of an element in the Biolink Model.
-        mixins_included: bool
+        mixin: bool
             If True, then that means we want to find mixin children as well as is_a children
 
         Returns
@@ -215,9 +215,9 @@ class ToolkitGenerator(Generator):
 
         """
         kids_or_mixin_kids = []
-        if mixins_included:
-            for mixins_included in self._union_of(self.synopsis.mixinrefs.get(name, References())):
-                kids_or_mixin_kids.append(mixins_included)
+        if mixin:
+            for mixin in self._union_of(self.synopsis.mixinrefs.get(name, References())):
+                kids_or_mixin_kids.append(mixin)
             for kid in self._union_of(self.synopsis.isarefs.get(name, References())):
                 kids_or_mixin_kids.append(kid)
         else:

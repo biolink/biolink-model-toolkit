@@ -253,7 +253,7 @@ class Toolkit(object):
     def get_ancestors(self, name: str,
                       reflexive: bool = True,
                       formatted: bool = False,
-                      mixins_included: bool = True) -> List[str]:
+                      mixin: bool = True) -> List[str]:
         """
         Gets a list of names of ancestors.
 
@@ -265,7 +265,7 @@ class Toolkit(object):
             Whether to include the query element in the list of ancestors
         formatted: bool
             Whether to format element names as CURIEs
-        mixins_included: bool
+        mixin: bool
             If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
@@ -278,7 +278,7 @@ class Toolkit(object):
         ancs = []
         if isinstance(element, (ClassDefinition, SlotDefinition)):
             a = self.generator.ancestors(element)
-            if mixins_included:
+            if mixin:
                 mixins_parents = self._get_mixin_descendants(a)
                 a = a + mixins_parents
             ancs = a if reflexive else a[1:]
@@ -303,7 +303,7 @@ class Toolkit(object):
     def get_descendants(self, name: str,
                         reflexive: bool = True,
                         formatted: bool = False,
-                        mixins_included: bool = True) -> List[str]:
+                        mixin: bool = True) -> List[str]:
         """
         Gets a list of names of descendants.
 
@@ -315,7 +315,7 @@ class Toolkit(object):
             Whether to include the query element in the list of ancestors
         formatted: bool
             Whether to format element names as CURIEs
-        mixins_included: bool
+        mixin: bool
             If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
@@ -329,7 +329,7 @@ class Toolkit(object):
         element = self.get_element(name)
 
         if element:
-            d = self.generator.descendants(element.name, mixins_included)
+            d = self.generator.descendants(element.name, mixin)
             if reflexive:
                 desc.append(element.name)
             desc += d
@@ -451,13 +451,13 @@ class Toolkit(object):
         if element and element.domain:
             domain_classes.add(element.domain)
             if include_ancestors:
-                slot_domain.extend(self.get_ancestors(element.domain, reflexive=True, mixins_included=mixin))
+                slot_domain.extend(self.get_ancestors(element.domain, reflexive=True, mixin=mixin))
             else:
                 slot_domain.append(element.domain)
         for d in element.domain_of:
             if d not in domain_classes:
                 if include_ancestors:
-                    slot_domain.extend(self.get_ancestors(d, reflexive=True, mixins_included=mixin))
+                    slot_domain.extend(self.get_ancestors(d, reflexive=True, mixin=mixin))
                 else:
                     slot_domain.append(d)
         return self._format_all_elements(slot_domain, formatted)
@@ -492,7 +492,7 @@ class Toolkit(object):
         if element and element.range:
             slot_range.append(element.range)
             if include_ancestors:
-                ancs = self.get_ancestors(element.range, reflexive=False, mixins_included=mixin)
+                ancs = self.get_ancestors(element.range, reflexive=False, mixin=mixin)
                 slot_range.extend(ancs)
         return self._format_all_elements(slot_range, formatted)
 

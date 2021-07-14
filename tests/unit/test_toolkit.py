@@ -172,10 +172,10 @@ def test_ancestors(toolkit):
     assert 'biolink:GenomicEntity' in toolkit.get_ancestors(GENE, formatted=True)
     assert BIOLINK_RELATED_TO in toolkit.get_ancestors(CAUSES, formatted=True)
     assert 'biolink:GeneOrGeneProduct' in toolkit.get_ancestors(GENE, formatted=True)
-    assert 'biolink:GeneOrGeneProduct' not in toolkit.get_ancestors(GENE, formatted=True, mixins_included=False)
+    assert 'biolink:GeneOrGeneProduct' not in toolkit.get_ancestors(GENE, formatted=True, mixin=False)
     assert NAMED_THING in toolkit.get_ancestors(GENE)
     assert GENE_OR_GENE_PRODUCT in toolkit.get_ancestors(GENE)
-    assert GENE_OR_GENE_PRODUCT not in toolkit.get_ancestors(GENE, mixins_included=False)
+    assert GENE_OR_GENE_PRODUCT not in toolkit.get_ancestors(GENE, mixin=False)
     assert 'biolink:NamedThing' in toolkit.get_ancestors(GENE, formatted=True)
     assert 'biological entity' in toolkit.get_ancestors(GENE)
     assert 'transcript' not in toolkit.get_ancestors(GENE)
@@ -187,12 +187,12 @@ def test_ancestors(toolkit):
     assert GENOMIC_ENTITY not in toolkit.get_ancestors(BIOLOGICAL_ENTITY)
     assert GENOMIC_ENTITY in toolkit.get_ancestors(GENOMIC_ENTITY, reflexive=True)
     assert GENOMIC_ENTITY not in toolkit.get_ancestors(GENOMIC_ENTITY, reflexive=False)
-    assert THING_WITH_TAXON not in toolkit.get_ancestors(PHENOTYPIC_FEATURE, mixins_included=False)
+    assert THING_WITH_TAXON not in toolkit.get_ancestors(PHENOTYPIC_FEATURE, mixin=False)
     assert THING_WITH_TAXON in toolkit.get_ancestors(PHENOTYPIC_FEATURE)
 
 
 def test_ancestors_for_kgx(toolkit):
-    ancestors1 = toolkit.get_ancestors(PHENOTYPIC_FEATURE, formatted=True, mixins_included=False)
+    ancestors1 = toolkit.get_ancestors(PHENOTYPIC_FEATURE, formatted=True, mixin=False)
     assert ancestors1 is not None
     assert len(ancestors1) == 5
     ancestors2 = toolkit.get_ancestors(PHENOTYPIC_FEATURE, formatted=True)
@@ -202,7 +202,7 @@ def test_ancestors_for_kgx(toolkit):
 
 def test_descendants(toolkit):
     assert GENE in toolkit.get_descendants(GENE_OR_GENE_PRODUCT)
-    assert GENE not in toolkit.get_descendants(GENE_OR_GENE_PRODUCT, mixins_included=False)
+    assert GENE not in toolkit.get_descendants(GENE_OR_GENE_PRODUCT, mixin=False)
     assert MOLECULAR_ACTIVITY in toolkit.get_descendants('occurrent')
     assert GENE not in toolkit.get_descendants('outcome')
     assert GENE in toolkit.get_descendants(NAMED_THING)
