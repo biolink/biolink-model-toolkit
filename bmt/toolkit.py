@@ -1,7 +1,8 @@
 from functools import lru_cache, reduce
 from typing import List, Union, TextIO, Optional
 import deprecation
-from linkml_runtime.linkml_model.meta import SchemaDefinition, Element, Definition, ClassDefinition, SlotDefinition
+from linkml_runtime.linkml_model.meta import SchemaDefinition, Element, ElementName, \
+    Definition, ClassDefinition, SlotDefinition
 
 from bmt.toolkit_generator import ToolkitGenerator
 from bmt.utils import format_element, parse_name
@@ -275,17 +276,10 @@ class Toolkit(object):
         """
         element = self.get_element(name)
         ancs = []
-        mixins_parents = []
         if isinstance(element, (ClassDefinition, SlotDefinition)):
             a = self.generator.ancestors(element)
             if mixins_included:
-                for ancestor in a:
-                    a_element = self.get_element(ancestor)
-                    if a_element.mixins:
-                        for mixin in a_element.mixins:
-                            mixin_element = self.get_element(mixin)
-                            mixin_parents = self.generator.ancestors(mixin_element)
-                            mixins_parents = mixins_parents + mixin_parents
+                mixins_parents = self._get_mixin_descendants(a)
                 a = a + mixins_parents
             ancs = a if reflexive else a[1:]
         if isinstance(element, SlotDefinition):
@@ -293,6 +287,17 @@ class Toolkit(object):
         else:
             filtered_ancs = ancs
         return self._format_all_elements(filtered_ancs, formatted)
+
+    def _get_mixin_descendants(self, ancestors: List[ElementName]) -> List[ElementName]:
+        mixins_parents = []
+        for ancestor in ancestors:
+            a_element = self.get_element(ancestor)
+            if a_element.mixins:
+                for mixin in a_element.mixins:
+                    mixin_element = self.get_element(mixin)
+                    mixin_parents = self.generator.ancestors(mixin_element)
+                    mixins_parents = mixins_parents + mixin_parents
+        return mixins_parents
 
     @lru_cache(CACHE_SIZE)
     def get_descendants(self, name: str,
