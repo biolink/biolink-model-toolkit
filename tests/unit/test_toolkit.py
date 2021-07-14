@@ -31,7 +31,7 @@ TREATMENT = 'treatment'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == '2.1.0'
+    assert version == '2.2.0'
 
 
 def test_get_all_elements(toolkit):
