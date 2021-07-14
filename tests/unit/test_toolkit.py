@@ -28,6 +28,7 @@ THING_WITH_TAXON = 'thing with taxon'
 PHENOTYPIC_FEATURE = 'phenotypic feature'
 
 
+
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
     assert version == '2.1.0'
@@ -251,7 +252,6 @@ def test_get_slot_domain(toolkit):
     assert 'biological process or activity' in toolkit.get_slot_domain(ENABLED_BY)
     assert BIOLOGICAL_ENTITY in toolkit.get_slot_domain(ENABLED_BY, include_ancestors=True)
     assert 'biolink:BiologicalEntity' in toolkit.get_slot_domain(ENABLED_BY, include_ancestors=True, formatted=True)
-
     assert 'entity' in toolkit.get_slot_domain('name')
     assert 'entity' in toolkit.get_slot_domain('category')
     assert ASSOCIATION in toolkit.get_slot_domain('relation')
@@ -261,7 +261,6 @@ def test_get_slot_range(toolkit):
     assert 'disease or phenotypic feature' in toolkit.get_slot_range('treats')
     assert BIOLOGICAL_ENTITY in toolkit.get_slot_range('treats', include_ancestors=True)
     assert 'biolink:BiologicalEntity' in toolkit.get_slot_range('treats', include_ancestors=True, formatted=True)
-
     assert 'label type' in toolkit.get_slot_range('name')
     assert 'uriorcurie' in toolkit.get_slot_range('relation')
     assert 'metatype:Uriorcurie' in toolkit.get_slot_range('relation', formatted=True)

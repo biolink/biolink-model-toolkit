@@ -165,7 +165,7 @@ class ToolkitGenerator(Generator):
 
         return element_obj
 
-    def ancestors(self, element: Union[ClassDefinition, SlotDefinition], mixin: bool = True) -> List[ElementName]:
+    def ancestors(self, element: Union[ClassDefinition, SlotDefinition]) -> List[ElementName]:
         """
         Return an ordered list of ancestor names for the supplied slot or class.
 
