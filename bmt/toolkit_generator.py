@@ -165,7 +165,7 @@ class ToolkitGenerator(Generator):
 
         return element_obj
 
-    def ancestors(self, element: Union[ClassDefinition, SlotDefinition], mixin: bool = True) -> List[ElementName]:
+    def ancestors(self, element: Union[ClassDefinition, SlotDefinition]) -> List[ElementName]:
         """
         Return an ordered list of ancestor names for the supplied slot or class.
 
@@ -177,18 +177,7 @@ class ToolkitGenerator(Generator):
             If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         """
-        if element is None:
-            return []
-        if not mixin:
-            return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element), mixin=False))
-        elif mixin and not element.mixins:
-            return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
-        else:
-            for mixin in element.mixins:
-                mixin_element = self.obj_for(mixin)
-                return [element.name] + [mixin_element.name] + ([] if element.is_a is None else
-                                                                self.ancestors(self.parent(element)) +
-                                                                self.ancestors(self.parent(mixin_element)))
+        return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
 
     def descendants(self, element_name: str, mixin: bool = True):
         """
