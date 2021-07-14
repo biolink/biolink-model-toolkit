@@ -177,22 +177,6 @@ class ToolkitGenerator(Generator):
             If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         """
-        # print("sierra")
-        # if element is None:
-        #     return []
-        # if not mixin:
-        #     return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element),
-        #                                                                             mixin=False))
-        # elif mixin and not element.mixins:
-        #     print(element.name)
-        #     return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
-        # else:
-        #     print(element.name)
-        #     print(element.mixins)
-        #     return [([element.name] + [self.obj_for(mixin).name] + ([] if element.is_a is None else
-        #                                                        self.ancestors(self.parent(element)) +
-        #                                                        self.ancestors(self.parent(self.obj_for(mixin))))
-        #             for mixin in element.mixins)]
         return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
 
     def descendants(self, element_name: str, mixin: bool = True):
