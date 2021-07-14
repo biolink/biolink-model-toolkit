@@ -202,7 +202,7 @@ def test_ancestors_for_kgx(toolkit):
 
 def test_descendants(toolkit):
     assert GENE in toolkit.get_descendants(GENE_OR_GENE_PRODUCT)
-    assert GENE not in toolkit.get_descendants(GENE_OR_GENE_PRODUCT, mixin=False)
+    assert GENE not in toolkit.get_descendants(GENE_OR_GENE_PRODUCT, mixins_included=False)
     assert MOLECULAR_ACTIVITY in toolkit.get_descendants('occurrent')
     assert GENE not in toolkit.get_descendants('outcome')
     assert GENE in toolkit.get_descendants(NAMED_THING)

@@ -303,7 +303,7 @@ class Toolkit(object):
     def get_descendants(self, name: str,
                         reflexive: bool = True,
                         formatted: bool = False,
-                        mixin: bool = True) -> List[str]:
+                        mixins_included: bool = True) -> List[str]:
         """
         Gets a list of names of descendants.
 
@@ -315,7 +315,7 @@ class Toolkit(object):
             Whether to include the query element in the list of ancestors
         formatted: bool
             Whether to format element names as CURIEs
-        mixin: bool
+        mixins_included: bool
             If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         Returns
@@ -329,7 +329,7 @@ class Toolkit(object):
         element = self.get_element(name)
 
         if element:
-            d = self.generator.descendants(element.name, mixin)
+            d = self.generator.descendants(element.name, mixins_included)
             if reflexive:
                 desc.append(element.name)
             desc += d
