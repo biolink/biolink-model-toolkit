@@ -287,9 +287,7 @@ class Toolkit(object):
                             mixin_parents = self.generator.ancestors(mixin_element)
                             mixins_parents = mixins_parents + mixin_parents
                 a = a + mixins_parents
-                ancs = a if reflexive else a[1:]
-            else:
-                ancs = a if reflexive else a[1:]
+            ancs = a if reflexive else a[1:]
         if isinstance(element, SlotDefinition):
             filtered_ancs = self._filter_secondary(ancs)
         else:
