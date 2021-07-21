@@ -6,7 +6,6 @@ from bmt import Toolkit
 def toolkit():
     return Toolkit()
 
-
 ASSOCIATION = 'association'
 BIOLOGICAL_ENTITY = "biological entity"
 BIOLINK_BIOLOGICAL_ENTITY = "biolink:BiologicalEntity"
