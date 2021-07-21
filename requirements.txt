@@ -4,5 +4,4 @@ stringcase>=1.0.0
 pbr
 pytest
 black
-mypy
 flake8
