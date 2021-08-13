@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/sierra-moxon/cookiecutter-pypackage",
-  "commit": "f5d18a3c2ee59eab53ddab5dc1e9ce909f3ed83c",
+  "commit": "6557796f8d24e1392b2bd452699f144cfe4b74f8",
   "checkout": null,
   "context": {
     "cookiecutter": {
