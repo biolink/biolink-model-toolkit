@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>bmt.toolkit_generator &mdash; Biolink Model Toolkit 0.7.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Biolink Model Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bmt</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Biolink Model Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>bmt.toolkit_generator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bmt.toolkit_generator</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">linkml_runtime.linkml_model.meta</span> <span class="kn">import</span> <span class="n">ClassDefinition</span><span class="p">,</span> <span class="n">SlotDefinition</span><span class="p">,</span> <span class="n">TypeDefinition</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> \
+    <span class="n">SubsetDefinition</span><span class="p">,</span> <span class="n">ElementName</span>
+<span class="kn">from</span> <span class="nn">linkml.utils.generator</span> <span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">from</span> <span class="nn">linkml.utils.typereferences</span> <span class="kn">import</span> <span class="n">References</span>
+
+
+<div class="viewcode-block" id="ToolkitGenerator"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator">[docs]</a><span class="k">class</span> <span class="nc">ToolkitGenerator</span><span class="p">(</span><span class="n">Generator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An extension to linkml.utils.generator.Generator for accessing the Biolink Model.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    *args: Dict</span>
+<span class="sd">        Arguments</span>
+<span class="sd">    **kwargs: Dict</span>
+<span class="sd">        Additional arguments</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">valid_formats</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mappings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exact_mappings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_mappings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">related_mappings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">narrow_mappings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broad_mappings</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ToolkitGenerator.visit_element"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator.visit_element">[docs]</a>    <span class="k">def</span> <span class="nf">visit_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Element</span><span class="p">,</span> <span class="n">element_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given an element and an element URI (optional), visit the element</span>
+<span class="sd">        in the Biolink Model and pull the necessary properties corresponding</span>
+<span class="sd">        to that element.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        element: linkml_runtime.linkml_model.meta.Element</span>
+<span class="sd">            The element to access</span>
+<span class="sd">        element_uri: Optional[str]</span>
+<span class="sd">            The URI for the element</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">mappings</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mappings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">namespaces</span><span class="o">.</span><span class="n">uri_for</span><span class="p">(</span><span class="n">curie</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">exact_mappings</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exact_mappings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">namespaces</span><span class="o">.</span><span class="n">uri_for</span><span class="p">(</span><span class="n">curie</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">close_mappings</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close_mappings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">namespaces</span><span class="o">.</span><span class="n">uri_for</span><span class="p">(</span><span class="n">curie</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">related_mappings</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">related_mappings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">namespaces</span><span class="o">.</span><span class="n">uri_for</span><span class="p">(</span><span class="n">curie</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">narrow_mappings</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">narrow_mappings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">namespaces</span><span class="o">.</span><span class="n">uri_for</span><span class="p">(</span><span class="n">curie</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">curie</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">broad_mappings</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">broad_mappings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">namespaces</span><span class="o">.</span><span class="n">uri_for</span><span class="p">(</span><span class="n">curie</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">element_uri</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mappings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">namespaces</span><span class="o">.</span><span class="n">uri_for</span><span class="p">(</span><span class="n">element_uri</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">a</span><span class="p">:</span> <span class="n">element</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">aliases</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="ToolkitGenerator.visit_slot"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator.visit_slot">[docs]</a>    <span class="k">def</span> <span class="nf">visit_slot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aliased_slot_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">slot</span><span class="p">:</span> <span class="n">SlotDefinition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a slot, visit the slot in the Biolink Model and pull necessary</span>
+<span class="sd">        properties corresponding to that slot.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        aliased_slot_name: str</span>
+<span class="sd">            Alias name of the slot</span>
+<span class="sd">        slot: linkml_runtime.linkml_model.meta.SlotDefinition</span>
+<span class="sd">            The slot definition</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visit_element</span><span class="p">(</span><span class="n">slot</span><span class="p">,</span> <span class="n">slot</span><span class="o">.</span><span class="n">slot_uri</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">a</span><span class="p">:</span> <span class="n">slot</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">slot</span><span class="o">.</span><span class="n">aliases</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="ToolkitGenerator.visit_type"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator.visit_type">[docs]</a>    <span class="k">def</span> <span class="nf">visit_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="n">TypeDefinition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a type, visit the type in the Biolink Model and pull necessary</span>
+<span class="sd">        properties corresponding to that type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        typ: linkml_runtime.linkml_model.meta.TypeDefinition</span>
+<span class="sd">            The type definition</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visit_element</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">typ</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ToolkitGenerator.visit_class"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator.visit_class">[docs]</a>    <span class="k">def</span> <span class="nf">visit_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="n">ClassDefinition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a class, visit the class in the Biolink Model and pull necessary</span>
+<span class="sd">        properties corresponding to that class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cls: linkml_runtime.linkml_model.meta.ClassDefinition</span>
+<span class="sd">            The class definition</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visit_element</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">class_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="ToolkitGenerator.visit_subset"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator.visit_subset">[docs]</a>    <span class="k">def</span> <span class="nf">visit_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subset</span><span class="p">:</span> <span class="n">SubsetDefinition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a subset, visit the subset in the Biolink Model and pull necessary</span>
+<span class="sd">        properties corresponding to that class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        subset: linkml_runtime.linkml_model.meta.SubsetDefinition</span>
+<span class="sd">            The subset definition</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visit_element</span><span class="p">(</span><span class="n">subset</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ToolkitGenerator.obj_for"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator.obj_for">[docs]</a>    <span class="k">def</span> <span class="nf">obj_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">el_or_elname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_range_name</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Element</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get object for a given element name.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        el_or_elname: str</span>
+<span class="sd">            The element or element name</span>
+<span class="sd">        is_range_name: bool</span>
+<span class="sd">            If True, then that means we are looking for a class or type</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Optional[Element]</span>
+<span class="sd">            An instance of Element corresponding to the given name</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">element_obj</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">el_or_elname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">classes</span><span class="p">:</span>
+            <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_or_type_for</span><span class="p">(</span><span class="n">el_or_elname</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">el_or_elname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">slots</span><span class="p">:</span>
+            <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slot_for</span><span class="p">(</span><span class="n">el_or_elname</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">el_or_elname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">types</span> <span class="ow">or</span> <span class="n">el_or_elname</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">default_range</span><span class="p">:</span>
+            <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_or_type_for</span><span class="p">(</span><span class="n">el_or_elname</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">el_or_elname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">subsets</span><span class="p">:</span>
+            <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset_for</span><span class="p">(</span><span class="n">el_or_elname</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_or_type_for</span><span class="p">(</span><span class="n">el_or_elname</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">element_obj</span><span class="p">:</span>
+            <span class="c1"># try case-insensitive match</span>
+            <span class="n">classes</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">slots</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">slots</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">types</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">subsets</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">subsets</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">el_or_elname_lower</span> <span class="o">=</span> <span class="n">el_or_elname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">el_or_elname_lower</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">:</span>
+                <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_or_type_for</span><span class="p">(</span><span class="n">classes</span><span class="p">[</span><span class="n">el_or_elname_lower</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">el_or_elname_lower</span> <span class="ow">in</span> <span class="n">slots</span><span class="p">:</span>
+                <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slot_for</span><span class="p">(</span><span class="n">slots</span><span class="p">[</span><span class="n">el_or_elname_lower</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">el_or_elname_lower</span> <span class="ow">in</span> <span class="n">types</span> <span class="ow">or</span> <span class="n">el_or_elname_lower</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">default_range</span><span class="p">:</span>
+                <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_or_type_for</span><span class="p">(</span><span class="n">types</span><span class="p">[</span><span class="n">el_or_elname_lower</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">el_or_elname_lower</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">subsets</span><span class="p">:</span>
+                <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset_for</span><span class="p">(</span><span class="n">subsets</span><span class="p">[</span><span class="n">el_or_elname_lower</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">element_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_or_type_for</span><span class="p">(</span><span class="n">el_or_elname_lower</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">element_obj</span></div>
+
+<div class="viewcode-block" id="ToolkitGenerator.ancestors"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator.ancestors">[docs]</a>    <span class="k">def</span> <span class="nf">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ClassDefinition</span><span class="p">,</span> <span class="n">SlotDefinition</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ElementName</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return an ordered list of ancestor names for the supplied slot or class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        element: Union[ClassDefinition, SlotDefinition]</span>
+<span class="sd">            An element</span>
+<span class="sd">        mixin: bool</span>
+<span class="sd">            If True, then that means we want to find mixin ancestors as well as is_a ancestors</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">+</span> <span class="p">([]</span> <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">is_a</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">ancestors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">(</span><span class="n">element</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="ToolkitGenerator.descendants"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator.descendants">[docs]</a>    <span class="k">def</span> <span class="nf">descendants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mixin</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return an ordered list of descendant names for the supplied slot or class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        element_name: Union[ClassDefinition, SlotDefinition]</span>
+<span class="sd">            An element</span>
+<span class="sd">        mixin: bool</span>
+<span class="sd">            If True, then that means we want to find mixin ancestors as well as is_a ancestors</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">(</span><span class="n">element_name</span><span class="p">,</span> <span class="n">mixin</span><span class="p">):</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+            <span class="n">c</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">descendants</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">mixin</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span></div>
+
+<div class="viewcode-block" id="ToolkitGenerator.children"><a class="viewcode-back" href="../../bmt.html#bmt.toolkit_generator.ToolkitGenerator.children">[docs]</a>    <span class="k">def</span> <span class="nf">children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mixin</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets a list of names of children.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: str</span>
+<span class="sd">            The name of an element in the Biolink Model.</span>
+<span class="sd">        mixin: bool</span>
+<span class="sd">            If True, then that means we want to find mixin children as well as is_a children</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[str]</span>
+<span class="sd">            The names of the given elements children.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kids_or_mixin_kids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">mixin</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">mixin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_union_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">synopsis</span><span class="o">.</span><span class="n">mixinrefs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">References</span><span class="p">())):</span>
+                <span class="n">kids_or_mixin_kids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mixin</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">kid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_union_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">synopsis</span><span class="o">.</span><span class="n">isarefs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">References</span><span class="p">())):</span>
+                <span class="n">kids_or_mixin_kids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kid</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">kid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_union_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">synopsis</span><span class="o">.</span><span class="n">isarefs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">References</span><span class="p">())):</span>
+                <span class="n">kids_or_mixin_kids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kids_or_mixin_kids</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_union_of</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">References</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return all references in r</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        r: linkml.utils.typereferences.References</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">classrefs</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">slotrefs</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">typerefs</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">subsetrefs</span><span class="p">)))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Deepak Unni, Sierra Moxon.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

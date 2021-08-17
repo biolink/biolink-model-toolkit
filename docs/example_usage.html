@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Example Usage &mdash; Biolink Model Toolkit 0.7.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Installation" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Biolink Model Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-toolkit-class">Using the Toolkit class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getting-a-biolink-model-element-based-on-its-name">Getting a Biolink Model element based on its name</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-a-biolink-model-element-based-on-its-mappings">Get a Biolink Model element based on its mappings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-ancestors-for-a-given-biolink-model-element">Get ancestors for a given Biolink Model element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-descendants-for-a-given-biolink-model-element">Get descendants for a given Biolink Model element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#check-whether-a-given-string-is-a-valid-biolink-model-category">Check whether a given string is a valid Biolink Model category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#check-whether-a-given-string-is-a-valid-biolink-model-predicate">Check whether a given string is a valid Biolink Model predicate</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-toolkit-class-with-different-versions-of-biolink-model">Using the Toolkit class with different versions of Biolink Model</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Biolink Model Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Example Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/example_usage.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p><a class="reference external" href="#"><img alt="Python" src="https://img.shields.io/badge/python-3.7+-blue.svg" /></a>
+<a class="reference external" href="https://img.shields.io/pypi/v/bmt"><img alt="PyPI" src="https://img.shields.io/pypi/v/bmt" /></a></p>
+<div class="section" id="example-usage">
+<h1>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h1>
+<p>BMT provides convenience methods to operate on the Biolink Model.</p>
+<p>Using this toolkit you can,</p>
+<ul class="simple">
+<li><p>Get Biolink Model elements corresponding to a given Biolink class or slot name</p></li>
+<li><p>Get Biolink Model elements corresponding to a given external CURIE/IRI</p></li>
+<li><p>Get ancestors for a given Biolink Model element</p></li>
+<li><p>Get descendants for a given Biolink Model element</p></li>
+<li><p>Get parent for a given Biolink Model element</p></li>
+<li><p>Get children for a given Biolink Model element</p></li>
+<li><p>Check whether a given Biolink Model element is part of a specified subset</p></li>
+</ul>
+<div class="section" id="using-the-toolkit-class">
+<h2>Using the Toolkit class<a class="headerlink" href="#using-the-toolkit-class" title="Permalink to this headline">¶</a></h2>
+<p>The main entrypoint is the Toolkit class that provides various methods for accessing and working with the Biolink Model.</p>
+<div class="section" id="getting-a-biolink-model-element-based-on-its-name">
+<h3>Getting a Biolink Model element based on its name<a class="headerlink" href="#getting-a-biolink-model-element-based-on-its-name" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
+<span class="n">element</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="s1">&#39;gene&#39;</span><span class="p">)</span> <span class="c1"># This returns the element for &#39;biolink:Gene&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-a-biolink-model-element-based-on-its-mappings">
+<h3>Get a Biolink Model element based on its mappings<a class="headerlink" href="#get-a-biolink-model-element-based-on-its-mappings" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
+<span class="n">element_name</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_element_by_mapping</span><span class="p">(</span><span class="s1">&#39;SEMMEDDB:CAUSES&#39;</span><span class="p">)</span> <span class="c1"># This returns &#39;causes&#39;</span>
+<span class="n">element</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">element_name</span><span class="p">)</span>
+
+<span class="n">element_name</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_element_by_mapping</span><span class="p">(</span><span class="s1">&#39;RO:0002410&#39;</span><span class="p">)</span> <span class="c1"># This returns &#39;causes&#39;</span>
+<span class="n">element</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">element_name</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-ancestors-for-a-given-biolink-model-element">
+<h3>Get ancestors for a given Biolink Model element<a class="headerlink" href="#get-ancestors-for-a-given-biolink-model-element" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
+<span class="n">ancestors</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_ancestors</span><span class="p">(</span><span class="s1">&#39;gene&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above returns a list of ancestors: <code class="docutils literal notranslate"><span class="pre">['gene',</span> <span class="pre">'gene</span> <span class="pre">or</span> <span class="pre">gene</span> <span class="pre">product',</span> <span class="pre">'macromolecular</span> <span class="pre">machine',</span> <span class="pre">'genomic</span> <span class="pre">entity',</span> <span class="pre">'molecular</span> <span class="pre">entity',</span> <span class="pre">'biological</span> <span class="pre">entity',</span> <span class="pre">'named</span> <span class="pre">thing']</span></code></p>
+</div>
+<div class="section" id="get-descendants-for-a-given-biolink-model-element">
+<h3>Get descendants for a given Biolink Model element<a class="headerlink" href="#get-descendants-for-a-given-biolink-model-element" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
+<span class="n">descendants</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_descendants</span><span class="p">(</span><span class="s1">&#39;gene or gene product&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above returns a list of descendants: <code class="docutils literal notranslate"><span class="pre">['gene',</span> <span class="pre">'gene</span> <span class="pre">product',</span> <span class="pre">'gene</span> <span class="pre">product</span> <span class="pre">isoform',</span> <span class="pre">'RNA</span> <span class="pre">product',</span> <span class="pre">'noncoding</span> <span class="pre">RNA</span> <span class="pre">product',</span> <span class="pre">'microRNA',</span> <span class="pre">'RNA</span> <span class="pre">product</span> <span class="pre">isoform',</span> <span class="pre">'transcript',</span> <span class="pre">'protein',</span> <span class="pre">'protein</span> <span class="pre">isoform']</span></code></p>
+</div>
+<div class="section" id="check-whether-a-given-string-is-a-valid-biolink-model-category">
+<h3>Check whether a given string is a valid Biolink Model category<a class="headerlink" href="#check-whether-a-given-string-is-a-valid-biolink-model-category" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
+<span class="n">t</span><span class="o">.</span><span class="n">is_category</span><span class="p">(</span><span class="s1">&#39;gene&#39;</span><span class="p">)</span> <span class="c1"># True</span>
+<span class="n">t</span><span class="o">.</span><span class="n">is_category</span><span class="p">(</span><span class="s1">&#39;treats&#39;</span><span class="p">)</span> <span class="c1"># False</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="check-whether-a-given-string-is-a-valid-biolink-model-predicate">
+<h3>Check whether a given string is a valid Biolink Model predicate<a class="headerlink" href="#check-whether-a-given-string-is-a-valid-biolink-model-predicate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
+<span class="n">t</span><span class="o">.</span><span class="n">is_predicate</span><span class="p">(</span><span class="s1">&#39;related to&#39;</span><span class="p">)</span> <span class="c1"># True</span>
+<span class="n">t</span><span class="o">.</span><span class="n">is_predicate</span><span class="p">(</span><span class="s1">&#39;interacts with&#39;</span><span class="p">)</span> <span class="c1"># True</span>
+<span class="n">t</span><span class="o">.</span><span class="n">is_predicate</span><span class="p">(</span><span class="s1">&#39;disease&#39;</span><span class="p">)</span> <span class="c1"># False</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="using-the-toolkit-class-with-different-versions-of-biolink-model">
+<h2>Using the Toolkit class with different versions of Biolink Model<a class="headerlink" href="#using-the-toolkit-class-with-different-versions-of-biolink-model" title="Permalink to this headline">¶</a></h2>
+<p>BMT is pinned to a specific version of Biolink Model at each release. This can be configured to use your custom
+version of Biolink Model YAML:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">(</span><span class="s1">&#39;/path/to/biolink-model.yaml&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The path can be a file path or a URL.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Deepak Unni, Sierra Moxon.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
