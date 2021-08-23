@@ -12,6 +12,7 @@ BIOLOGICAL_ENTITY = "biological entity"
 BIOLINK_BIOLOGICAL_ENTITY = "biolink:BiologicalEntity"
 BIOLINK_SUBJECT = "biolink:subject"
 BIOLINK_RELATED_TO = "biolink:related_to"
+BIOLINK_NAMED_THING = "biolink:NamedThing"
 CAUSES = "causes"
 ENABLED_BY = "enabled by"
 GENE = "gene"
@@ -49,7 +50,7 @@ def test_get_all_elements(toolkit):
 
     elements = toolkit.get_all_elements(formatted=True)
     assert "biolink:ThingDoesNotExist" not in elements
-    assert "biolink:NamedThing" in elements
+    assert BIOLINK_NAMED_THING in elements
     assert "biolink:GeneToGeneAssociation" in elements
     assert BIOLINK_RELATED_TO in elements
     assert "metatype:Uriorcurie" in elements
@@ -65,7 +66,7 @@ def test_get_all_entities(toolkit):
     assert RELATED_TO not in entities
 
     entities = toolkit.get_all_entities(formatted=True)
-    assert "biolink:NamedThing" in entities
+    assert BIOLINK_NAMED_THING in entities
     assert "biolink:Gene" in entities
     assert "biolink:Disease" in entities
     assert "biolink:Association" not in entities
@@ -80,7 +81,7 @@ def test_get_all_associations(toolkit):
     associations = toolkit.get_all_associations(formatted=True)
     assert "biolink:Association" in associations
     assert "biolink:GeneToGeneAssociation" in associations
-    assert "biolink:NamedThing" not in associations
+    assert BIOLINK_NAMED_THING not in associations
 
 
 def test_get_all_node_properties(toolkit):
@@ -185,7 +186,7 @@ def test_ancestors(toolkit):
     assert NAMED_THING in toolkit.get_ancestors(GENE)
     assert GENE_OR_GENE_PRODUCT in toolkit.get_ancestors(GENE)
     assert GENE_OR_GENE_PRODUCT not in toolkit.get_ancestors(GENE, mixin=False)
-    assert "biolink:NamedThing" in toolkit.get_ancestors(GENE, formatted=True)
+    assert BIOLINK_NAMED_THING in toolkit.get_ancestors(GENE, formatted=True)
     assert "biological entity" in toolkit.get_ancestors(GENE)
     assert "transcript" not in toolkit.get_ancestors(GENE)
     assert CAUSES in toolkit.get_ancestors(CAUSES)
