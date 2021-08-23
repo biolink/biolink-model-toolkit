@@ -31,7 +31,7 @@ TREATMENT = 'treatment'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == '2.2.0'
+    assert version == '2.2.3'
 
 
 def test_get_all_elements(toolkit):
@@ -254,7 +254,7 @@ def test_get_slot_domain(toolkit):
     assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_slot_domain(ENABLED_BY, include_ancestors=True, formatted=True)
     assert 'entity' in toolkit.get_slot_domain('name')
     assert 'entity' in toolkit.get_slot_domain('category')
-    assert ASSOCIATION in toolkit.get_slot_domain('relation')
+    assert ASSOCIATION in toolkit.get_slot_domain('predicate')
 
 
 def test_get_slot_range(toolkit):
@@ -262,8 +262,6 @@ def test_get_slot_range(toolkit):
     assert BIOLOGICAL_ENTITY in toolkit.get_slot_range('treats', include_ancestors=True)
     assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_slot_range('treats', include_ancestors=True, formatted=True)
     assert 'label type' in toolkit.get_slot_range('name')
-    assert 'uriorcurie' in toolkit.get_slot_range('relation')
-    assert 'metatype:Uriorcurie' in toolkit.get_slot_range('relation', formatted=True)
 
 
 def test_get_all_slots_with_class_domain(toolkit):
