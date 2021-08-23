@@ -4,7 +4,7 @@ dev-install:
 install:
 	python setup.py install
 
-tests:
+test:
 	pytest tests/*
 
 cleandist:
