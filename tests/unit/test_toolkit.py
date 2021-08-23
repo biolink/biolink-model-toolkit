@@ -34,6 +34,11 @@ def test_get_model_version(toolkit):
     assert version == '2.2.3'
 
 
+def test_get_element_by_mapping(toolkit):
+    element_name = toolkit.get_element_by_mapping('RO:0002410')
+    assert element_name == 'causes'
+
+
 def test_get_all_elements(toolkit):
     elements = toolkit.get_all_elements()
     assert NAMED_THING in elements
