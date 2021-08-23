@@ -1,8 +1,15 @@
 import re
 
 import stringcase
-from linkml_runtime.linkml_model.meta import ClassDefinition, SlotDefinition, Element, ClassDefinitionName, \
-    SlotDefinitionName, ElementName, TypeDefinition
+from linkml_runtime.linkml_model.meta import (
+    ClassDefinition,
+    SlotDefinition,
+    Element,
+    ClassDefinitionName,
+    SlotDefinitionName,
+    ElementName,
+    TypeDefinition,
+)
 
 lowercase_pattern = re.compile(r"[a-zA-Z]*[a-z][a-zA-Z]*")
 underscore_pattern = re.compile(r"(?<!^)(?=[A-Z][a-z])")
@@ -77,11 +84,7 @@ def sentencecase_to_camelcase(s: str) -> str:
     str
         string in CamelCase form
     """
-    return re.sub(
-        r"(?:^| )([a-zA-Z])",
-        lambda match: match.group(1).upper(),
-        s
-    )
+    return re.sub(r"(?:^| )([a-zA-Z])", lambda match: match.group(1).upper(), s)
 
 
 def format_element(element: Element) -> str:
@@ -108,7 +111,7 @@ def format_element(element: Element) -> str:
     elif isinstance(element, SlotDefinition):
         formatted = f"biolink:{sentencecase_to_snakecase(element.name)}"
     elif isinstance(element, TypeDefinition):
-        if element.from_schema == 'https://w3id.org/linkml/types':
+        if element.from_schema == "https://w3id.org/linkml/types":
             formatted = f"metatype:{sentencecase_to_camelcase(element.name)}"
         else:
             formatted = f"biolink:{sentencecase_to_camelcase(element.name)}"
@@ -140,13 +143,13 @@ def parse_name(name) -> str:
         m = re.match("biolink:(.+)", name)
         if m:
             r = m.groups()[0]
-            if '_' in r:
+            if "_" in r:
                 actual_name = snakecase_to_sentencecase(r)
             else:
                 actual_name = camelcase_to_sentencecase(r)
-    elif '_' in name:
+    elif "_" in name:
         actual_name = snakecase_to_sentencecase(name)
-    elif ' ' in name:
+    elif " " in name:
         actual_name = name
     else:
         actual_name = camelcase_to_sentencecase(name)
