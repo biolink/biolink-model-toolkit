@@ -1,8 +1,14 @@
 from collections import defaultdict
 from typing import Union, Dict, Set, Optional, List
 
-from linkml_runtime.linkml_model.meta import ClassDefinition, SlotDefinition, TypeDefinition, Element, \
-    SubsetDefinition, ElementName
+from linkml_runtime.linkml_model.meta import (
+    ClassDefinition,
+    SlotDefinition,
+    TypeDefinition,
+    Element,
+    SubsetDefinition,
+    ElementName,
+)
 from linkml.utils.generator import Generator
 from linkml.utils.typereferences import References
 
@@ -19,6 +25,7 @@ class ToolkitGenerator(Generator):
         Additional arguments
 
     """
+
     valid_formats = [None]
 
     def __init__(self, *args, **kwargs):
@@ -116,7 +123,9 @@ class ToolkitGenerator(Generator):
         """
         self.visit_element(subset, None)
 
-    def obj_for(self, el_or_elname: str, is_range_name: bool = False) -> Optional[Element]:
+    def obj_for(
+        self, el_or_elname: str, is_range_name: bool = False
+    ) -> Optional[Element]:
         """
         Get object for a given element name.
 
@@ -138,7 +147,10 @@ class ToolkitGenerator(Generator):
             element_obj = self.class_or_type_for(el_or_elname)
         elif el_or_elname in self.schema.slots:
             element_obj = self.slot_for(el_or_elname)
-        elif el_or_elname in self.schema.types or el_or_elname == self.schema.default_range:
+        elif (
+            el_or_elname in self.schema.types
+            or el_or_elname == self.schema.default_range
+        ):
             element_obj = self.class_or_type_for(el_or_elname)
         elif el_or_elname in self.schema.subsets:
             element_obj = self.subset_for(el_or_elname)
@@ -156,7 +168,10 @@ class ToolkitGenerator(Generator):
                 element_obj = self.class_or_type_for(classes[el_or_elname_lower].name)
             elif el_or_elname_lower in slots:
                 element_obj = self.slot_for(slots[el_or_elname_lower].name)
-            elif el_or_elname_lower in types or el_or_elname_lower == self.schema.default_range:
+            elif (
+                el_or_elname_lower in types
+                or el_or_elname_lower == self.schema.default_range
+            ):
                 element_obj = self.class_or_type_for(types[el_or_elname_lower].name)
             elif el_or_elname_lower in self.schema.subsets:
                 element_obj = self.subset_for(subsets[el_or_elname_lower].name)
@@ -165,7 +180,9 @@ class ToolkitGenerator(Generator):
 
         return element_obj
 
-    def ancestors(self, element: Union[ClassDefinition, SlotDefinition]) -> List[ElementName]:
+    def ancestors(
+        self, element: Union[ClassDefinition, SlotDefinition]
+    ) -> List[ElementName]:
         """
         Return an ordered list of ancestor names for the supplied slot or class.
 
@@ -177,7 +194,9 @@ class ToolkitGenerator(Generator):
             If True, then that means we want to find mixin ancestors as well as is_a ancestors
 
         """
-        return [element.name] + ([] if element.is_a is None else self.ancestors(self.parent(element)))
+        return [element.name] + (
+            [] if element.is_a is None else self.ancestors(self.parent(element))
+        )
 
     def descendants(self, element_name: str, mixin: bool = True):
         """
@@ -216,7 +235,9 @@ class ToolkitGenerator(Generator):
         """
         kids_or_mixin_kids = []
         if mixin:
-            for mixin in self._union_of(self.synopsis.mixinrefs.get(name, References())):
+            for mixin in self._union_of(
+                self.synopsis.mixinrefs.get(name, References())
+            ):
                 kids_or_mixin_kids.append(mixin)
             for kid in self._union_of(self.synopsis.isarefs.get(name, References())):
                 kids_or_mixin_kids.append(kid)
