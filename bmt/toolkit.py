@@ -995,7 +995,8 @@ class Toolkit(object):
         Returns
         -------
         Optional[str]
-                The Biolink element (or the common ancestor) corresponding to the given URI/CURIE
+                The Biolink element corresponding to the given URI/CURIE as available via
+                the id_prefixes mapped to that element.
 
         """
         categories = []
