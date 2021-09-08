@@ -12,6 +12,7 @@ from linkml_runtime.linkml_model.meta import (
 
 from bmt.toolkit_generator import ToolkitGenerator
 from bmt.utils import format_element, parse_name
+import logging
 
 Url = str
 Path = str
@@ -21,6 +22,8 @@ REMOTE_PATH = (
 )
 RELATED_TO = "related to"
 CACHE_SIZE = 1024
+
+logger = logging.getLogger(__name__)
 
 
 class Toolkit(object):
@@ -974,6 +977,41 @@ class Toolkit(object):
             That the named element is a valid category in Biolink Model
         """
         return "named thing" in self.get_ancestors(name, mixin)
+
+    @lru_cache(CACHE_SIZE)
+    def get_element_by_prefix(
+            self,
+            identifier: str
+    ) -> List[str]:
+        """
+        Get a Biolink Model element by prefix.
+        This method return the common ancestor of the set of elements referenced by uriorcurie.
+
+        Parameters
+        ----------
+        identifier: str
+            The identifier as a CURIE
+
+        Returns
+        -------
+        Optional[str]
+                The Biolink element (or the common ancestor) corresponding to the given URI/CURIE
+
+        """
+        categories = []
+        if ":" in identifier:
+            id_components = identifier.split(":")
+            prefix = id_components[0]
+            elements = self.get_all_elements()
+            for category in elements:
+                element = self.get_element(category)
+                if hasattr(element, 'id_prefixes') and prefix in element.id_prefixes:
+                    categories.append(element.name)
+        print(categories)
+        if len(categories) == 0:
+            logger.warning("no biolink class found for the given curie: %s, try get_element_by_mapping?", identifier)
+
+        return categories
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_mapping(

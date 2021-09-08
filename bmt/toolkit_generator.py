@@ -37,6 +37,7 @@ class ToolkitGenerator(Generator):
         self.narrow_mappings: Dict[str, Set[str]] = defaultdict(set)
         self.broad_mappings: Dict[str, Set[str]] = defaultdict(set)
         self.aliases: Dict[str, str] = dict()
+        self.id_prefixes: Dict[str, Set[str]] = defaultdict(set)
 
     def visit_element(self, element: Element, element_uri: Optional[str]) -> None:
         """
@@ -64,6 +65,8 @@ class ToolkitGenerator(Generator):
             self.narrow_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.broad_mappings:
             self.broad_mappings[self.namespaces.uri_for(curie)].add(element.name)
+        for id_prefix in element.id_prefixes:
+            self.id_prefixes[element.name].add(id_prefix)
         if element_uri:
             self.mappings[self.namespaces.uri_for(element_uri)].add(element.name)
         self.aliases.update({a: element.name for a in element.aliases})

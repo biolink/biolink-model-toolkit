@@ -36,8 +36,19 @@ def test_get_model_version(toolkit):
 
 
 def test_get_element_by_mapping(toolkit):
-    element_name = toolkit.get_element_by_mapping("RO:0002410")
+    element_name = toolkit.get_element_by_mapping("RO:0003303")
     assert element_name == "causes"
+
+
+def test_get_element_by_prefix(toolkit):
+    elements = toolkit.get_element_by_prefix("UBERON:1234")
+    assert "anatomical entity" in elements
+
+    elements = toolkit.get_element_by_prefix("GO:1234")
+    assert "molecular activity" in elements
+
+    elements = toolkit.get_element_by_prefix("TEST:1234")
+    assert "anatomical entity" not in elements
 
 
 def test_get_all_elements(toolkit):
