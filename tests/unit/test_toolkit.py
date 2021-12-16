@@ -32,7 +32,7 @@ TREATMENT = "treatment"
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "2.2.11"
+    assert version == "2.2.12"
 
 
 def test_get_element_by_mapping(toolkit):
