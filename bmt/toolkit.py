@@ -1015,13 +1015,10 @@ class Toolkit(object):
         return categories
 
     @lru_cache(CACHE_SIZE)
-    def get_element_by_mapping(
-        self,
-        identifier: str,
-        most_specific: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
-    ) -> Optional[str]:
+    def get_element_by_mapping(self, identifier: str,
+                               most_specific: bool = False,
+                               formatted: bool = False,
+                               mixin: bool = True) -> Optional[str]:
         """
         Get a Biolink Model element by mapping.
         This method return the common ancestor of the set of elements referenced by uriorcurie.
@@ -1046,23 +1043,31 @@ class Toolkit(object):
         """
         if most_specific:
             mappings = self._get_element_by_mapping(identifier)
+            print("most specific")
+            print(mappings)
         else:
             mappings = self.get_all_elements_by_mapping(identifier)
+            print("all")
+            print(mappings)
         if mappings:
             ancestors: List[List[str]] = []
             for m in mappings:
-                ancestors.append(
-                    [x for x in self.get_ancestors(m, mixin)[::-1] if x in mappings]
-                )
-            common_ancestors = reduce(
-                lambda s, l: s.intersection(set(l)), ancestors[1:], set(ancestors[0])
-            )
+                ancestors.append([x for x in self.get_ancestors(m, mixin)[::-1] if x in mappings])
+            common_ancestors = reduce(lambda s, l: s.intersection(set(l)), ancestors[1:], set(ancestors[0]))
+            print("common ancestors")
+            print(common_ancestors)
             for a in ancestors[0]:
+                print("a")
+                print(a)
                 if a in common_ancestors:
                     if formatted:
+                        print("formated")
                         element = format_element(self.generator.obj_for(a))
+                        print(element)
                     else:
+                        print("not formatted")
                         element = a
+                        print(element)
                     return element
 
     @lru_cache(CACHE_SIZE)
@@ -1085,9 +1090,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.mappings.get(
-            self.generator.namespaces.uri_for(identifier), set()
-        )
+        mappings = self.generator.mappings.get(self.generator.namespaces.uri_for(identifier), set())
         if not mappings:
             exact = set(self.get_element_by_exact_mapping(identifier))
             mappings.update(exact)
@@ -1106,9 +1109,7 @@ class Toolkit(object):
         return mappings
 
     @lru_cache(CACHE_SIZE)
-    def get_element_by_exact_mapping(
-        self, identifier: str, formatted: bool = False
-    ) -> List[str]:
+    def get_element_by_exact_mapping(self, identifier: str, formatted: bool = False) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
         to the given identifier as part of its exact_mappings.
@@ -1126,9 +1127,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.exact_mappings.get(
-            self.generator.namespaces.uri_for(identifier), set()
-        )
+        mappings = self.generator.exact_mappings.get(self.generator.namespaces.uri_for(identifier), set())
         return self._format_all_elements(mappings, formatted)
 
     @lru_cache(CACHE_SIZE)
