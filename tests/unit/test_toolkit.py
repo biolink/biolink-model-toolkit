@@ -34,7 +34,6 @@ def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
     assert version == "2.2.12"
 
-
 def test_inverse(toolkit):
     assert toolkit.get_inverse('acts upstream of') == 'has upstream actor'
 
@@ -239,6 +238,8 @@ def test_descendants(toolkit):
     assert INTERACTS_WITH in toolkit.get_descendants(RELATED_TO)
     assert PHENOTYPIC_FEATURE in toolkit.get_descendants(NAMED_THING)
     assert RELATED_TO not in toolkit.get_descendants(NAMED_THING)
+    with pytest.raises(ValueError):
+        toolkit.get_descendants('biolink:invalid')
     assert "biolink:PhenotypicFeature" in toolkit.get_descendants(
         NAMED_THING, formatted=True
     )

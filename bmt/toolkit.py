@@ -353,6 +353,9 @@ class Toolkit(object):
                 filtered_desc = self._filter_secondary(desc)
             else:
                 filtered_desc = desc
+        else:
+            raise ValueError("not a valid biolink component")
+
         return self._format_all_elements(filtered_desc, formatted)
 
     @lru_cache(CACHE_SIZE)
