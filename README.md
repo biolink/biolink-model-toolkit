@@ -37,7 +37,7 @@ python setup.py install
 
 ## Documentation
 
-The technical documentation for BMT can be found at [https://biolink.github.io/biolink-model-toolkit/](bmt.readthedocs.io)
+The technical documentation for BMT can be found at [https://biolink.github.io/biolink-model-toolkit/](documentation)
 
 ## Usage
 
