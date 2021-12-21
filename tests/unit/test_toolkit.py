@@ -34,8 +34,15 @@ def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
     assert version == "2.2.12"
 
-def test_inverse(toolkit):
+
+def test_get_inverse(toolkit):
     assert toolkit.get_inverse('acts upstream of') == 'has upstream actor'
+
+
+def test_rna(toolkit):
+    assert 'molecular entity' in toolkit.get_descendants('biolink:Entity')
+    assert 'microRNA' in toolkit.get_descendants('biolink:Entity')
+    assert 'biolink:MicroRNA' in toolkit.get_descendants('biolink:Entity', formatted=True)
 
 
 def test_get_element_by_mapping(toolkit):
