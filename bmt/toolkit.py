@@ -1,6 +1,6 @@
 from functools import lru_cache, reduce
 from typing import List, Union, TextIO, Optional
-from linkml_runtime.utils.schemaview import SchemaView
+from linkml_runtime import SchemaView
 import deprecation
 from linkml_runtime.linkml_model.meta import (
     SchemaDefinition,
@@ -19,13 +19,12 @@ Url = str
 Path = str
 
 REMOTE_PATH = (
-    "https://raw.githubusercontent.com/biolink/biolink-model/latest/biolink-model.yaml"
+    "https://raw.githubusercontent.com/biolink/biolink-model/2.2.12/biolink-model.yaml"
 )
 RELATED_TO = "related to"
 CACHE_SIZE = 1024
 
 logger = logging.getLogger(__name__)
-
 
 class Toolkit(object):
     """
@@ -294,13 +293,25 @@ class Toolkit(object):
         """
         element = self.get_element(name)
         ancs = []
-        if isinstance(element, (ClassDefinition, SlotDefinition)):
-            ancs = self.view.class_ancestors(mixins=mixin, class_name=name, reflexive=reflexive)
+        if isinstance(element, ClassDefinition):
+            ancs = self.view.class_ancestors(element)
         if isinstance(element, SlotDefinition):
+            ancs = self.view.slot_ancestors(element)
             filtered_ancs = self._filter_secondary(ancs)
         else:
             filtered_ancs = ancs
         return self._format_all_elements(filtered_ancs, formatted)
+
+    def _get_mixin_descendants(self, ancestors: List[ElementName]) -> List[ElementName]:
+        mixins_parents = []
+        for ancestor in ancestors:
+            a_element = self.get_element(ancestor)
+            if a_element.mixins:
+                for mixin in a_element.mixins:
+                    mixin_element = self.get_element(mixin)
+                    mixin_parents = self.generator.ancestors(mixin_element)
+                    mixins_parents = mixins_parents + mixin_parents
+        return mixins_parents
 
     @lru_cache(CACHE_SIZE)
     def get_descendants(
@@ -335,9 +346,10 @@ class Toolkit(object):
         element = self.get_element(name)
 
         if element:
-            d = self.view.class_ancestors(mixins=mixin, class_name=name, reflexive=reflexive)
-            desc += d
+            if isinstance(element, ClassDefinition):
+                desc = self.view.class_ancestors(element)
             if isinstance(element, SlotDefinition):
+                desc = self.view.slot_ancestors(element)
                 filtered_desc = self._filter_secondary(desc)
             else:
                 filtered_desc = desc
