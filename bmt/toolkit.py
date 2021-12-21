@@ -436,6 +436,7 @@ class Toolkit(object):
         element = self.generator.obj_for(parsed_name)
         if element is None and name in self.generator.aliases:
             print("name is in aliases: " + self.generator.aliases[name])
+            print(self.generator.aliases)
             element = self.get_element(self.generator.aliases[name])
             if element:
                 print("its an element from aliases: " + element.name)
