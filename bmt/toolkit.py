@@ -1,6 +1,6 @@
 from functools import lru_cache, reduce
 from typing import List, Union, TextIO, Optional
-from linkml_runtime import SchemaView
+from linkml_runtime.utils.schemaview import SchemaView
 import deprecation
 from linkml_runtime.linkml_model.meta import (
     SchemaDefinition,
@@ -294,9 +294,9 @@ class Toolkit(object):
         element = self.get_element(name)
         ancs = []
         if isinstance(element, ClassDefinition):
-            ancs = self.view.class_ancestors(element)
+            ancs = self.view.class_ancestors(element.name, mixins=mixin, reflexive=reflexive)
         if isinstance(element, SlotDefinition):
-            ancs = self.view.slot_ancestors(element)
+            ancs = self.view.slot_ancestors(element.name, mixins=mixin, reflexive=reflexive)
             filtered_ancs = self._filter_secondary(ancs)
         else:
             filtered_ancs = ancs
@@ -347,9 +347,9 @@ class Toolkit(object):
 
         if element:
             if isinstance(element, ClassDefinition):
-                desc = self.view.class_ancestors(element)
+                desc = self.view.class_descendants(element.name, mixins=mixin, reflexive=reflexive)
             if isinstance(element, SlotDefinition):
-                desc = self.view.slot_ancestors(element)
+                desc = self.view.slot_descendants(element.name, mixins=mixin, reflexive=reflexive)
                 filtered_desc = self._filter_secondary(desc)
             else:
                 filtered_desc = desc
