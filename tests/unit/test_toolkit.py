@@ -35,6 +35,10 @@ def test_get_model_version(toolkit):
     assert version == "2.2.12"
 
 
+def test_inverse(toolkit):
+    assert toolkit.get_inverse('acts upstream of') == 'has upstream actor'
+
+
 def test_get_element_by_mapping(toolkit):
     element_name = toolkit.get_element_by_mapping("RO:0003303")
     assert element_name == "causes"
