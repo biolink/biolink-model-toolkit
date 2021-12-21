@@ -437,14 +437,17 @@ class Toolkit(object):
         if element is None and name in self.generator.aliases:
             print("in aliases")
             element = self.get_element(self.generator.aliases[name])
-            print(element.name)
+            if element:
+                print(element.name)
+            else:
+                print("no element in aliases")
         if element is None and "_" in name:
             print("- in name")
             element = self.get_element(name.replace("_", " "))
             if element:
                 print(element.name)
             else:
-                print("no element")
+                print("no element with -")
         return element
 
     def get_slot_domain(
