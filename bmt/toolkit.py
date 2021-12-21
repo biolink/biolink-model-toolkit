@@ -1,5 +1,6 @@
 from functools import lru_cache, reduce
 from typing import List, Union, TextIO, Optional
+from linkml_runtime.utils.schemaview import SchemaView
 import deprecation
 from linkml_runtime.linkml_model.meta import (
     SchemaDefinition,
@@ -25,7 +26,6 @@ CACHE_SIZE = 1024
 
 logger = logging.getLogger(__name__)
 
-
 class Toolkit(object):
     """
     Provides a series of methods for performing lookups on the Biolink Model
@@ -42,6 +42,7 @@ class Toolkit(object):
     ) -> None:
         self.generator = ToolkitGenerator(schema)
         self.generator.serialize()
+        self.view = SchemaView(REMOTE_PATH)
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements(self, formatted: bool = False) -> List[str]:
@@ -292,13 +293,10 @@ class Toolkit(object):
         """
         element = self.get_element(name)
         ancs = []
-        if isinstance(element, (ClassDefinition, SlotDefinition)):
-            a = self.generator.ancestors(element)
-            if mixin:
-                mixins_parents = self._get_mixin_descendants(a)
-                a = a + mixins_parents
-            ancs = a if reflexive else a[1:]
+        if isinstance(element, ClassDefinition):
+            ancs = self.view.class_ancestors(element.name, mixins=mixin, reflexive=reflexive)
         if isinstance(element, SlotDefinition):
+            ancs = self.view.slot_ancestors(element.name, mixins=mixin, reflexive=reflexive)
             filtered_ancs = self._filter_secondary(ancs)
         else:
             filtered_ancs = ancs
@@ -348,14 +346,16 @@ class Toolkit(object):
         element = self.get_element(name)
 
         if element:
-            d = self.generator.descendants(element.name, mixin)
-            if reflexive:
-                desc.append(element.name)
-            desc += d
+            if isinstance(element, ClassDefinition):
+                desc = self.view.class_descendants(element.name, mixins=mixin, reflexive=reflexive)
             if isinstance(element, SlotDefinition):
+                desc = self.view.slot_descendants(element.name, mixins=mixin, reflexive=reflexive)
                 filtered_desc = self._filter_secondary(desc)
             else:
                 filtered_desc = desc
+        else:
+            raise ValueError("not a valid biolink component")
+
         return self._format_all_elements(filtered_desc, formatted)
 
     @lru_cache(CACHE_SIZE)
@@ -912,6 +912,10 @@ class Toolkit(object):
         element = self.get_element(name)
         is_mixin = element.mixin if isinstance(element, Definition) else False
         return is_mixin
+
+    @lru_cache(CACHE_SIZE)
+    def get_inverse(self, slot_name: str):
+        return self.view.inverse(slot_name)
 
     @lru_cache(CACHE_SIZE)
     def has_inverse(self, name: str) -> bool:

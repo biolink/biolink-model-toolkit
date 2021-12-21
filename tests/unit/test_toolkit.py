@@ -35,6 +35,16 @@ def test_get_model_version(toolkit):
     assert version == "2.2.12"
 
 
+def test_get_inverse(toolkit):
+    assert toolkit.get_inverse('acts upstream of') == 'has upstream actor'
+
+
+def test_rna(toolkit):
+    assert 'molecular entity' in toolkit.get_descendants('biolink:Entity')
+    assert 'microRNA' in toolkit.get_descendants('biolink:Entity')
+    assert 'biolink:MicroRNA' in toolkit.get_descendants('biolink:Entity', formatted=True)
+
+
 def test_get_element_by_mapping(toolkit):
     element_name = toolkit.get_element_by_mapping("RO:0003303")
     assert element_name == "causes"
@@ -235,6 +245,8 @@ def test_descendants(toolkit):
     assert INTERACTS_WITH in toolkit.get_descendants(RELATED_TO)
     assert PHENOTYPIC_FEATURE in toolkit.get_descendants(NAMED_THING)
     assert RELATED_TO not in toolkit.get_descendants(NAMED_THING)
+    with pytest.raises(ValueError):
+        toolkit.get_descendants('biolink:invalid')
     assert "biolink:PhenotypicFeature" in toolkit.get_descendants(
         NAMED_THING, formatted=True
     )
