@@ -435,16 +435,14 @@ class Toolkit(object):
         print("parsed_name: " + parsed_name)
         element = self.generator.obj_for(parsed_name)
         if element is None and name in self.generator.aliases:
-            print("in aliases")
-            print("tada")
-            print(self.generator.aliases[name])
+            print("name is in aliases: " + self.generator.aliases[name])
             element = self.get_element(self.generator.aliases[name])
             if element:
-                print(element.name)
+                print("its an element from aliases: " + element.name)
             else:
                 print("no element in aliases")
         if element is None and "_" in name:
-            print("- in name")
+            print("there is a - in name: " + name)
             element = self.get_element(name.replace("_", " "))
             if element:
                 print(element.name)
