@@ -435,8 +435,8 @@ class Toolkit(object):
         element = self.generator.obj_for(parsed_name)
         if element is None and name in self.generator.aliases:
             print("in aliases")
-            print(element.name)
             element = self.get_element(self.generator.aliases[name])
+            print(element.name)
         if element is None and "_" in name:
             print("- in name")
             element = self.get_element(name.replace("_", " "))
