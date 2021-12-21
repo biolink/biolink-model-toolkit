@@ -300,8 +300,6 @@ class Toolkit(object):
             filtered_ancs = self._filter_secondary(ancs)
         else:
             filtered_ancs = ancs
-        if not element:
-            raise ValueError("not a valid biolink component")
         return self._format_all_elements(filtered_ancs, formatted)
 
     def _get_mixin_descendants(self, ancestors: List[ElementName]) -> List[ElementName]:
