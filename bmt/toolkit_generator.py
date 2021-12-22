@@ -70,20 +70,25 @@ class ToolkitGenerator(Generator):
             self.id_prefixes[element.name].add(id_prefix)
         if element_uri:
             self.mappings[self.namespaces.uri_for(element_uri)].add(element.name)
-        print("visit element " + element.name)
-        self.aliases.update({a: element.name for a in self.aliases})
+        # print("visit element " + element.name)
+        # new_aliases = self.fix_aliases(element)
+        # self.aliases.update({a: element.name for a in new_aliases})
+        # self.aliases.update({a: element.name for a in element.aliases})
 
-    def fix_aliases(self, aelement: Element, n_aliases):
-        new_aliases = []
-
+    def fix_aliases(self, aelement: Element):
+        print("element in fix_aliases")
+        print(aelement.name)
+        print("here are our aliases so far")
+        print(self.aliases)
+        print("element aliases")
+        print(aelement.aliases)
         if '_' in aelement.name:
-            for a in n_aliases:
-                if a in self.aliases:
-                    continue
-                else:
-                    new_aliases.append(a)
+            print("i did find an _")
+            new_aliases = []
         else:
             new_aliases = aelement.aliases
+        print("new aliases")
+        print(new_aliases)
         return new_aliases
 
     def visit_slot(self, aliased_slot_name: str, slot: SlotDefinition) -> None:
@@ -100,12 +105,10 @@ class ToolkitGenerator(Generator):
 
         """
         self.visit_element(slot, slot.slot_uri)
-        new_aliases = self.fix_aliases(slot, slot.aliases)
         print("visit slot " + slot.name)
-        print(slot.aliases)
-        print(self.aliases)
-        print(new_aliases)
+        new_aliases = self.fix_aliases(slot)
         self.aliases.update({a: slot.name for a in new_aliases})
+        #self.aliases.update({a: slot.name for a in slot.aliases})
 
     def visit_type(self, typ: TypeDefinition) -> None:
         """
