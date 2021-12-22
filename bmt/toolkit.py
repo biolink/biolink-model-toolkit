@@ -432,27 +432,11 @@ class Toolkit(object):
 
         """
         parsed_name = parse_name(name)
-        print("parsed_name: " + parsed_name)
         element = self.generator.obj_for(parsed_name)
-        if element is not None:
-            print(element)
-        else:
-            print("no element for: " + parsed_name)
         if element is None and name in self.generator.aliases:
-            print("name is in aliases: " + self.generator.aliases[name])
-            print(self.generator.aliases)
             element = self.get_element(self.generator.aliases[name])
-            if element:
-                print("its an element from aliases: " + element.name)
-            else:
-                print("no element in aliases")
         if element is None and "_" in name:
-            print("there is a - in name: " + name)
             element = self.get_element(name.replace("_", " "))
-            if element:
-                print(element.name)
-            else:
-                print("no element with -")
         return element
 
     def get_slot_domain(
@@ -1024,7 +1008,6 @@ class Toolkit(object):
                 element = self.get_element(category)
                 if hasattr(element, 'id_prefixes') and prefix in element.id_prefixes:
                     categories.append(element.name)
-        print(categories)
         if len(categories) == 0:
             logger.warning("no biolink class found for the given curie: %s, try get_element_by_mapping?", identifier)
 
@@ -1059,31 +1042,19 @@ class Toolkit(object):
         """
         if most_specific:
             mappings = self._get_element_by_mapping(identifier)
-            print("most specific")
-            print(mappings)
         else:
             mappings = self.get_all_elements_by_mapping(identifier)
-            print("all")
-            print(mappings)
         if mappings:
             ancestors: List[List[str]] = []
             for m in mappings:
                 ancestors.append([x for x in self.get_ancestors(m, mixin)[::-1] if x in mappings])
             common_ancestors = reduce(lambda s, l: s.intersection(set(l)), ancestors[1:], set(ancestors[0]))
-            print("common ancestors")
-            print(common_ancestors)
             for a in ancestors[0]:
-                print("a")
-                print(a)
                 if a in common_ancestors:
                     if formatted:
-                        print("formated")
                         element = format_element(self.generator.obj_for(a))
-                        print(element)
                     else:
-                        print("not formatted")
                         element = a
-                        print(element)
                     return element
 
     @lru_cache(CACHE_SIZE)
@@ -1107,8 +1078,6 @@ class Toolkit(object):
 
         """
         mappings = self.generator.mappings.get(self.generator.namespaces.uri_for(identifier), set())
-        print("mappings from toolkit")
-        print(mappings)
         if not mappings:
             exact = set(self.get_element_by_exact_mapping(identifier))
             mappings.update(exact)
