@@ -1107,6 +1107,8 @@ class Toolkit(object):
 
         """
         mappings = self.generator.mappings.get(self.generator.namespaces.uri_for(identifier), set())
+        print("mappings from toolkit")
+        print(mappings)
         if not mappings:
             exact = set(self.get_element_by_exact_mapping(identifier))
             mappings.update(exact)
