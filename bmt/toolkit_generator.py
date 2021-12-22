@@ -70,23 +70,26 @@ class ToolkitGenerator(Generator):
             self.id_prefixes[element.name].add(id_prefix)
         if element_uri:
             self.mappings[self.namespaces.uri_for(element_uri)].add(element.name)
-        new_aliases = self.fix_aliases(element.aliases)
-        print("here are the new aliases")
-        print(new_aliases)
-        self.aliases.update({a: element.name for a in new_aliases})
+        new_aliases = self.fix_aliases(element, element.aliases)
 
-    def fix_aliases(self, aliases: List[str]) -> List[str]:
+        if element.name.startswith('publication'):
+            print("old publication aliases: ")
+            print(element.aliases)
+        self.aliases.update({a: element.name for a in new_aliases})
+        if element.name.startswith('publication'):
+            print("here is new publication aliases: ")
+            print(element.aliases)
+
+    def fix_aliases(self, element: Element, aliases: List[str]) -> List[str]:
         new_aliases = []
-        for a in aliases:
-            print("a originally here")
-            print(a)
-            if "_" in a:
-                a = alias_root(a)
-                print("new a here")
-                print(a)
-                new_aliases.append(a)
-            else:
-                new_aliases.append(a)
+        if '_' in element.name:
+            for a in aliases:
+                if a in self.aliases:
+                    print("I'm already in aliases" + " " + a)
+                    print(aliases)
+                    continue
+                else:
+                    new_aliases.append(a)
         return new_aliases
 
     def visit_slot(self, aliased_slot_name: str, slot: SlotDefinition) -> None:
@@ -103,7 +106,9 @@ class ToolkitGenerator(Generator):
 
         """
         self.visit_element(slot, slot.slot_uri)
-        self.aliases.update({a: slot.name for a in slot.aliases})
+        new_aliases = self.fix_aliases(slot, slot.aliases)
+
+        self.aliases.update({a: slot.name for a in new_aliases})
 
     def visit_type(self, typ: TypeDefinition) -> None:
         """
