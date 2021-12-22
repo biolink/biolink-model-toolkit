@@ -9,6 +9,7 @@ from linkml_runtime.linkml_model.meta import (
     SubsetDefinition,
     ElementName,
 )
+from linkml.utils.mergeutils import alias_root
 from linkml.utils.generator import Generator
 from linkml.utils.typereferences import References
 
@@ -69,7 +70,18 @@ class ToolkitGenerator(Generator):
             self.id_prefixes[element.name].add(id_prefix)
         if element_uri:
             self.mappings[self.namespaces.uri_for(element_uri)].add(element.name)
-        self.aliases.update({a: element.name for a in element.aliases})
+        new_aliases = self.fix_aliases(element.aliases)
+        self.aliases.update({a: element.name for a in new_aliases})
+
+    def fix_aliases(self, aliases: List[str]) -> List[str]:
+        new_aliases = []
+        for a in aliases:
+            if "_" in a:
+                a = alias_root(a)
+                new_aliases.append(a)
+            else:
+                new_aliases.append(a)
+        return new_aliases
 
     def visit_slot(self, aliased_slot_name: str, slot: SlotDefinition) -> None:
         """
