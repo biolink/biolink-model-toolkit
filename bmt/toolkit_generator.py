@@ -76,9 +76,11 @@ class ToolkitGenerator(Generator):
     def fix_aliases(self, aliases: List[str]) -> List[str]:
         new_aliases = []
         for a in aliases:
+            print("a originally here")
             print(a)
             if "_" in a:
                 a = alias_root(a)
+                print("new a here")
                 print(a)
                 new_aliases.append(a)
             else:
