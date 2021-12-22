@@ -71,6 +71,8 @@ class ToolkitGenerator(Generator):
         if element_uri:
             self.mappings[self.namespaces.uri_for(element_uri)].add(element.name)
         new_aliases = self.fix_aliases(element.aliases)
+        print("here are the new aliases")
+        print(new_aliases)
         self.aliases.update({a: element.name for a in new_aliases})
 
     def fix_aliases(self, aliases: List[str]) -> List[str]:
