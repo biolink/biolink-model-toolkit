@@ -69,7 +69,12 @@ class ToolkitGenerator(Generator):
             self.id_prefixes[element.name].add(id_prefix)
         if element_uri:
             self.mappings[self.namespaces.uri_for(element_uri)].add(element.name)
-        self.aliases.update({a: element.name for a in element.aliases})
+        new_aliases = self.fix_aliases(element)
+        if element.name == 'gene':
+            print(self.aliases)
+        self.aliases.update({a: element.name for a in new_aliases})
+        if element.name == 'gene':
+            print(self.aliases)
 
     def visit_slot(self, aliased_slot_name: str, slot: SlotDefinition) -> None:
         """
@@ -86,9 +91,7 @@ class ToolkitGenerator(Generator):
         """
         self.visit_element(slot, slot.slot_uri)
         new_aliases = self.fix_aliases(slot)
-        print(new_aliases)
         self.aliases.update({a: slot.name for a in new_aliases})
-        print(self.aliases)
 
     def fix_aliases(self, aelement: Element):
         if '_' in aelement.name:
@@ -96,7 +99,6 @@ class ToolkitGenerator(Generator):
         else:
             new_aliases = aelement.aliases
         return new_aliases
-
 
     def visit_type(self, typ: TypeDefinition) -> None:
         """
