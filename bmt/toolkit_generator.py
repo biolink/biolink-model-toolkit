@@ -95,11 +95,6 @@ class ToolkitGenerator(Generator):
             new_aliases = aelement.aliases
         return new_aliases
 
-    # def fix_aliases(self, aelement: Element):
-    #     if '_' in aelement.name:
-    #         print(aelement.name)
-
-            # self.aliases = {k: v for k, v in self.aliases.items() if }
 
     def visit_type(self, typ: TypeDefinition) -> None:
         """
