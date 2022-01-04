@@ -87,7 +87,7 @@ class ToolkitGenerator(Generator):
         self.visit_element(slot, slot.slot_uri)
         new_aliases = self.fix_aliases(slot)
         self.aliases.update({a: slot.name for a in new_aliases})
-        print(self.aliases['name'])
+        print(self.aliases)
 
     def fix_aliases(self, aelement: Element):
         if '_' in aelement.name:
