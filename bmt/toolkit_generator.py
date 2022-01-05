@@ -70,10 +70,8 @@ class ToolkitGenerator(Generator):
         if element_uri:
             self.mappings[self.namespaces.uri_for(element_uri)].add(element.name)
 
-
         new_aliases = self.fix_aliases(element)
         self.aliases.update({a: element.name for a in new_aliases})
-
 
     def visit_slot(self, aliased_slot_name: str, slot: SlotDefinition) -> None:
         """
