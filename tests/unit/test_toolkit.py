@@ -32,7 +32,7 @@ TREATMENT = "treatment"
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "2.2.12"
+    assert version == "2.2.13"
 
 
 def test_get_inverse(toolkit):

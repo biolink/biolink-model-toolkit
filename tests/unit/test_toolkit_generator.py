@@ -2,7 +2,7 @@ import pytest
 from bmt import ToolkitGenerator
 
 REMOTE_PATH = (
-    "https://raw.githubusercontent.com/biolink/biolink-model/2.2.12/biolink-model.yaml"
+    "https://raw.githubusercontent.com/biolink/biolink-model/2.2.13/biolink-model.yaml"
 )
 
 
