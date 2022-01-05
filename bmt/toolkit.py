@@ -1064,12 +1064,13 @@ class Toolkit(object):
                 )
                 print("ancestors")
                 print(ancestors)
+            without_empty_lists = list(filter(None, ancestors))
             common_ancestors = reduce(
-                lambda s, l: s.intersection(set(l)), ancestors[1:], set(ancestors[0])
+                lambda s, l: s.intersection(set(l)), without_empty_lists[1:], set(without_empty_lists[0])
             )
             print("common_ancestors")
             print(common_ancestors)
-            for a in ancestors[0]:
+            for a in without_empty_lists[0]:
                 print("ancestors[0]")
                 print(a)
                 if a in common_ancestors:
