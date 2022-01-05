@@ -1134,9 +1134,11 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
+        print(self.generator.namespaces.uri_for(identifier))
         mappings = self.generator.exact_mappings.get(
             self.generator.namespaces.uri_for(identifier), set()
         )
+        print(mappings)
         return self._format_all_elements(mappings, formatted)
 
     @lru_cache(CACHE_SIZE)
