@@ -54,33 +54,26 @@ class ToolkitGenerator(Generator):
 
         """
         for curie in element.mappings:
-            if "_" not in curie:
-                self.mappings[self.namespaces.uri_for(curie)].add(element.name)
+            self.mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.exact_mappings:
-            if "_" not in curie:
-                self.exact_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            self.exact_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.close_mappings:
-            if "_" not in curie:
-                self.close_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            self.close_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.related_mappings:
-            if "_" not in curie:
-                self.related_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            self.related_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.narrow_mappings:
-            if "_" not in curie:
-                self.narrow_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            self.narrow_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.broad_mappings:
-            if "_" not in curie:
-                self.broad_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            self.broad_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for id_prefix in element.id_prefixes:
             self.id_prefixes[element.name].add(id_prefix)
         if element_uri:
             self.mappings[self.namespaces.uri_for(element_uri)].add(element.name)
+
+
         new_aliases = self.fix_aliases(element)
-        if element.name == 'gene':
-            print(self.aliases)
         self.aliases.update({a: element.name for a in new_aliases})
-        if element.name == 'gene':
-            print(self.aliases)
+
 
     def visit_slot(self, aliased_slot_name: str, slot: SlotDefinition) -> None:
         """
