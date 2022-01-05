@@ -54,17 +54,23 @@ class ToolkitGenerator(Generator):
 
         """
         for curie in element.mappings:
-            self.mappings[self.namespaces.uri_for(curie)].add(element.name)
+            if "_" not in curie:
+                self.mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.exact_mappings:
-            self.exact_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            if "_" not in curie:
+                self.exact_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.close_mappings:
-            self.close_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            if "_" not in curie:
+                self.close_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.related_mappings:
-            self.related_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            if "_" not in curie:
+                self.related_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.narrow_mappings:
-            self.narrow_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            if "_" not in curie:
+                self.narrow_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for curie in element.broad_mappings:
-            self.broad_mappings[self.namespaces.uri_for(curie)].add(element.name)
+            if "_" not in curie:
+                self.broad_mappings[self.namespaces.uri_for(curie)].add(element.name)
         for id_prefix in element.id_prefixes:
             self.id_prefixes[element.name].add(id_prefix)
         if element_uri:
