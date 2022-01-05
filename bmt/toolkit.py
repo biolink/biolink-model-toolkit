@@ -42,7 +42,7 @@ class Toolkit(object):
     ) -> None:
         self.generator = ToolkitGenerator(schema)
         self.generator.serialize()
-        self.view = SchemaView(REMOTE_PATH)
+        self.view = SchemaView(schema)
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements(self, formatted: bool = False) -> List[str]:
