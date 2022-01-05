@@ -432,14 +432,14 @@ class Toolkit(object):
 
         """
         parsed_name = parse_name(name)
-        print(parsed_name)
+        logger.debug(parsed_name)
         element = self.generator.obj_for(parsed_name)
         if element is None and name in self.generator.aliases:
-            print("in aliases")
-            print(self.generator.aliases)
+            logger.debug("in aliases")
+            logger.debug(self.generator.aliases)
             element = self.get_element(self.generator.aliases[name])
         if element is None and "_" in name:
-            print("has a _")
+            logger.debug("has a _")
             element = self.get_element(name.replace("_", " "))
         return element
 
@@ -1016,7 +1016,6 @@ class Toolkit(object):
                 element = self.get_element(category)
                 if hasattr(element, 'id_prefixes') and prefix in element.id_prefixes:
                     categories.append(element.name)
-        print(categories)
         if len(categories) == 0:
             logger.warning("no biolink class found for the given curie: %s, try get_element_by_mapping?", identifier)
 
@@ -1062,17 +1061,16 @@ class Toolkit(object):
                 ancestors.append(
                     [x for x in self.get_ancestors(m, mixin)[::-1] if x in mappings]
                 )
-                print("ancestors")
-                print(ancestors)
+                logger.debug(ancestors)
             without_empty_lists = list(filter(None, ancestors))
             common_ancestors = reduce(
                 lambda s, l: s.intersection(set(l)), without_empty_lists[1:], set(without_empty_lists[0])
             )
-            print("common_ancestors")
-            print(common_ancestors)
+            logger.debug("common_ancestors")
+            logger.debug(common_ancestors)
             for a in without_empty_lists[0]:
-                print("ancestors[0]")
-                print(a)
+                logger.debug("ancestors[0]")
+                logger.debug(a)
                 if a in common_ancestors:
                     if formatted:
                         element = format_element(self.generator.obj_for(a))
@@ -1144,7 +1142,7 @@ class Toolkit(object):
         mappings = self.generator.exact_mappings.get(
             self.generator.namespaces.uri_for(identifier), set()
         )
-        print(mappings)
+        logger.debug(mappings)
         return self._format_all_elements(mappings, formatted)
 
     @lru_cache(CACHE_SIZE)
