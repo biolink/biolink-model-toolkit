@@ -1062,10 +1062,12 @@ class Toolkit(object):
                 ancestors.append(
                     [x for x in self.get_ancestors(m, mixin)[::-1] if x in mappings]
                 )
+                print("ancestors")
                 print(ancestors)
             common_ancestors = reduce(
                 lambda s, l: s.intersection(set(l)), ancestors[1:], set(ancestors[0])
             )
+            print("common_ancestors")
             print(common_ancestors)
             for a in ancestors[0]:
                 print("ancestors[0]")
