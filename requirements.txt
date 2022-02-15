@@ -1,4 +1,4 @@
-linkml
+linkml==1.1.17
 linkml-runtime
 deprecation>=2.0.6
 stringcase>=1.0.0
@@ -11,5 +11,5 @@ numpydoc
 recommonmark
 tox
 flake8
-black
+black<=21.12b0
 biothings-explorer
