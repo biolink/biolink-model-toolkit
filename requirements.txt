@@ -12,4 +12,3 @@ recommonmark
 tox
 flake8
 black<=21.12b0
-biothings-explorer
