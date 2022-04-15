@@ -32,20 +32,12 @@ TREATMENT = "treatment"
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "2.2.13"
-
-
-def test_get_inverse(toolkit):
-    assert toolkit.get_inverse('acts upstream of') == 'has upstream actor'
-    for classt in toolkit.get_all_classes():
-        element = toolkit.get_element(classt)
-        toolkit.get
+    assert version == "2.2.16"
 
 
 def test_get_id_prefixes(toolkit):
     tclass = toolkit.get_element('biolink:Gene')
     print(tclass.id_prefixes)
-
 
 
 def test_rna(toolkit):
