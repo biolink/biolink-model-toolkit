@@ -32,7 +32,7 @@ TREATMENT = "treatment"
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "2.2.16"
+    assert version == "2.4.4"
 
 
 def test_get_id_prefixes(toolkit):
@@ -136,9 +136,6 @@ def test_get_all_edge_properties(toolkit):
 
 
 def test_get_element(toolkit):
-    gene = toolkit.get_element(GENE)
-    locus = toolkit.get_element("locus")
-    assert gene == locus
 
     o = toolkit.get_element("drug intake")
     assert o and o.name == "drug exposure"
@@ -180,7 +177,6 @@ def test_is_translator_canonical_predicate(toolkit):
 
 
 def test_has_inverse(toolkit):
-    assert not toolkit.has_inverse("contributor")
     assert toolkit.has_inverse("superclass of")
     assert toolkit.has_inverse("completed by")
     assert not toolkit.has_inverse("this_does_not_exist")
