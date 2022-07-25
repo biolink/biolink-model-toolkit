@@ -253,6 +253,7 @@ def test_descendants(toolkit):
     assert "molecular activity_has output" not in toolkit.get_descendants(
         "has output", reflexive=True
     )
+    assert "expressed in" in toolkit.get_descendants("located in")
     assert GENE in toolkit.get_descendants(GENE, reflexive=True)
 
 
