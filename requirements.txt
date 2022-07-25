@@ -6,8 +6,6 @@ pytest
 sphinx
 sphinx-rtd-theme
 sphinxcontrib-napoleon
-numpydoc
-recommonmark
 tox
 flake8
 black<=21.12b0
