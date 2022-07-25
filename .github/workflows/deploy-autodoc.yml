@@ -1,7 +1,7 @@
 name: Auto-deployment of Documentation
 on:
   push:
-    branches: [ master, bm-2.2.17 ]
+    branches: [ master ]
 jobs:
   build-docs:
     runs-on: ubuntu-latest
