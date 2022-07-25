@@ -3,6 +3,7 @@ linkml-runtime
 deprecation>=2.0.6
 stringcase>=1.0.0
 pytest
+recommonmark
 sphinx
 sphinx-rtd-theme
 sphinxcontrib-napoleon
