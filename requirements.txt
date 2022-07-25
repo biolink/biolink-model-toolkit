@@ -2,7 +2,6 @@ linkml
 linkml-runtime
 deprecation>=2.0.6
 stringcase>=1.0.0
-pbr
 pytest
 sphinx
 sphinx-rtd-theme
