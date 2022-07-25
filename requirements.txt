@@ -2,13 +2,11 @@ linkml
 linkml-runtime
 deprecation>=2.0.6
 stringcase>=1.0.0
-pbr
 pytest
+recommonmark
 sphinx
 sphinx-rtd-theme
 sphinxcontrib-napoleon
-numpydoc
-recommonmark
 tox
 flake8
 black<=21.12b0

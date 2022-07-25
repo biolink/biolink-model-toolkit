@@ -32,7 +32,7 @@ TREATMENT = "treatment"
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "2.4.4"
+    assert version == "3.0.0"
 
 
 def test_get_id_prefixes(toolkit):
@@ -253,6 +253,7 @@ def test_descendants(toolkit):
     assert "molecular activity_has output" not in toolkit.get_descendants(
         "has output", reflexive=True
     )
+    assert "expressed in" in toolkit.get_descendants("located in")
     assert GENE in toolkit.get_descendants(GENE, reflexive=True)
 
 

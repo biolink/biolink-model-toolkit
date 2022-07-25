@@ -19,12 +19,13 @@ Url = str
 Path = str
 
 REMOTE_PATH = (
-    "https://raw.githubusercontent.com/biolink/biolink-model/v.2.4.4/biolink-model.yaml"
+    "https://raw.githubusercontent.com/biolink/biolink-model/v3.0.0/biolink-model.yaml"
 )
 RELATED_TO = "related to"
 CACHE_SIZE = 1024
 
 logger = logging.getLogger(__name__)
+
 
 class Toolkit(object):
     """
@@ -888,7 +889,7 @@ class Toolkit(object):
                 annotation_tags.append(annotation)
         is_canonical = (
             True
-            if element is not None and "biolink:canonical_predicate" in annotation_tags
+            if element is not None and "canonical_predicate" in annotation_tags
             else False
         )
         return (
