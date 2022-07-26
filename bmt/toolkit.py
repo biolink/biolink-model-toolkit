@@ -19,7 +19,7 @@ Url = str
 Path = str
 
 REMOTE_PATH = (
-    "https://raw.githubusercontent.com/biolink/biolink-model/v.2.4.8/biolink-model.yaml"
+    "https://raw.githubusercontent.com/biolink/biolink-model/v2.4.8/biolink-model.yaml"
 )
 RELATED_TO = "related to"
 CACHE_SIZE = 1024

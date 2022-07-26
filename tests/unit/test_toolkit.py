@@ -32,7 +32,7 @@ TREATMENT = "treatment"
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "2.4.4"
+    assert version == "2.4.8"
 
 
 def test_get_id_prefixes(toolkit):
