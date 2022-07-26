@@ -4,7 +4,7 @@ with open("requirements.txt", "r") as FH:
     REQUIREMENTS = FH.readlines()
 
 NAME = 'bmt'
-VERSION = '0.8.7.1'
+VERSION = 'v0.8.8_augustQotM'
 DESCRIPTION = 'Biolink Model Toolkit: A Python API for working with the Biolink Model'
 URL = 'https://github.com/biolink/biolink-model-toolkit'
 AUTHOR = 'Deepak Unni', 'Sierra Moxon'
