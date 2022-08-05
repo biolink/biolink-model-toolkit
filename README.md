@@ -55,7 +55,7 @@ Using this toolkit you can,
 
 ### Using the Toolkit class
 
-The main entrypoint is the Toolkit class that provides various methods for accessing and working with the Biolink Model.
+The main entrypoint is the Toolkit class that provides various methods for accessing and working with the Biolink Model. Additional methods similar to the ones below are documented in the [Examples Usage](docs/example_usage.md).
 
 #### Getting a Biolink Model element based on its name
 
@@ -115,7 +115,6 @@ t.is_predicate('related to') # True
 t.is_predicate('interacts with') # True
 t.is_predicate('disease') # False
 ```
-
 
 ### Using the Toolkit class with different versions of Biolink Model
 
