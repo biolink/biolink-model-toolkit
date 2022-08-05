@@ -21,7 +21,11 @@ Path = str
 REMOTE_PATH = (
     "https://raw.githubusercontent.com/biolink/biolink-model/2.2.16/biolink-model.yaml"
 )
+
+NODE_PROPERTY = "node property"
+ASSOCIATION_SLOT = "association slot"
 RELATED_TO = "related to"
+
 CACHE_SIZE = 1024
 
 logger = logging.getLogger(__name__)
@@ -842,9 +846,51 @@ class Toolkit(object):
         return slots
 
     @lru_cache(CACHE_SIZE)
+    def is_node_property(self, name: str, mixin: bool = True) -> bool:
+        """
+        Determines whether the given name is the name of a node property
+        in the Biolink Model. An element is a node property if it descends from
+        `NODE_PROPERTY`
+
+        Parameters
+        ----------
+        name: str
+            The name or alias of an element in the Biolink Model
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
+
+        Returns
+        -------
+        bool
+            That the named element is a valid node property in Biolink Model
+        """
+        return NODE_PROPERTY in self.get_ancestors(name, mixin)
+
+    @lru_cache(CACHE_SIZE)
+    def is_association_slot(self, name: str, mixin: bool = True) -> bool:
+        """
+        Determines whether the given name is the name of an association slot
+        in the Biolink Model. An element is an association slot if it descends from
+        `ASSOCIATION_SLOT`
+
+        Parameters
+        ----------
+        name: str
+            The name or alias of an element in the Biolink Model
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
+
+        Returns
+        -------
+        bool
+            That the named element is a valid an association slot in Biolink Model
+        """
+        return ASSOCIATION_SLOT in self.get_ancestors(name, mixin)
+
+    @lru_cache(CACHE_SIZE)
     def is_predicate(self, name: str, mixin: bool = True) -> bool:
         """
-        Determines whether the given name is the name of an relation/predicate
+        Determines whether the given name is the name of a relation/predicate
         in the Biolink Model. An element is a predicate if it descends from
         `RELATED_TO`
 
