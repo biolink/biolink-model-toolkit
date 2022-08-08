@@ -160,7 +160,7 @@ def test_get_element(toolkit):
     assert o and o.name == "RNA product"
 
 
-def test_is_node_property():
+def test_is_node_property(toolkit):
     assert toolkit.is_node_property(NODE_PROPERTY)
     assert toolkit.is_node_property(SYNONYM)
     assert not toolkit.is_node_property(HAS_POPULATION_CONTEXT)
@@ -168,7 +168,7 @@ def test_is_node_property():
     assert not toolkit.is_node_property(GENE)
 
 
-def test_is_association_slot():
+def test_is_association_slot(toolkit):
     assert toolkit.is_association_slot(ASSOCIATION_SLOT)
     assert toolkit.is_association_slot(HAS_POPULATION_CONTEXT)
     assert not toolkit.is_association_slot(SYNONYM)
