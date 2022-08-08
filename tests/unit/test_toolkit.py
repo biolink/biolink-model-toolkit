@@ -13,6 +13,10 @@ BIOLINK_BIOLOGICAL_ENTITY = "biolink:BiologicalEntity"
 BIOLINK_SUBJECT = "biolink:subject"
 BIOLINK_RELATED_TO = "biolink:related_to"
 BIOLINK_NAMED_THING = "biolink:NamedThing"
+NODE_PROPERTY = 'node property'
+SYNONYM = "synonym"
+ASSOCIATION_SLOT = "association slot"
+HAS_POPULATION_CONTEXT = "has population context"
 CAUSES = "causes"
 ENABLED_BY = "enabled by"
 GENE = "gene"
@@ -156,13 +160,31 @@ def test_get_element(toolkit):
     assert o and o.name == "RNA product"
 
 
-def test_predicate(toolkit):
+def test_is_node_property(toolkit):
+    assert toolkit.is_node_property(NODE_PROPERTY)
+    assert toolkit.is_node_property(SYNONYM)
+    assert not toolkit.is_node_property(HAS_POPULATION_CONTEXT)
+    assert not toolkit.is_node_property(CAUSES)
+    assert not toolkit.is_node_property(GENE)
+
+
+def test_is_association_slot(toolkit):
+    assert toolkit.is_association_slot(ASSOCIATION_SLOT)
+    assert toolkit.is_association_slot(HAS_POPULATION_CONTEXT)
+    assert not toolkit.is_association_slot(SYNONYM)
+    assert not toolkit.is_association_slot(CAUSES)
+    assert not toolkit.is_association_slot(GENE)
+
+
+def test_is_predicate(toolkit):
+    assert toolkit.is_predicate(CAUSES)
     assert not toolkit.is_predicate(NAMED_THING)
     assert not toolkit.is_predicate(GENE)
-    assert toolkit.is_predicate(CAUSES)
+    assert not toolkit.is_category(SYNONYM)
+    assert not toolkit.is_category(HAS_POPULATION_CONTEXT)
 
 
-def test_mixin(toolkit):
+def test_is_mixin(toolkit):
     assert not toolkit.is_mixin(NAMED_THING)
     assert toolkit.is_mixin("ontology class")
     assert not toolkit.is_mixin("this_does_not_exist")

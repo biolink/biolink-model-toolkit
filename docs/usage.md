@@ -75,7 +75,33 @@ from bmt import Toolkit
 t = Toolkit()
 t.is_predicate('related to') # True
 t.is_predicate('interacts with') # True
+t.is_predicate('synonym') # False
+t.is_predicate('has population context') # False
 t.is_predicate('disease') # False
+```
+
+### Check whether a given string is a valid Biolink Model node property
+
+```py
+from bmt import Toolkit
+t = Toolkit()
+t.is_node_property('node property') # True
+t.is_node_property('synonym') # True
+t.is_node_property('has population context') # False
+t.is_node_property('interacts with') # False
+t.is_node_property('disease') # False
+```
+
+### Check whether a given string is a valid Biolink Model association slot
+
+```py
+from bmt import Toolkit
+t = Toolkit()
+t.is_association_slot('association slot') # True
+t.is_association_slot('has population context') # True
+t.is_association_slot('synonym') # False
+t.is_association_slot('interacts with') # False
+t.is_association_slot('disease') # False
 ```
 
 
