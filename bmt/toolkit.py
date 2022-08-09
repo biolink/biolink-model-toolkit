@@ -935,7 +935,7 @@ class Toolkit(object):
                 annotation_tags.append(annotation)
         is_canonical = (
             True
-            if element is not None and "canonical_predicate" in annotation_tags
+            if element is not None and "biolink:canonical_predicate" in annotation_tags
             else False
         )
         return (
