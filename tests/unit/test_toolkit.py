@@ -208,6 +208,11 @@ def test_has_inverse(toolkit):
     assert not toolkit.has_inverse("this_does_not_exist")
 
 
+def test_get_inverse(toolkit):
+    assert toolkit.get_inverse("acts upstream of") == "has upstream actor"
+    assert toolkit.get_inverse("has upstream actor") == "acts upstream of"
+
+
 def test_category(toolkit):
     assert toolkit.is_category(NAMED_THING)
     assert toolkit.is_category(GENE)
