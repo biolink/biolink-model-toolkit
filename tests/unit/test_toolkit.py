@@ -32,6 +32,8 @@ RELATED_TO = "related to"
 SUBJECT = "subject"
 THING_WITH_TAXON = "thing with taxon"
 TREATMENT = "treatment"
+ACTIVE_IN = "active in"
+HAS_ACTIVE_COMPONENT = "has active component"
 
 
 def test_get_model_version(toolkit):
@@ -202,6 +204,13 @@ def test_has_inverse(toolkit):
     assert toolkit.has_inverse("superclass of")
     assert toolkit.has_inverse("completed by")
     assert not toolkit.has_inverse("this_does_not_exist")
+
+
+def test_get_inverse(toolkit):
+    assert toolkit.get_inverse(ACTIVE_IN) == HAS_ACTIVE_COMPONENT
+    assert toolkit.get_inverse(HAS_ACTIVE_COMPONENT) == ACTIVE_IN
+    sd = toolkit.get_element(ACTIVE_IN)
+    assert toolkit.get_inverse(sd.name) == HAS_ACTIVE_COMPONENT
 
 
 def test_category(toolkit):
