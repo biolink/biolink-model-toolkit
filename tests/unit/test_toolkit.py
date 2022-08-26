@@ -204,6 +204,11 @@ def test_has_inverse(toolkit):
     assert not toolkit.has_inverse("this_does_not_exist")
 
 
+def test_get_inverse(toolkit):
+    assert toolkit.get_inverse("active in") == "has active component"
+    assert toolkit.get_inverse("has active component") == "active in"
+
+
 def test_category(toolkit):
     assert toolkit.is_category(NAMED_THING)
     assert toolkit.is_category(GENE)
