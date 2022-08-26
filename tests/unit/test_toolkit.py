@@ -207,6 +207,8 @@ def test_has_inverse(toolkit):
 def test_get_inverse(toolkit):
     assert toolkit.get_inverse("active in") == "has active component"
     assert toolkit.get_inverse("has active component") == "active in"
+    sd = toolkit.get_element("active in")
+    assert toolkit.get_inverse(sd.name) == "has active component"
 
 
 def test_category(toolkit):
