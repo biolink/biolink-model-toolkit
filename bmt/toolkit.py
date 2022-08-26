@@ -964,7 +964,7 @@ class Toolkit(object):
         return is_mixin
 
     @lru_cache(CACHE_SIZE)
-    def get_inverse(self, slot_name: str):
+    def get_inverse(self, slot_name: SlotDefinition):
         return self.view.inverse(slot_name)
 
     @lru_cache(CACHE_SIZE)
