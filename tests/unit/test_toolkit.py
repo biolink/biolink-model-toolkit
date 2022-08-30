@@ -38,7 +38,7 @@ HAS_ACTIVE_COMPONENT = "has active component"
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.0.0"
+    assert version == "3.0.1"
 
 
 def test_get_id_prefixes(toolkit):
