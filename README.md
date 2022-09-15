@@ -2,8 +2,8 @@
 [![PyPI](https://img.shields.io/pypi/v/bmt)](https://img.shields.io/pypi/v/bmt)
 
 # Biolink Model Toolkit
-
-Biolink Model Toolkit (BMT): A Python API for working with the [Biolink Model](https://github.com/biolink/biolink-model).
+ 
+ Biolink Model Toolkit (BMT): A Python API for working with the [Biolink Model](https://github.com/biolink/biolink-model).
 
 BMT provides utility functions to look up Biolink Model for classes, relations, and properties based on Biolink CURIEs
 or external CURIEs that have been mapped to Biolink Model.
