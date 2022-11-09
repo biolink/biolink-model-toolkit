@@ -1,8 +1,8 @@
 dev-install:
-	pip install -e .
+	poetry install
 
 install:
-	python setup.py install
+	poetry install
 
 test:
 	pytest tests/*

@@ -19,7 +19,7 @@ Url = str
 Path = str
 
 REMOTE_PATH = (
-    "https://raw.githubusercontent.com/biolink/biolink-model/v3.0.0/biolink-model.yaml"
+    "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.0/biolink-model.yaml"
 )
 
 NODE_PROPERTY = "node property"

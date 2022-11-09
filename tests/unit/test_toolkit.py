@@ -16,7 +16,7 @@ BIOLINK_NAMED_THING = "biolink:NamedThing"
 NODE_PROPERTY = 'node property'
 SYNONYM = "synonym"
 ASSOCIATION_SLOT = "association slot"
-HAS_POPULATION_CONTEXT = "has population context"
+HAS_POPULATION_CONTEXT = "population context qualifier"
 CAUSES = "causes"
 ENABLED_BY = "enabled by"
 GENE = "gene"
@@ -38,7 +38,7 @@ HAS_ACTIVE_COMPONENT = "has active component"
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.0.1"
+    assert version == "3.1.0"
 
 
 def test_get_id_prefixes(toolkit):
@@ -197,7 +197,7 @@ def test_is_translator_canonical_predicate(toolkit):
     assert not toolkit.is_translator_canonical_predicate("treated by")
     assert not toolkit.is_translator_canonical_predicate("this_does_not_exist")
     assert not toolkit.is_translator_canonical_predicate("completed by")
-    assert toolkit.is_translator_canonical_predicate("decreases molecular interaction")
+    assert toolkit.is_translator_canonical_predicate("regulates")
 
 
 def test_has_inverse(toolkit):
@@ -316,10 +316,10 @@ def test_mapping(toolkit):
     assert len(toolkit.get_all_elements_by_mapping("UPHENO:0000001")) == 1
     assert "affects" in toolkit.get_all_elements_by_mapping("UPHENO:0000001")
 
-    assert len(toolkit.get_all_elements_by_mapping("RO:0004033")) == 2
-    assert "negatively regulates" in toolkit.get_all_elements_by_mapping("RO:0004033")
-    assert "biolink:negatively_regulates" in toolkit.get_all_elements_by_mapping(
-        "RO:0004033", formatted=True
+    assert len(toolkit.get_all_elements_by_mapping("RO:0002211")) == 1
+    assert "regulates" in toolkit.get_all_elements_by_mapping("RO:0002211")
+    assert "biolink:regulates" in toolkit.get_all_elements_by_mapping(
+        "RO:0002211", formatted=True
     )
 
 
