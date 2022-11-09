@@ -12,7 +12,7 @@ or external CURIEs that have been mapped to Biolink Model.
 
 ## Installation
 
-### For users
+### For users:
 
 BMT is available on [PyPI](https://pypi.org/project/bmt/) and can be installed via `pip`: 
 
@@ -37,6 +37,13 @@ cd biolink-model-toolkit
 # install
 poetry install 
 ```
+
+Alternatively, you can install BMT in your virtual environment of choice, pip will recognize
+pyproject.toml and install the dependencies listed there.
+
+```bash
+
+```bash
 
 ## Documentation
 
