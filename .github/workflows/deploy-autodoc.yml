@@ -32,6 +32,7 @@ jobs:
           touch gh-pages/.nojekyll
           cd docs/
           poetry run sphinx-build -b html . _build
+          ls -al _build
           cp -r _build/html/* ../gh-pages/
           ls -al ../gh-pages/
 
