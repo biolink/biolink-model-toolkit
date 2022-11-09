@@ -37,8 +37,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -e .
+          pip install poetry
+          poetry install 
 
       - name: Run tests
         run: |
-         pytest tests/*
+         poetry run pytest tests/*

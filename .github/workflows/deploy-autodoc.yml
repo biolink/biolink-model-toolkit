@@ -1,7 +1,7 @@
 name: Auto-deploy Documentation
 on:
   push:
-    branches: [main]
+    branches: [ master]
 
 jobs:
   build-docs:
