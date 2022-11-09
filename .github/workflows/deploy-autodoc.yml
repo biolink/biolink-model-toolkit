@@ -2,6 +2,8 @@ name: Auto-deploy Documentation
 on:
   push:
     branches: [ master ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build-docs:
@@ -18,9 +20,6 @@ jobs:
 
       - name: Install Poetry
         run: pip install poetry
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
 
       - name: install
         run: poetry install -E docs

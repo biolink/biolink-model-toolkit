@@ -12,7 +12,7 @@ or external CURIEs that have been mapped to Biolink Model.
 
 ## Installation
 
-### For users
+### For users:
 
 BMT is available on [PyPI](https://pypi.org/project/bmt/) and can be installed via `pip`: 
 
@@ -20,11 +20,14 @@ BMT is available on [PyPI](https://pypi.org/project/bmt/) and can be installed v
 pip install bmt
 ```
 
-## For developers
+## For developers:
 
-You can install BMT from GitHub as follows:
+The Biolink organization favors the use of [Poetry](https://python-poetry.org/) for dependency management, packaging,
+and developer build environments. 
 
-```
+To install BMT in a development environment, clone the repository and run `poetry install`:
+
+```bash
 # clone the repo
 git clone https://github.com/biolink/biolink-model-toolkit
 
@@ -32,8 +35,15 @@ git clone https://github.com/biolink/biolink-model-toolkit
 cd biolink-model-toolkit
 
 # install
-python setup.py install
+poetry install 
 ```
+
+Alternatively, you can install BMT in your virtual environment of choice, pip will recognize
+pyproject.toml and install the dependencies listed there.
+
+```bash
+
+```bash
 
 ## Documentation
 
@@ -112,14 +122,14 @@ t.is_category('treats') # False
 from bmt import Toolkit
 t = Toolkit()
 t.is_predicate('related to') # True
-t.is_predicate('interacts with') # True
+t.is_predicate('regulates') # True
 t.is_predicate('disease') # False
 ```
 
 ### Using the Toolkit class with different versions of Biolink Model
 
-BMT is pinned to a specific version of Biolink Model at each release. This can be configured to use your custom
-version of Biolink Model YAML:
+BMT is pinned to a specific version of Biolink Model at each release. This can be configured to 
+use your custom version of Biolink Model YAML:
 
 ```py
 from bmt import Toolkit
