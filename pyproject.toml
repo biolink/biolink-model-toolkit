@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bmt"
-version = "0.8.12"
+version = "0.0.0"
 description = "Biolink Model Toolkit: A Python API for working with the Biolink Model"
 authors = ["Sierra Taylor Moxon <sierra.taylor@gmail.com>"]
 license = "BSD"
@@ -25,3 +25,6 @@ black = "^22.10.0"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.extras]
+docs = ["Sphinx", "sphinxcontrib-mermaid", "furo"]

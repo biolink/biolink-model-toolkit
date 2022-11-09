@@ -1,38 +1,12 @@
 ## Release instructions
 
-This section is only relevant for core developers.
+- update the "REMOTE_PATH" variable in toolkit.py to reflect any updates in Biolink Model that should be reflected in the bmt release.
 
-
-## Setting version of a new release
-
-To create a new release, first check whether the `VERSION` in [setup.py](setup.py) matches with the latest tag or PyPI release. 
-
-If the version is the same then you need to bump the version to make a new release. 
-Follow Semantic Versioning guidelines to decide whether the bump in version is major or minor.
-
-If you did bump the version then run the following commands:
-
-
-```sh
-TAG=`python setup.py --version`
-git add setup.py
-git commit --message="Bump version to $TAG in preparation of a release"
-git push
-git tag --annotate $TAG --message="Release $TAG"
-git push --tags
-  ```
-
+- Generate a release via the GitHub UI
+- Use semantic versioning, prefixing with a 'v' (e.g. v0.8.12) in the GitHub release name and tag name
 
 ### Releasing on PyPI
 
-To ensure this is successful, make sure you have relevant permissions to BMT package on [PyPI](https://pypi.org/project/bmt/).
+The release-pypi.yml workflow will automatically release to PyPI when a new release is created on GitHub. 
 
-Also, be sure to install [twine](https://pypi.org/project/twine/) and [wheel](https://pypi.org/project/wheel/)
 
-Now, run the following commands:
-
-```sh
-rm -rf dist/
-python setup.py sdist bdist_wheel
-twine upload --repository-url https://upload.pypi.org/legacy/ --username PYPI_USERNAME dist/*
-```
