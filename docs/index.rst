@@ -11,7 +11,7 @@ Welcome to Biolink Model Toolkit's documentation!
    :caption: Contents:
 
 
-static/intro.md
+intro.md
 
 modules
 
