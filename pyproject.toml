@@ -19,6 +19,8 @@ sphinxcontrib-napoleon = "^0.7"
 tox = "^3.27.0"
 flake8 = "^5.0.4"
 black = "^22.10.0"
+sphinx-autodoc-typehints = "^1.19.5"
+sphinx-click = "^4.3.0"
 
 [tool.poetry.dev-dependencies]
 
