@@ -10,9 +10,8 @@ Welcome to Biolink Model Toolkit's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
-intro/intro
-intro/examples_usage
+   intro/intro
+   intro/examples_usage
 
 * :ref:`genindex`
 * :ref:`modindex`
