@@ -13,8 +13,6 @@ Welcome to Biolink Model Toolkit's documentation!
 
 intro.md
 
-modules
-
 
 Indices and tables
 ==================
