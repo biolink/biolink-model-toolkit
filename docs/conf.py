@@ -31,20 +31,9 @@ author = 'bmt Authors'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.githubpages',
-    'sphinx.ext.autosectionlabel',
-    'sphinx_click',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'myst_parser'
+    'sphinx_rtd_theme',
+    'recommonmark'
 ]
-
-myst_heading_anchors = 3
-
-# The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
-# source_suffix = ['.rst', '.md']
-source_suffix = ['.rst', '.md']
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,13 +50,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
+html_static_path = ['_static']
 
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['_static']
-
-
-# Options for autosectionlabel
-autosectionlabel_prefix_document = True
