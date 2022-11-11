@@ -1,7 +1,7 @@
 name: Auto-deploy Documentation
 on:
   push:
-    branches: [ master ]
+    branches: [ master, poetry ]
   pull_request:
     types: [ opened, synchronize, reopened ]
 
@@ -31,9 +31,10 @@ jobs:
           mkdir gh-pages
           touch gh-pages/.nojekyll
           cd docs/
-          poetry run sphinx-build -b html . _build
-          ls -al _build
+          make clean 
+          make html
           cp -r _build/html/* ../gh-pages/
+          ls -al 
           ls -al ../gh-pages/
 
       - name: Deploy documentation.
