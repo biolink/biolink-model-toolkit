@@ -10,27 +10,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
 
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v2
+      - name: Set up Python 3.
+        uses: actions/setup-python@v3
         with:
           python-version: 3.9
 
       - name: Install Poetry
-        run: pip install poetry
-
-      - name: install
-        run: poetry install -E docs
+        run: pip install -e .
 
       - name: Build documentation.
         run: |
           mkdir gh-pages
           touch gh-pages/.nojekyll
           cd docs/
-          poetry run sphinx-build -b html . _build
-          cp -r _build/* ../gh-pages/
+          make clean 
+          make html
+          cp -r _build/html/* ../gh-pages/
+          ls -al 
+          ls -al ../gh-pages/
 
       - name: Deploy documentation.
         if: ${{ github.event_name == 'push' }}

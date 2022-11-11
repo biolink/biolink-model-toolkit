@@ -1120,6 +1120,22 @@ lint = ["flake8 (>=3.5.0)", "flake8-comprehensions", "flake8-bugbear", "flake8-s
 test = ["pytest (>=4.6)", "html5lib", "typed-ast", "cython"]
 
 [[package]]
+name = "sphinx-autodoc-typehints"
+version = "1.19.5"
+description = "Type hints (PEP 484) support for the Sphinx autodoc extension"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+sphinx = ">=5.3"
+
+[package.extras]
+docs = ["furo (>=2022.9.29)", "sphinx-autodoc-typehints (>=1.19.4)", "sphinx (>=5.3)"]
+testing = ["covdefaults (>=2.2)", "coverage (>=6.5)", "diff-cover (>=7.0.1)", "nptyping (>=2.3.1)", "pytest-cov (>=4)", "pytest (>=7.2)", "sphobjinv (>=2.2.2)", "typing-extensions (>=4.4)"]
+type-comment = ["typed-ast (>=1.5.4)"]
+
+[[package]]
 name = "sphinx-click"
 version = "4.3.0"
 description = "Sphinx extension that automatically documents click applications"
@@ -1394,7 +1410,7 @@ docs = ["Sphinx"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3a033bf7d07330827c17a58aefb707f02658b81ab3614e6fe3de9b1ee1804b69"
+content-hash = "32e5418fac963b4867b237208ee5815a5fbcf11399e26edeaca1c65002fb3762"
 
 [metadata.files]
 alabaster = [
@@ -1708,6 +1724,7 @@ sparqlwrapper = [
     {file = "SPARQLWrapper-2.0.0.tar.gz", hash = "sha256:3fed3ebcc77617a4a74d2644b86fd88e0f32e7f7003ac7b2b334c026201731f1"},
 ]
 sphinx = []
+sphinx-autodoc-typehints = []
 sphinx-click = []
 sphinx-rtd-theme = []
 sphinxcontrib-applehelp = [
