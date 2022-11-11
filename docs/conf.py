@@ -60,10 +60,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-#html_theme = 'sphinx_rtd_theme'
-html_theme = 'furo'
-html_logo = 'https://linkml.io/uploads/linkml-logo_color.png'
+html_theme = 'sphinx_rtd_theme'
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -71,11 +68,6 @@ html_logo = 'https://linkml.io/uploads/linkml-logo_color.png'
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ['_static']
 
-
-# Options for the linkcheck builder
-linkcheck_ignore = [
-    'https://w3id.org/linkml/*',
-]
 
 # Options for autosectionlabel
 autosectionlabel_prefix_document = True

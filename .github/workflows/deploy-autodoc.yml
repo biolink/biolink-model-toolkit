@@ -1,7 +1,7 @@
 name: Sphinx Documentation
 on:
   push:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   build-docs:
