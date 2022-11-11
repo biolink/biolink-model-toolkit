@@ -8,7 +8,7 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('../'))
 
 project = 'Biolink Model Toolkit'
 copyright = '2022, Sierra Moxon; Deepak Unni'
@@ -38,7 +38,7 @@ html_static_path = ['_static']
 
 html_context = {
     # "github_url": "https://github.com", # or your GitHub Enterprise interprise
-    "github_user": "bmt",
+    "github_user": "biolink",
     "github_repo": "biolink-model-toolkit",
     "github_version": "master/docs/",
     "display_github": True,  # Add 'Edit on Github' link instead of 'View page source'
