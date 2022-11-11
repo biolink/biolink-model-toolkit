@@ -1,7 +1,7 @@
 name: Auto-deploy Documentation
 on:
   push:
-    branches: [ master, poetry ]
+    branches: [ master ]
   pull_request:
     types: [ opened, synchronize, reopened ]
 
