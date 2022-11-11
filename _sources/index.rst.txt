@@ -11,8 +11,8 @@ Welcome to Biolink Model Toolkit's documentation!
    :caption: Contents:
 
 
-intro.md
-
+intro
+examples_usage
 
 Indices and tables
 ==================
