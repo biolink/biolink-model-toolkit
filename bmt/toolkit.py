@@ -26,6 +26,7 @@ NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
 RELATED_TO = "related to"
 
+
 CACHE_SIZE = 1024
 
 logger = logging.getLogger(__name__)
