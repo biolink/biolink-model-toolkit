@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'linkml'
-copyright = '2021, LinkML Authors'
-author = 'LinkML Authors'
+project = 'bmt'
+copyright = '2021, bmt Authors'
+author = 'bmt Authors'
 
 
 # -- General configuration ---------------------------------------------------
