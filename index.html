@@ -39,8 +39,76 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to Biolink Model Toolkit’s documentation!</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#">Welcome to Biolink Model Toolkit’s documentation!</a><ul>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit"><code class="docutils literal notranslate"><span class="pre">Toolkit</span></code></a><ul>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.ancestors"><code class="docutils literal notranslate"><span class="pre">Toolkit.ancestors()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.children"><code class="docutils literal notranslate"><span class="pre">Toolkit.children()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.descendents"><code class="docutils literal notranslate"><span class="pre">Toolkit.descendents()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_associations"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_associations()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_by_mapping"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_by_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_classes"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_classes()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_edge_properties"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_edge_properties()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_elements"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_elements()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_elements_by_mapping"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_elements_by_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_entities"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_entities()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_node_properties"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_node_properties()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_predicates_with_class_domain"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_predicates_with_class_domain()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_predicates_with_class_range"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_predicates_with_class_range()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_properties_with_class_domain"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_properties_with_class_domain()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_properties_with_class_range"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_properties_with_class_range()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_slots"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_slots()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_slots_with_class_domain"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_slots_with_class_domain()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_slots_with_class_range"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_slots_with_class_range()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_all_types"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_all_types()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_ancestors"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_ancestors()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_by_mapping"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_by_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_children"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_children()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_descendants"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_descendants()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_element"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_element()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_element_by_broad_mapping"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_element_by_broad_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_element_by_close_mapping"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_element_by_close_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_element_by_exact_mapping"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_element_by_exact_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_element_by_mapping"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_element_by_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_element_by_narrow_mapping"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_element_by_narrow_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_element_by_prefix"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_element_by_prefix()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_element_by_related_mapping"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_element_by_related_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_model_version"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_model_version()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_parent"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_parent()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_slot_domain"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_slot_domain()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_slot_range"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_slot_range()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.get_value_type_for_slot"><code class="docutils literal notranslate"><span class="pre">Toolkit.get_value_type_for_slot()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.has_inverse"><code class="docutils literal notranslate"><span class="pre">Toolkit.has_inverse()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.in_subset"><code class="docutils literal notranslate"><span class="pre">Toolkit.in_subset()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.is_association_slot"><code class="docutils literal notranslate"><span class="pre">Toolkit.is_association_slot()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.is_category"><code class="docutils literal notranslate"><span class="pre">Toolkit.is_category()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.is_edgelabel"><code class="docutils literal notranslate"><span class="pre">Toolkit.is_edgelabel()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.is_mixin"><code class="docutils literal notranslate"><span class="pre">Toolkit.is_mixin()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.is_node_property"><code class="docutils literal notranslate"><span class="pre">Toolkit.is_node_property()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.is_predicate"><code class="docutils literal notranslate"><span class="pre">Toolkit.is_predicate()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.is_translator_canonical_predicate"><code class="docutils literal notranslate"><span class="pre">Toolkit.is_translator_canonical_predicate()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.names"><code class="docutils literal notranslate"><span class="pre">Toolkit.names()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit.Toolkit.parent"><code class="docutils literal notranslate"><span class="pre">Toolkit.parent()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.ancestors"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.ancestors()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.children"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.children()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.descendants"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.descendants()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.emit_prefixes"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.emit_prefixes</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.mergeimports"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.mergeimports</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.metadata"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.metadata</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.obj_for"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.obj_for()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.schema"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.schema</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.valid_formats"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.valid_formats</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.visit_class"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.visit_class()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.visit_element"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.visit_element()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.visit_slot"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.visit_slot()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.visit_subset"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.visit_subset()</span></code></a></li>
+<li><a class="reference internal" href="#bmt.toolkit_generator.ToolkitGenerator.visit_type"><code class="docutils literal notranslate"><span class="pre">ToolkitGenerator.visit_type()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
         </div>
@@ -73,14 +141,1195 @@
 </div>
 <p>intro/intro
 intro/examples_usage</p>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
+<span class="target" id="module-bmt.toolkit"></span><dl class="py class">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bmt.toolkit.</span></span><span class="sig-name descname"><span class="pre">Toolkit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">TextIO</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SchemaDefinition</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.0/biolink-model.yaml'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bmt.toolkit.Toolkit" title="Permalink to this definition"></a></dt>
+<dd><p>Provides a series of methods for performing lookups on the Biolink Model</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading"></a></h2>
+<dl class="simple">
+<dt>schema: Union[str, TextIO, SchemaDefinition]</dt><dd><p>The path or url to an instance of the biolink-model.yaml file.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.ancestors">
+<span class="sig-name descname"><span class="pre">ancestors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.ancestors" title="Permalink to this definition"></a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.2.0: </span>This will be removed in 1.0. Use get_ancestors method instead</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.children">
+<span class="sig-name descname"><span class="pre">children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.children" title="Permalink to this definition"></a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.2.0: </span>This will be removed in 1.0. Use get_children method instead</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.descendents">
+<span class="sig-name descname"><span class="pre">descendents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.descendents" title="Permalink to this definition"></a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.2.0: </span>This will be removed in 1.0. Use get_descendants method instead</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_associations">
+<span class="sig-name descname"><span class="pre">get_all_associations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_associations" title="Permalink to this definition"></a></dt>
+<dd><p>Get all associations from Biolink Model.</p>
+<p>This method returns a list containing all the classes
+that are descendants of the class <code class="docutils literal notranslate"><span class="pre">association</span></code>.</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of elements</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_by_mapping">
+<span class="sig-name descname"><span class="pre">get_all_by_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uriorcurie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_by_mapping" title="Permalink to this definition"></a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.1.1: </span>This will be removed in 1.0. Use get_all_elements_by_mapping method instead</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_classes">
+<span class="sig-name descname"><span class="pre">get_all_classes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_classes" title="Permalink to this definition"></a></dt>
+<dd><p>Get all classes from Biolink Model.</p>
+<p>This method returns a list containing all the
+classes defined in the model.</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>Returns<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of elements</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_edge_properties">
+<span class="sig-name descname"><span class="pre">get_all_edge_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_edge_properties" title="Permalink to this definition"></a></dt>
+<dd><p>Get all edge properties from Biolink Model.</p>
+<p>This method returns a list containing all the slots
+that are descendants of the slot <code class="docutils literal notranslate"><span class="pre">association</span> <span class="pre">slot</span></code>.</p>
+<section id="id4">
+<h3>Parameters<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h3>Returns<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of elements</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_elements">
+<span class="sig-name descname"><span class="pre">get_all_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_elements" title="Permalink to this definition"></a></dt>
+<dd><p>Get all elements from Biolink Model.</p>
+<p>This method returns a list containing all
+classes, slots, and types defined in the model.</p>
+<section id="id6">
+<h3>Parameters<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h3>Returns<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of elements</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_elements_by_mapping">
+<span class="sig-name descname"><span class="pre">get_all_elements_by_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_elements_by_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Given an identifier as IRI/CURIE, find all Biolink element that corresponds
+to the given identifier as part of its mappings.</p>
+<section id="id8">
+<h3>Parameters<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>identifier: str</dt><dd><p>The identifier as an IRI or CURIE</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h3>Returns<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of Biolink elements that correspond to the given identifier IRI/CURIE</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_entities">
+<span class="sig-name descname"><span class="pre">get_all_entities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_entities" title="Permalink to this definition"></a></dt>
+<dd><p>Get all entities from Biolink Model.</p>
+<p>This method returns a list containing all the classes
+that are descendants of the class <code class="docutils literal notranslate"><span class="pre">named</span> <span class="pre">thing</span></code>.</p>
+<section id="id10">
+<h3>Parameters<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id11">
+<h3>Returns<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of elements</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_node_properties">
+<span class="sig-name descname"><span class="pre">get_all_node_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_node_properties" title="Permalink to this definition"></a></dt>
+<dd><p>Get all node properties from Biolink Model.</p>
+<p>This method returns a list containing all the slots
+that are descendants of the slot <code class="docutils literal notranslate"><span class="pre">node</span> <span class="pre">property</span></code>.</p>
+<section id="id12">
+<h3>Parameters<a class="headerlink" href="#id12" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id13">
+<h3>Returns<a class="headerlink" href="#id13" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of elements</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_predicates_with_class_domain">
+<span class="sig-name descname"><span class="pre">get_all_predicates_with_class_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_predicates_with_class_domain" title="Permalink to this definition"></a></dt>
+<dd><p>Given a class, get all Biolink predicates where the class is the domain.</p>
+<section id="id14">
+<h3>Parameters<a class="headerlink" href="#id14" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>class_name: str</dt><dd><p>The name or alias of a class in the Biolink Model</p>
+</dd>
+<dt>check_ancestors: bool</dt><dd><p>Whether or not to lookup slots that include ancestors of the given class as its domain</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id15">
+<h3>Returns<a class="headerlink" href="#id15" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of slots</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_predicates_with_class_range">
+<span class="sig-name descname"><span class="pre">get_all_predicates_with_class_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_predicates_with_class_range" title="Permalink to this definition"></a></dt>
+<dd><p>Given a class, get all Biolink predicates where the class is the range.</p>
+<section id="id16">
+<h3>Parameters<a class="headerlink" href="#id16" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>class_name: str</dt><dd><p>The name or alias of a class in the Biolink Model</p>
+</dd>
+<dt>check_ancestors: bool</dt><dd><p>Whether or not to lookup slots that include ancestors of the given class as its range</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id17">
+<h3>Returns<a class="headerlink" href="#id17" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of slots</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_properties_with_class_domain">
+<span class="sig-name descname"><span class="pre">get_all_properties_with_class_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_properties_with_class_domain" title="Permalink to this definition"></a></dt>
+<dd><p>Given a class, get all Biolink properties where the class is the domain.</p>
+<section id="id18">
+<h3>Parameters<a class="headerlink" href="#id18" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>class_name: str</dt><dd><p>The name or alias of a class in the Biolink Model</p>
+</dd>
+<dt>check_ancestors: bool</dt><dd><p>Whether or not to lookup slots that include ancestors of the given class as its domain</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id19">
+<h3>Returns<a class="headerlink" href="#id19" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of slots</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_properties_with_class_range">
+<span class="sig-name descname"><span class="pre">get_all_properties_with_class_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_properties_with_class_range" title="Permalink to this definition"></a></dt>
+<dd><p>Given a class, get all Biolink properties where the class is the range.</p>
+<section id="id20">
+<h3>Parameters<a class="headerlink" href="#id20" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>class_name: str</dt><dd><p>The name or alias of a class in the Biolink Model</p>
+</dd>
+<dt>check_ancestors: bool</dt><dd><p>Whether or not to lookup slots that include ancestors of the given class as its range</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id21">
+<h3>Returns<a class="headerlink" href="#id21" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of slots</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_slots">
+<span class="sig-name descname"><span class="pre">get_all_slots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_slots" title="Permalink to this definition"></a></dt>
+<dd><p>Get all slots from Biolink Model.</p>
+<p>This method returns a list containing all the
+slots defined in the model.</p>
+<section id="id22">
+<h3>Parameters<a class="headerlink" href="#id22" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id23">
+<h3>Returns<a class="headerlink" href="#id23" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of elements</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_slots_with_class_domain">
+<span class="sig-name descname"><span class="pre">get_all_slots_with_class_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_slots_with_class_domain" title="Permalink to this definition"></a></dt>
+<dd><p>Given a class, get all the slots where the class is the domain.</p>
+<section id="id24">
+<h3>Parameters<a class="headerlink" href="#id24" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>class_name: str</dt><dd><p>The name or alias of a class in the Biolink Model</p>
+</dd>
+<dt>check_ancestors: bool</dt><dd><p>Whether or not to lookup slots that include ancestors of the given class as its domain</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id25">
+<h3>Returns<a class="headerlink" href="#id25" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of slots</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_slots_with_class_range">
+<span class="sig-name descname"><span class="pre">get_all_slots_with_class_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_slots_with_class_range" title="Permalink to this definition"></a></dt>
+<dd><p>Given a class, get all the slots where the class is the range.</p>
+<section id="id26">
+<h3>Parameters<a class="headerlink" href="#id26" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>class_name: str</dt><dd><p>The name or alias of a class in the Biolink Model</p>
+</dd>
+<dt>check_ancestors: bool</dt><dd><p>Whether or not to lookup slots that include ancestors of the given class as its range</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id27">
+<h3>Returns<a class="headerlink" href="#id27" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of slots</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_all_types">
+<span class="sig-name descname"><span class="pre">get_all_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_all_types" title="Permalink to this definition"></a></dt>
+<dd><p>Get all types from Biolink Model.</p>
+<p>This method returns a list containing all the
+built-in and defined types in the model.</p>
+<section id="id28">
+<h3>Parameters<a class="headerlink" href="#id28" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id29">
+<h3>Returns<a class="headerlink" href="#id29" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of elements</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_ancestors">
+<span class="sig-name descname"><span class="pre">get_ancestors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reflexive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_ancestors" title="Permalink to this definition"></a></dt>
+<dd><p>Gets a list of names of ancestors.</p>
+<section id="id30">
+<h3>Parameters<a class="headerlink" href="#id30" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name of an element in the Biolink Model</p>
+</dd>
+<dt>reflexive: bool</dt><dd><p>Whether to include the query element in the list of ancestors</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id31">
+<h3>Returns<a class="headerlink" href="#id31" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>The names of the given elements ancestors</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_by_mapping">
+<span class="sig-name descname"><span class="pre">get_by_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uriorcurie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_by_mapping" title="Permalink to this definition"></a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.1.1: </span>This will be removed in 1.0. Use get_element_by_mapping method instead</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_children">
+<span class="sig-name descname"><span class="pre">get_children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_children" title="Permalink to this definition"></a></dt>
+<dd><p>Gets a list of names of children.</p>
+<section id="id32">
+<h3>Parameters<a class="headerlink" href="#id32" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name of an element in the Biolink Model</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id33">
+<h3>Returns<a class="headerlink" href="#id33" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>The names of the given elements children</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_descendants">
+<span class="sig-name descname"><span class="pre">get_descendants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reflexive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_descendants" title="Permalink to this definition"></a></dt>
+<dd><p>Gets a list of names of descendants.</p>
+<section id="id34">
+<h3>Parameters<a class="headerlink" href="#id34" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name of an element in the Biolink Model</p>
+</dd>
+<dt>reflexive: bool</dt><dd><p>Whether to include the query element in the list of ancestors</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id35">
+<h3>Returns<a class="headerlink" href="#id35" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>The names of the given element’s descendants</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_element">
+<span class="sig-name descname"><span class="pre">get_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Element</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_element" title="Permalink to this definition"></a></dt>
+<dd><p>Gets an element that is identified by the given name, either as its name
+or as one of its aliases.</p>
+<section id="id36">
+<h3>Parameters<a class="headerlink" href="#id36" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+</dl>
+</section>
+<section id="id37">
+<h3>Returns<a class="headerlink" href="#id37" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>Element</dt><dd><p>The element identified by the given name</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_element_by_broad_mapping">
+<span class="sig-name descname"><span class="pre">get_element_by_broad_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_element_by_broad_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Given an identifier as IRI/CURIE, find a Biolink element that corresponds
+to the given identifier as part of its broad_mappings.</p>
+<section id="id38">
+<h3>Parameters<a class="headerlink" href="#id38" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>identifier: str</dt><dd><p>The identifier as an IRI or CURIE</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id39">
+<h3>Returns<a class="headerlink" href="#id39" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of Biolink elements that correspond to the given identifier IRI/CURIE</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_element_by_close_mapping">
+<span class="sig-name descname"><span class="pre">get_element_by_close_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_element_by_close_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Given an identifier as IRI/CURIE, find a Biolink element that corresponds
+to the given identifier as part of its close_mappings.</p>
+<section id="id40">
+<h3>Parameters<a class="headerlink" href="#id40" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>identifier:</dt><dd><p>The identifier as an IRI or CURIE</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id41">
+<h3>Returns<a class="headerlink" href="#id41" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of Biolink elements that correspond to the given identifier IRI/CURIE</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_element_by_exact_mapping">
+<span class="sig-name descname"><span class="pre">get_element_by_exact_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_element_by_exact_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Given an identifier as IRI/CURIE, find a Biolink element that corresponds
+to the given identifier as part of its exact_mappings.</p>
+<section id="id42">
+<h3>Parameters<a class="headerlink" href="#id42" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>identifier: str</dt><dd><p>The identifier as an IRI or CURIE</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id43">
+<h3>Returns<a class="headerlink" href="#id43" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of Biolink elements that correspond to the given identifier IRI/CURIE</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_element_by_mapping">
+<span class="sig-name descname"><span class="pre">get_element_by_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">most_specific</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_element_by_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Get a Biolink Model element by mapping.
+This method return the common ancestor of the set of elements referenced by uriorcurie.</p>
+<section id="id44">
+<h3>Parameters<a class="headerlink" href="#id44" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>identifier: str</dt><dd><p>The identifier as an IRI or CURIE</p>
+</dd>
+<dt>most_specific: bool</dt><dd><p>Whether or not to get the first available mapping in the order of specificity
+or to get all mappings of varying specificity</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id45">
+<h3>Returns<a class="headerlink" href="#id45" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>Optional[str]</dt><dd><p>The Biolink element (or the common ancestor) corresponding to the given URI/CURIE</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_element_by_narrow_mapping">
+<span class="sig-name descname"><span class="pre">get_element_by_narrow_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_element_by_narrow_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Given an identifier as IRI/CURIE, find a Biolink element that corresponds
+to the given identifier as part of its narrow_mappings.</p>
+<section id="id46">
+<h3>Parameters<a class="headerlink" href="#id46" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>identifier: str</dt><dd><p>The identifier as an IRI or CURIE</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id47">
+<h3>Returns<a class="headerlink" href="#id47" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of Biolink elements that correspond to the given identifier IRI/CURIE</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_element_by_prefix">
+<span class="sig-name descname"><span class="pre">get_element_by_prefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_element_by_prefix" title="Permalink to this definition"></a></dt>
+<dd><p>Get a Biolink Model element by prefix.
+This method return the common ancestor of the set of elements referenced by uriorcurie.</p>
+<section id="id48">
+<h3>Parameters<a class="headerlink" href="#id48" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>identifier: str</dt><dd><p>The identifier as a CURIE</p>
+</dd>
+</dl>
+</section>
+<section id="id49">
+<h3>Returns<a class="headerlink" href="#id49" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>Optional[str]</dt><dd><p>The Biolink element corresponding to the given URI/CURIE as available via
+the id_prefixes mapped to that element.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_element_by_related_mapping">
+<span class="sig-name descname"><span class="pre">get_element_by_related_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_element_by_related_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Given an identifier as IRI/CURIE, find a Biolink element that corresponds
+to the given identifier as part of its related_mappings.</p>
+<section id="id50">
+<h3>Parameters<a class="headerlink" href="#id50" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>identifier: str</dt><dd><p>The identifier as an IRI or CURIE</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id51">
+<h3>Returns<a class="headerlink" href="#id51" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>A list of Biolink elements that correspond to the given identifier IRI/CURIE</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_model_version">
+<span class="sig-name descname"><span class="pre">get_model_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_model_version" title="Permalink to this definition"></a></dt>
+<dd><p>Return the version of the biolink-model in use.</p>
+<section id="id52">
+<h3>Returns<a class="headerlink" href="#id52" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>The biolink-model version</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_parent">
+<span class="sig-name descname"><span class="pre">get_parent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_parent" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the name of the parent.</p>
+<section id="id53">
+<h3>Parameters<a class="headerlink" href="#id53" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name of an element in the Biolink Model</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id54">
+<h3>Returns<a class="headerlink" href="#id54" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>Optional[str]</dt><dd><p>The name of the given elements parent</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_slot_domain">
+<span class="sig-name descname"><span class="pre">get_slot_domain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_slot_domain" title="Permalink to this definition"></a></dt>
+<dd><p>Get the domain for a given slot.</p>
+<section id="id55">
+<h3>Parameters<a class="headerlink" href="#id55" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>slot_name: str</dt><dd><p>The name or alias of a slot in the Biolink Model</p>
+</dd>
+<dt>include_ancestors: bool</dt><dd><p>Whether or not to include ancestors of the domain class</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id56">
+<h3>Returns<a class="headerlink" href="#id56" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>The domain for a given slot</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_slot_range">
+<span class="sig-name descname"><span class="pre">get_slot_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_slot_range" title="Permalink to this definition"></a></dt>
+<dd><p>Get the range for a given slot.</p>
+<section id="id57">
+<h3>Parameters<a class="headerlink" href="#id57" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>slot_name: str</dt><dd><p>The name or alias of a slot in the Biolink Model</p>
+</dd>
+<dt>include_ancestors: bool</dt><dd><p>Whether or not to include ancestors of the range class</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id58">
+<h3>Returns<a class="headerlink" href="#id58" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>The range for a given slot</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.get_value_type_for_slot">
+<span class="sig-name descname"><span class="pre">get_value_type_for_slot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slot_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.get_value_type_for_slot" title="Permalink to this definition"></a></dt>
+<dd><p>Get the value type for a given slot.</p>
+<section id="id59">
+<h3>Parameters<a class="headerlink" href="#id59" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>slot_name: str</dt><dd><p>The name or alias of a slot in the Biolink Model</p>
+</dd>
+<dt>formatted: bool</dt><dd><p>Whether to format element names as CURIEs</p>
+</dd>
+</dl>
+</section>
+<section id="id60">
+<h3>Returns<a class="headerlink" href="#id60" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>The slot type</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.has_inverse">
+<span class="sig-name descname"><span class="pre">has_inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.has_inverse" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is a predicate and if that predicate has an inverse defined
+in the Biolink Model. An element is a predicate if it descends from
+<cite>RELATED_TO</cite></p>
+<section id="id61">
+<h3>Parameters<a class="headerlink" href="#id61" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+</dl>
+</section>
+<section id="id62">
+<h3>Returns<a class="headerlink" href="#id62" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid mixin in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.in_subset">
+<span class="sig-name descname"><span class="pre">in_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.in_subset" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is in a given subset
+in the Biolink Model.</p>
+<section id="id63">
+<h3>Parameters<a class="headerlink" href="#id63" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model.</p>
+</dd>
+<dt>subset: str</dt><dd><p>The name of the subset</p>
+</dd>
+</dl>
+</section>
+<section id="id64">
+<h3>Returns<a class="headerlink" href="#id64" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is part of a given subset in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_association_slot">
+<span class="sig-name descname"><span class="pre">is_association_slot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_association_slot" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is the name of an association slot
+in the Biolink Model. An element is an association slot if it descends from
+<cite>ASSOCIATION_SLOT</cite></p>
+<section id="id65">
+<h3>Parameters<a class="headerlink" href="#id65" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id66">
+<h3>Returns<a class="headerlink" href="#id66" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid an association slot in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_category">
+<span class="sig-name descname"><span class="pre">is_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_category" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is the name of a category in the
+Biolink Model. An element is a category if it descends from
+<cite>named thing</cite></p>
+<section id="id67">
+<h3>Parameters<a class="headerlink" href="#id67" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name<span class="classifier">str</span></dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id68">
+<h3>Returns<a class="headerlink" href="#id68" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid category in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_edgelabel">
+<span class="sig-name descname"><span class="pre">is_edgelabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_edgelabel" title="Permalink to this definition"></a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.1.1: </span>This will be removed in 1.0. Use is_predicate method instead</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_mixin">
+<span class="sig-name descname"><span class="pre">is_mixin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_mixin" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is the name of a mixin
+in the Biolink Model. An element is a mixin if one of its properties is “is_mixin:true”</p>
+<section id="id69">
+<h3>Parameters<a class="headerlink" href="#id69" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+</dl>
+</section>
+<section id="id70">
+<h3>Returns<a class="headerlink" href="#id70" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid mixin in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_node_property">
+<span class="sig-name descname"><span class="pre">is_node_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_node_property" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is the name of a node property
+in the Biolink Model. An element is a node property if it descends from
+<cite>NODE_PROPERTY</cite></p>
+<section id="id71">
+<h3>Parameters<a class="headerlink" href="#id71" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id72">
+<h3>Returns<a class="headerlink" href="#id72" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid node property in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_predicate">
+<span class="sig-name descname"><span class="pre">is_predicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_predicate" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is the name of a relation/predicate
+in the Biolink Model. An element is a predicate if it descends from
+<cite>RELATED_TO</cite></p>
+<section id="id73">
+<h3>Parameters<a class="headerlink" href="#id73" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id74">
+<h3>Returns<a class="headerlink" href="#id74" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid relation/predicate in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_translator_canonical_predicate">
+<span class="sig-name descname"><span class="pre">is_translator_canonical_predicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_translator_canonical_predicate" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is the name of a canonical relation/predicate
+in the Biolink Model. An element is a canonical predicate if it descends from
+<cite>RELATED_TO</cite> and is tagged with the annotation ‘biolink:canonical_predicate’</p>
+<section id="id75">
+<h3>Parameters<a class="headerlink" href="#id75" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id76">
+<h3>Returns<a class="headerlink" href="#id76" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid translator canonical prediacte in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.names">
+<span class="sig-name descname"><span class="pre">names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.names" title="Permalink to this definition"></a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.3.0: </span>This will be removed in 1.0. Use get_all_elements method instead</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.parent" title="Permalink to this definition"></a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.2.0: </span>This will be removed in 1.0. Use get_parent method instead</p>
+</div>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+<span class="target" id="module-bmt.toolkit_generator"></span><dl class="py class">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bmt.toolkit_generator.</span></span><span class="sig-name descname"><span class="pre">ToolkitGenerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator" title="Permalink to this definition"></a></dt>
+<dd><p>An extension to linkml.utils.generator.Generator for accessing the Biolink Model.</p>
+<section id="id77">
+<h2>Parameters<a class="headerlink" href="#id77" title="Permalink to this heading"></a></h2>
+<dl class="simple">
+<dt><a href="#id78"><span class="problematic" id="id79">*</span></a>args: Dict</dt><dd><p>Arguments</p>
+</dd>
+<dt><a href="#id80"><span class="problematic" id="id81">**</span></a>kwargs: Dict</dt><dd><p>Additional arguments</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.ancestors">
+<span class="sig-name descname"><span class="pre">ancestors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">ClassDefinition</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SlotDefinition</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ElementName</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.ancestors" title="Permalink to this definition"></a></dt>
+<dd><p>Return an ordered list of ancestor names for the supplied slot or class.</p>
+<section id="id82">
+<h3>Parameters<a class="headerlink" href="#id82" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>element: Union[ClassDefinition, SlotDefinition]</dt><dd><p>An element</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.children">
+<span class="sig-name descname"><span class="pre">children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.children" title="Permalink to this definition"></a></dt>
+<dd><p>Gets a list of names of children.</p>
+<section id="id83">
+<h3>Parameters<a class="headerlink" href="#id83" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name of an element in the Biolink Model.</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin children as well as is_a children</p>
+</dd>
+</dl>
+</section>
+<section id="id84">
+<h3>Returns<a class="headerlink" href="#id84" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>List[str]</dt><dd><p>The names of the given elements children.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.descendants">
+<span class="sig-name descname"><span class="pre">descendants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.descendants" title="Permalink to this definition"></a></dt>
+<dd><p>Return an ordered list of descendant names for the supplied slot or class.</p>
+<section id="id85">
+<h3>Parameters<a class="headerlink" href="#id85" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>element_name: Union[ClassDefinition, SlotDefinition]</dt><dd><p>An element</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.emit_prefixes">
+<span class="sig-name descname"><span class="pre">emit_prefixes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.emit_prefixes" title="Permalink to this definition"></a></dt>
+<dd><p>Prefixes to emit, for RDF-based generators</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.mergeimports">
+<span class="sig-name descname"><span class="pre">mergeimports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.mergeimports" title="Permalink to this definition"></a></dt>
+<dd><p>True means merge non-linkml sources into importing package.  False means separate packages</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.metadata" title="Permalink to this definition"></a></dt>
+<dd><p>True means include date, generator, etc. information in source header if appropriate</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.obj_for">
+<span class="sig-name descname"><span class="pre">obj_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">el_or_elname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_range_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Element</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.obj_for" title="Permalink to this definition"></a></dt>
+<dd><p>Get object for a given element name.</p>
+<section id="id86">
+<h3>Parameters<a class="headerlink" href="#id86" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>el_or_elname: str</dt><dd><p>The element or element name</p>
+</dd>
+<dt>is_range_name: bool</dt><dd><p>If True, then that means we are looking for a class or type</p>
+</dd>
+</dl>
+</section>
+<section id="id87">
+<h3>Returns<a class="headerlink" href="#id87" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>Optional[Element]</dt><dd><p>An instance of Element corresponding to the given name</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.schema">
+<span class="sig-name descname"><span class="pre">schema</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">TextIO</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SchemaDefinition</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Generator</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.schema" title="Permalink to this definition"></a></dt>
+<dd><p>metamodel compliant schema.  Can be URI, file name, actual schema, another generator, an
+open file or a pre-parsed schema</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.valid_formats">
+<span class="sig-name descname"><span class="pre">valid_formats</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[None]</span></em><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.valid_formats" title="Permalink to this definition"></a></dt>
+<dd><p>Allowed formats - first format is default</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.visit_class">
+<span class="sig-name descname"><span class="pre">visit_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ClassDefinition</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.visit_class" title="Permalink to this definition"></a></dt>
+<dd><p>Given a class, visit the class in the Biolink Model and pull necessary
+properties corresponding to that class.</p>
+<section id="id88">
+<h3>Parameters<a class="headerlink" href="#id88" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>cls: linkml_runtime.linkml_model.meta.ClassDefinition</dt><dd><p>The class definition</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.visit_element">
+<span class="sig-name descname"><span class="pre">visit_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.visit_element" title="Permalink to this definition"></a></dt>
+<dd><p>Given an element and an element URI (optional), visit the element
+in the Biolink Model and pull the necessary properties corresponding
+to that element.</p>
+<section id="id89">
+<h3>Parameters<a class="headerlink" href="#id89" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>element: linkml_runtime.linkml_model.meta.Element</dt><dd><p>The element to access</p>
+</dd>
+<dt>element_uri: Optional[str]</dt><dd><p>The URI for the element</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.visit_slot">
+<span class="sig-name descname"><span class="pre">visit_slot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aliased_slot_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SlotDefinition</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.visit_slot" title="Permalink to this definition"></a></dt>
+<dd><p>Given a slot, visit the slot in the Biolink Model and pull necessary
+properties corresponding to that slot.</p>
+<section id="id90">
+<h3>Parameters<a class="headerlink" href="#id90" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>aliased_slot_name: str</dt><dd><p>Alias name of the slot</p>
+</dd>
+<dt>slot: linkml_runtime.linkml_model.meta.SlotDefinition</dt><dd><p>The slot definition</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.visit_subset">
+<span class="sig-name descname"><span class="pre">visit_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SubsetDefinition</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.visit_subset" title="Permalink to this definition"></a></dt>
+<dd><p>Given a subset, visit the subset in the Biolink Model and pull necessary
+properties corresponding to that class.</p>
+<section id="id91">
+<h3>Parameters<a class="headerlink" href="#id91" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>subset: linkml_runtime.linkml_model.meta.SubsetDefinition</dt><dd><p>The subset definition</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit_generator.ToolkitGenerator.visit_type">
+<span class="sig-name descname"><span class="pre">visit_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TypeDefinition</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#bmt.toolkit_generator.ToolkitGenerator.visit_type" title="Permalink to this definition"></a></dt>
+<dd><p>Given a type, visit the type in the Biolink Model and pull necessary
+properties corresponding to that type.</p>
+<section id="id92">
+<h3>Parameters<a class="headerlink" href="#id92" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>typ: linkml_runtime.linkml_model.meta.TypeDefinition</dt><dd><p>The type definition</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
 </section>
 
 

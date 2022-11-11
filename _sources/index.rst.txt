@@ -10,12 +10,17 @@ Welcome to Biolink Model Toolkit's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+
 intro/intro
 intro/examples_usage
-
-Indices and tables
-==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. automodule:: bmt.toolkit
+   :members:
+
+.. automodule:: bmt.toolkit_generator
+   :members:
