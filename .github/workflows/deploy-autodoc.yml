@@ -24,7 +24,9 @@ jobs:
         run: pip install poetry
 
       - name: install
-        run: poetry install -E docs
+        run: |
+          poetry install
+          poetry install -E docs
 
       - name: Build documentation.
         run: |
