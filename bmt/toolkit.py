@@ -11,7 +11,6 @@ from linkml_runtime.linkml_model.meta import (
     SlotDefinition,
 )
 
-from bmt.toolkit_generator import ToolkitGenerator
 from bmt.utils import format_element, parse_name
 import logging
 
@@ -46,8 +45,7 @@ class Toolkit(object):
     def __init__(
         self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH
     ) -> None:
-        self.generator = ToolkitGenerator(schema)
-        self.generator.serialize()
+        self.generator = SchemaView(schema)
         self.view = SchemaView(schema)
 
     @lru_cache(CACHE_SIZE)
@@ -261,13 +259,39 @@ class Toolkit(object):
         """
         filtered_elements = []
         for e in elements:
-            eo = self.generator.obj_for(e)
+            eo = self.generator.get_element(e)
             if isinstance(eo, SlotDefinition):
                 if not eo.alias:
                     filtered_elements.append(e)
             else:
                 filtered_elements.append(e)
         return filtered_elements
+
+    @lru_cache(CACHE_SIZE)
+    def get_permissible_value_ancestors(self, enum_name: str, permissible_value: str) -> List[str]:
+        """
+        Get ancestors of a permissible value.
+
+        This method returns a list containing all the ancestors of a
+        permissible value of a given enum.
+
+        Parameters
+        ----------
+        enum_name: str
+            The name of the enum
+        permissible_value: str
+            The name of the permissible value
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        enum = self.generator.get_element(enum_name)
+        ancestors = self.view.permissible_values_ancestors(enum, permissible_value)
+        return ancestors
+
 
     @lru_cache(CACHE_SIZE)
     def get_ancestors(
@@ -439,7 +463,7 @@ class Toolkit(object):
         """
         parsed_name = parse_name(name)
         logger.debug(parsed_name)
-        element = self.generator.obj_for(parsed_name)
+        element = self.generator.get_element(parsed_name)
         if element is None and name in self.generator.aliases:
             logger.debug("in aliases")
             logger.debug(self.generator.aliases)
@@ -776,7 +800,7 @@ class Toolkit(object):
             else:
                 et = "uriorcurie"
             if formatted:
-                element_type = format_element(self.generator.obj_for(et))
+                element_type = format_element(self.generator.get_element(et))
             else:
                 element_type = et
         return element_type
@@ -1010,7 +1034,7 @@ class Toolkit(object):
 
         """
         parsed_name = parse_name(name)
-        element = self.generator.obj_for(parsed_name)
+        element = self.generator.get_element(parsed_name)
         return subset in element.in_subset
 
     @lru_cache(CACHE_SIZE)
@@ -1121,7 +1145,7 @@ class Toolkit(object):
                 logger.debug(a)
                 if a in common_ancestors:
                     if formatted:
-                        element = format_element(self.generator.obj_for(a))
+                        element = format_element(self.generator.get_element(a))
                     else:
                         element = a
                     return element
@@ -1354,7 +1378,7 @@ class Toolkit(object):
         """
         if formatted:
             formatted_elements = [
-                format_element(self.generator.obj_for(x)) for x in elements
+                format_element(self.generator.get_element(x)) for x in elements
             ]
         else:
             formatted_elements = elements
