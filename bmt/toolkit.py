@@ -509,8 +509,6 @@ class Toolkit(object):
                 )
             else:
                 slot_domain.append(element.domain)
-        print(element.domain)
-        print(element.domain_of)
         for d in element.domain_of:
             if d not in domain_classes:
                 if include_ancestors:
