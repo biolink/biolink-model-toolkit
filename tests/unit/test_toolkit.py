@@ -347,8 +347,7 @@ def test_get_slot_range(toolkit):
 
 
 def test_get_all_slots_with_class_domain(toolkit):
-    assert "has drug" in toolkit.get_all_slots_with_class_domain(TREATMENT)
-    assert "name" in toolkit.get_all_slots_with_class_domain(
+    assert "has attribute" in toolkit.get_all_slots_with_class_domain(
         "entity", check_ancestors=True, mixin=True
     )
     assert "name" not in toolkit.get_all_slots_with_class_domain(
@@ -360,12 +359,6 @@ def test_get_all_slots_with_class_domain(toolkit):
     # we don't really have this use case in the model right now - where a domain's mixin has an attribute
     assert "has unit" in toolkit.get_all_slots_with_class_domain(
         "quantity value", check_ancestors=False, mixin=True
-    )
-    assert "name" in toolkit.get_all_slots_with_class_domain(
-        "entity", check_ancestors=True, mixin=False
-    )
-    assert "biolink:has_drug" in toolkit.get_all_slots_with_class_domain(
-        TREATMENT, formatted=True
     )
 
 
