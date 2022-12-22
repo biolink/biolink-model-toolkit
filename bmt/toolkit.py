@@ -289,9 +289,33 @@ class Toolkit(object):
 
         """
         enum = self.generator.get_element(enum_name)
-        ancestors = self.view.permissible_values_ancestors(enum, permissible_value)
+        ancestors = self.view.permissible_value_ancestors(enum.name, permissible_value)
         return ancestors
 
+    @lru_cache(CACHE_SIZE)
+    def get_permissible_value_parent(self, enum_name: str, permissible_value: str) -> str:
+        """
+        Get parent of a permissible value.
+
+        This method returns a list containing all the parent of a
+        permissible value of a given enum.
+
+        Parameters
+        ----------
+        enum_name: str
+            The name of the enum
+        permissible_value: str
+            The name of the permissible value
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        enum = self.generator.get_element(enum_name)
+        parent = self.view.permissible_values_parent(enum, permissible_value)
+        return parent
 
     @lru_cache(CACHE_SIZE)
     def get_ancestors(

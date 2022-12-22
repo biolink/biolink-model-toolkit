@@ -253,6 +253,11 @@ def test_ancestors(toolkit):
     assert THING_WITH_TAXON in toolkit.get_ancestors(PHENOTYPIC_FEATURE)
 
 
+def test_permissible_value_ancestors(toolkit):
+    assert "increased" in toolkit.generator.permissible_value_ancestors("upregulated", "DirectionQualifierEnum")
+    assert "modified_form" in toolkit.generator.permissible_value_ancestors("snp_form", "ChemicalOrGeneOrGeneProductFormOrVariantEnum")
+
+
 def test_ancestors_for_kgx(toolkit):
     ancestors1 = toolkit.get_ancestors(PHENOTYPIC_FEATURE, formatted=True, mixin=False)
     assert ancestors1 is not None
