@@ -114,14 +114,14 @@ def test_get_all_associations(toolkit):
 
 def test_get_all_node_properties(toolkit):
     properties = toolkit.get_all_node_properties()
-    assert "name" in properties
+    assert "provided by" in properties
     assert "category" in properties
     assert "has gene" in properties
     assert RELATED_TO not in properties
     assert SUBJECT not in properties
 
     properties = toolkit.get_all_node_properties(formatted=True)
-    assert "biolink:name" in properties
+    assert "biolink:provided_by" in properties
     assert "biolink:category" in properties
     assert "biolink:has_gene" in properties
     assert BIOLINK_SUBJECT not in properties
