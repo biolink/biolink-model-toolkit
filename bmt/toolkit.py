@@ -20,9 +20,8 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = (
-    "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/biolink-model.yaml"
-)
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/predicate_mapping.yaml'
 
 
 NODE_PROPERTY = "node property"
@@ -47,9 +46,12 @@ class Toolkit(object):
     """
 
     def __init__(
-        self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH
+        self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH,
+            predicate_map: Url = PREDICATE_MAP
     ) -> None:
         self.view = SchemaView(schema)
+        r = requests.get(predicate_map)
+        self.pmap = yaml.safe_load(r.text)
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements(self, formatted: bool = False) -> List[str]:
@@ -317,16 +319,12 @@ class Toolkit(object):
         """
         association = {}
 
-        r = requests.get('https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/predicate_mapping.yaml')
-        predicate_map = yaml.safe_load(r.text)
-
-        for mp in predicate_map.values():
+        for mp in self.pmap.values():
             for item in mp:
                 if item['mapped predicate'] == mapped_predicate:
                     for k, v in item.items():
                         association[format_element(self.get_element(k))] = v
         return association
-
 
     @lru_cache(CACHE_SIZE)
     def get_permissible_value_parent(self, permissible_value: str, enum_name: str) -> str:
