@@ -3,7 +3,7 @@ import yaml
 import deprecation
 import requests
 from functools import lru_cache, reduce
-from typing import List, Union, TextIO, Optional
+from typing import List, Union, TextIO, Optional, Dict
 from linkml_runtime.utils.schemaview import SchemaView
 from linkml_runtime.linkml_model.meta import (
     SchemaDefinition,
@@ -50,9 +50,6 @@ class Toolkit(object):
         self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH
     ) -> None:
         self.view = SchemaView(schema)
-
-        r = requests.get("https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/predicate_mapping.yaml")
-        self.predicate_map = yaml.safe_load(r.content)
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements(self, formatted: bool = False) -> List[str]:
@@ -298,6 +295,38 @@ class Toolkit(object):
         if formatted:
             return self._format_all_elements(ancestors)
         return ancestors
+
+    @lru_cache(CACHE_SIZE)
+    def get_predicate_mapping(self, mapped_predicate: str) -> Dict[str, str]:
+        """
+        Get the predicates that map to a given predicate.
+
+        This method returns a list containing all the predicates that map to
+        a given predicate.
+
+        Parameters
+        ----------
+        mapped_predicate: str
+            The name of the mapped predicate
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        association = {}
+
+        r = requests.get('https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/predicate_mapping.yaml')
+        predicate_map = yaml.safe_load(r.text)
+
+        for mp in predicate_map.values():
+            for item in mp:
+                if item['mapped predicate'] == mapped_predicate:
+                    for k, v in item.items():
+                        association[format_element(self.get_element(k))] = v
+        return association
+
 
     @lru_cache(CACHE_SIZE)
     def get_permissible_value_parent(self, permissible_value: str, enum_name: str) -> str:

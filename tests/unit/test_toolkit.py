@@ -47,7 +47,8 @@ def test_get_id_prefixes(toolkit):
 
 
 def test_predicate_map(toolkit):
-    print(toolkit.predicate_map)
+    mp = toolkit.get_predicate_mapping("augments")
+    assert mp.get("biolink:object_aspect_qualifier") == 'activity or abundance'
 
 
 def test_rna(toolkit):
