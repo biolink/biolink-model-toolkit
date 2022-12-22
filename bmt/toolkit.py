@@ -501,7 +501,7 @@ class Toolkit(object):
         slot_domain = []
         domain_classes = set()
         element = self.get_element(slot_name)
-        if element and element.range:
+        if element and element.domain:
             domain_classes.add(element.domain)
             if include_ancestors:
                 slot_domain.extend(
