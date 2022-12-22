@@ -201,7 +201,6 @@ def test_is_translator_canonical_predicate(toolkit):
 
 
 def test_has_inverse(toolkit):
-    assert toolkit.has_inverse("superclass of")
     assert toolkit.has_inverse("completed by")
     assert not toolkit.has_inverse("this_does_not_exist")
 
