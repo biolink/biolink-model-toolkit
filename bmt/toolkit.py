@@ -1,7 +1,10 @@
+import logging
+import yaml
+import deprecation
+import requests
 from functools import lru_cache, reduce
 from typing import List, Union, TextIO, Optional
 from linkml_runtime.utils.schemaview import SchemaView
-import deprecation
 from linkml_runtime.linkml_model.meta import (
     SchemaDefinition,
     Element,
@@ -12,7 +15,7 @@ from linkml_runtime.linkml_model.meta import (
 )
 
 from bmt.utils import format_element, parse_name
-import logging
+
 
 Url = str
 Path = str
@@ -20,6 +23,7 @@ Path = str
 REMOTE_PATH = (
     "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/biolink-model.yaml"
 )
+
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
@@ -46,6 +50,9 @@ class Toolkit(object):
         self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH
     ) -> None:
         self.view = SchemaView(schema)
+
+        r = requests.get("https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/predicate_mapping.yaml")
+        self.predicate_map = yaml.safe_load(r.content)
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements(self, formatted: bool = False) -> List[str]:

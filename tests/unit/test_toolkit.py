@@ -46,6 +46,10 @@ def test_get_id_prefixes(toolkit):
     print(tclass.id_prefixes)
 
 
+def test_predicate_map(toolkit):
+    print(toolkit.predicate_map)
+
+
 def test_rna(toolkit):
     assert 'molecular entity' in toolkit.get_descendants('biolink:Entity')
     assert 'microRNA' in toolkit.get_descendants('biolink:Entity')
