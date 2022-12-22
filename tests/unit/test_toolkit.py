@@ -409,11 +409,11 @@ def test_get_all_predicates_with_class_domain(toolkit):
 
 def test_get_all_predicates_with_class_range(toolkit):
     assert "manifestation of" in toolkit.get_all_predicates_with_class_range("disease")
-    assert "disease has basis in" in toolkit.get_all_predicates_with_class_range(
+    assert "target for" in toolkit.get_all_predicates_with_class_range(
         "disease", check_ancestors=True
     )
     assert (
-        "biolink:disease_has_basis_in"
+        "biolink:target_for"
         in toolkit.get_all_predicates_with_class_range(
             "disease", check_ancestors=True, formatted=True
         )
