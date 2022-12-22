@@ -465,7 +465,7 @@ class Toolkit(object):
         logger.debug(parsed_name)
         element = self.generator.get_element(parsed_name)
         if element is None and name in self.generator.all_aliases():
-            element = self.get_element(self.generator.all_aliases()[name])
+            element = self.get_element(name)
         if element is None and "_" in name:
             logger.debug("has a _")
             element = self.get_element(name.replace("_", " "))
@@ -501,7 +501,7 @@ class Toolkit(object):
         slot_domain = []
         domain_classes = set()
         element = self.get_element(slot_name)
-        if element and element.domain:
+        if element and element.range:
             domain_classes.add(element.domain)
             if include_ancestors:
                 slot_domain.extend(
@@ -509,6 +509,8 @@ class Toolkit(object):
                 )
             else:
                 slot_domain.append(element.domain)
+        print(element.domain)
+        print(element.domain_of)
         for d in element.domain_of:
             if d not in domain_classes:
                 if include_ancestors:
