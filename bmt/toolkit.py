@@ -45,7 +45,6 @@ class Toolkit(object):
     def __init__(
         self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH
     ) -> None:
-        self.generator = SchemaView(schema)
         self.view = SchemaView(schema)
 
     @lru_cache(CACHE_SIZE)
@@ -93,7 +92,7 @@ class Toolkit(object):
 
         """
         classes = []
-        for x in self.generator.schema.classes:
+        for x in self.view.schema.classes:
             classes.append(x)
         filtered_classes = self._filter_secondary(classes)
         return self._format_all_elements(filtered_classes, formatted)
@@ -118,7 +117,7 @@ class Toolkit(object):
 
         """
         slots = []
-        for x in self.generator.schema.slots:
+        for x in self.view.schema.slots:
             slots.append(x)
         filtered_slots = self._filter_secondary(slots)
         return self._format_all_elements(filtered_slots, formatted)
@@ -143,7 +142,7 @@ class Toolkit(object):
 
         """
         types = []
-        for x in self.generator.all_types():
+        for x in self.view.all_types():
             types.append(x)
         return self._format_all_elements(types, formatted)
 
@@ -259,7 +258,7 @@ class Toolkit(object):
         """
         filtered_elements = []
         for e in elements:
-            eo = self.generator.get_element(e)
+            eo = self.view.get_element(e)
             if isinstance(eo, SlotDefinition):
                 if not eo.alias:
                     filtered_elements.append(e)
@@ -363,7 +362,7 @@ class Toolkit(object):
             if a_element.mixins:
                 for mixin in a_element.mixins:
                     mixin_element = self.get_element(mixin)
-                    mixin_parents = self.generator.ancestors(mixin_element)
+                    mixin_parents = self.view.ancestors(mixin_element)
                     mixins_parents = mixins_parents + mixin_parents
         return mixins_parents
 
@@ -437,7 +436,7 @@ class Toolkit(object):
         children = []
         element = self.get_element(name)
         if element:
-            children = self.generator.get_children(element.name, mixin)
+            children = self.view.get_children(element.name, mixin)
         return self._format_all_elements(children, formatted)
 
     @lru_cache(CACHE_SIZE)
@@ -487,16 +486,16 @@ class Toolkit(object):
         """
         parsed_name = parse_name(name)
         logger.debug(parsed_name)
-        element = self.generator.get_element(parsed_name)
-        if element is None and self.generator.all_aliases() is not None:
-            for e in self.generator.all_aliases():
-                if name in self.generator.all_aliases()[e]:
-                    element = self.generator.get_element(e)
+        element = self.view.get_element(parsed_name)
+        if element is None and self.view.all_aliases() is not None:
+            for e in self.view.all_aliases():
+                if name in self.view.all_aliases()[e]:
+                    element = self.view.get_element(e)
         if element is None and "_" in name:
             print("has a _")
             element = self.get_element(name.replace("_", " "))
         if element is None:
-            for e, el in self.generator.all_elements().items():
+            for e, el in self.view.all_elements().items():
                 if el.name.lower() == name.lower():
                     element = el
         return element
@@ -830,7 +829,7 @@ class Toolkit(object):
             else:
                 et = "uriorcurie"
             if formatted:
-                element_type = format_element(self.generator.get_element(et))
+                element_type = format_element(self.view.get_element(et))
             else:
                 element_type = et
         return element_type
@@ -857,7 +856,7 @@ class Toolkit(object):
 
         """
         slots = []
-        for k, v in self.generator.schema.slots.items():
+        for k, v in self.view.schema.slots.items():
             if check_ancestors:
                 if (v.domain == element.name or v.domain in self.get_ancestors(element.name, mixin)
                         or element.name in v.domain_of
@@ -890,7 +889,7 @@ class Toolkit(object):
 
         """
         slots = []
-        for k, v in self.generator.schema.slots.items():
+        for k, v in self.view.schema.slots.items():
             if check_ancestors:
                 if v.range == element.name or v.range in self.get_ancestors(
                     element.name, mixin
@@ -1064,7 +1063,7 @@ class Toolkit(object):
 
         """
         parsed_name = parse_name(name)
-        element = self.generator.get_element(parsed_name)
+        element = self.view.get_element(parsed_name)
         return subset in element.in_subset
 
     @lru_cache(CACHE_SIZE)
@@ -1175,7 +1174,7 @@ class Toolkit(object):
                 logger.debug(a)
                 if a in common_ancestors:
                     if formatted:
-                        element = format_element(self.generator.get_element(a))
+                        element = format_element(self.view.get_element(a))
                     else:
                         element = a
                     return element
@@ -1200,8 +1199,8 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.get_mappings().get(
-            self.generator.namespaces.uri_for(identifier), set()
+        mappings = self.view.get_mappings().get(
+            self.view.namespaces.uri_for(identifier), set()
         )
         if not mappings:
             exact = set(self.get_element_by_exact_mapping(identifier))
@@ -1241,8 +1240,8 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.exact_mappings.get(
-            self.generator.namespaces.uri_for(identifier), set()
+        mappings = self.view.exact_mappings.get(
+            self.view.namespaces.uri_for(identifier), set()
         )
         logger.debug(mappings)
         return self._format_all_elements(mappings, formatted)
@@ -1268,8 +1267,8 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.close_mappings.get(
-            self.generator.namespaces.uri_for(identifier), set()
+        mappings = self.view.close_mappings.get(
+            self.view.namespaces.uri_for(identifier), set()
         )
         return self._format_all_elements(mappings, formatted)
 
@@ -1294,8 +1293,8 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.related_mappings.get(
-            self.generator.namespaces.uri_for(identifier), set()
+        mappings = self.view.related_mappings.get(
+            self.view.namespaces.uri_for(identifier), set()
         )
         return self._format_all_elements(mappings, formatted)
 
@@ -1320,8 +1319,8 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.narrow_mappings.get(
-            self.generator.namespaces.uri_for(identifier), set()
+        mappings = self.view.narrow_mappings.get(
+            self.view.namespaces.uri_for(identifier), set()
         )
         return self._format_all_elements(mappings, formatted)
 
@@ -1346,8 +1345,8 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.broad_mappings.get(
-            self.generator.namespaces.uri_for(identifier), set()
+        mappings = self.view.broad_mappings.get(
+            self.view.namespaces.uri_for(identifier), set()
         )
         return self._format_all_elements(mappings, formatted)
 
@@ -1372,7 +1371,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.get_element_by_mapping(identifier)
+        mappings = self.view.get_element_by_mapping(identifier)
         return self._format_all_elements(mappings, formatted)
 
     def _format_all_elements(
@@ -1396,7 +1395,7 @@ class Toolkit(object):
         """
         if formatted:
             formatted_elements = [
-                format_element(self.generator.get_element(x)) for x in elements
+                format_element(self.view.get_element(x)) for x in elements
             ]
         else:
             formatted_elements = elements
@@ -1413,7 +1412,7 @@ class Toolkit(object):
             The biolink-model version
 
         """
-        return self.generator.schema.version
+        return self.view.schema.version
 
     @deprecation.deprecated(
         deprecated_in="0.3.0",
