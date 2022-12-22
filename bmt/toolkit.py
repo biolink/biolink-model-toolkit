@@ -18,7 +18,7 @@ Url = str
 Path = str
 
 REMOTE_PATH = (
-    "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.0/biolink-model.yaml"
+    "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/biolink-model.yaml"
 )
 
 NODE_PROPERTY = "node property"
@@ -143,7 +143,7 @@ class Toolkit(object):
 
         """
         types = []
-        for x in self.generator.schema.types:
+        for x in self.generator.all_types():
             types.append(x)
         return self._format_all_elements(types, formatted)
 
@@ -413,7 +413,7 @@ class Toolkit(object):
         children = []
         element = self.get_element(name)
         if element:
-            children = self.generator.children(element.name, mixin)
+            children = self.generator.get_children(element.name, mixin)
         return self._format_all_elements(children, formatted)
 
     @lru_cache(CACHE_SIZE)
@@ -464,10 +464,8 @@ class Toolkit(object):
         parsed_name = parse_name(name)
         logger.debug(parsed_name)
         element = self.generator.get_element(parsed_name)
-        if element is None and name in self.generator.aliases:
-            logger.debug("in aliases")
-            logger.debug(self.generator.aliases)
-            element = self.get_element(self.generator.aliases[name])
+        if element is None and name in self.generator.all_aliases():
+            element = self.get_element(self.generator.all_aliases()[name])
         if element is None and "_" in name:
             logger.debug("has a _")
             element = self.get_element(name.replace("_", " "))
@@ -795,6 +793,8 @@ class Toolkit(object):
         element = self.get_element(slot_name)
         if element:
             types = self.get_all_types()
+            if element.range is None and self.view.schema.default_range:
+                element.range = self.view.schema.default_range
             if element.range in types:
                 et = element.range
             else:
@@ -1170,7 +1170,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.mappings.get(
+        mappings = self.generator.get_mappings().get(
             self.generator.namespaces.uri_for(identifier), set()
         )
         if not mappings:
@@ -1342,7 +1342,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.mappings.get(
+        mappings = self.generator.get_mappings.get(
             self.generator.namespaces.uri_for(identifier), set()
         )
         exact = set(self.get_element_by_exact_mapping(identifier))
