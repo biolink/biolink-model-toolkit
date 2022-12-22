@@ -493,8 +493,12 @@ class Toolkit(object):
                 if name in self.generator.all_aliases()[e]:
                     element = self.generator.get_element(e)
         if element is None and "_" in name:
-            logger.debug("has a _")
-            element = self.generator.get_element(name.replace("_", " "))
+            print("has a _")
+            element = self.get_element(name.replace("_", " "))
+        if element is None:
+            for e, el in self.generator.all_elements().items():
+                if el.name.lower() == name.lower():
+                    element = el
         return element
 
     def get_slot_domain(

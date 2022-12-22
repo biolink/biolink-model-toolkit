@@ -149,17 +149,17 @@ def test_get_element(toolkit):
     o = toolkit.get_element("molecular function")
     assert o and o.name == MOLECULAR_ACTIVITY
 
-    # o = toolkit.get_element("molecular_function")
-    # assert o and o.name == MOLECULAR_ACTIVITY
+    o = toolkit.get_element("molecular_function")
+    assert o and o.name == MOLECULAR_ACTIVITY
 
     o = toolkit.get_element("cellular_component")
     assert o and o.name == "cellular component"
 
-    # o = toolkit.get_element("RNA Product")
-    # assert o and o.name == "RNA product"
-    #
-    # o = toolkit.get_element("rna product")
-    # assert o and o.name == "RNA product"
+    o = toolkit.get_element("RNA Product")
+    assert o and o.name == "RNA product"
+
+    o = toolkit.get_element("rna product")
+    assert o and o.name == "RNA product"
 
 
 def test_is_node_property(toolkit):
