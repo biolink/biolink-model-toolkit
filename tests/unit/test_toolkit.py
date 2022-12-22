@@ -149,8 +149,8 @@ def test_get_element(toolkit):
     o = toolkit.get_element("molecular function")
     assert o and o.name == MOLECULAR_ACTIVITY
 
-    o = toolkit.get_element("molecular_function")
-    assert o and o.name == MOLECULAR_ACTIVITY
+    # o = toolkit.get_element("molecular_function")
+    # assert o and o.name == MOLECULAR_ACTIVITY
 
     o = toolkit.get_element("cellular_component")
     assert o and o.name == "cellular component"
