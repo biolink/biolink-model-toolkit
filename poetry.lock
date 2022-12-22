@@ -373,7 +373,7 @@ requests = "*"
 type = "git"
 url = "https://github.com/linkml/linkml-runtime.git"
 reference = "bmt_replacements"
-resolved_reference = "43a7c6dc745ddc4c152589a5da703db4ab1416fa"
+resolved_reference = "095733297c01fff8a1b175964342edb7956a2d88"
 
 [[package]]
 name = "markupsafe"

@@ -464,11 +464,13 @@ class Toolkit(object):
         parsed_name = parse_name(name)
         logger.debug(parsed_name)
         element = self.generator.get_element(parsed_name)
-        if element is None and name in self.generator.all_aliases():
-            element = self.get_element(name)
+        if element is None and self.generator.all_aliases() is not None:
+            for e in self.generator.all_aliases():
+                if name in self.generator.all_aliases()[e]:
+                    element = self.generator.get_element(e)
         if element is None and "_" in name:
             logger.debug("has a _")
-            element = self.get_element(name.replace("_", " "))
+            element = self.generator.get_element(name.replace("_", " "))
         return element
 
     def get_slot_domain(
