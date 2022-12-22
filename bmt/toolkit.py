@@ -1,5 +1,6 @@
 import logging
 import yaml
+import csv
 import deprecation
 import requests
 from functools import lru_cache, reduce
@@ -22,7 +23,7 @@ Path = str
 
 REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/biolink-model.yaml"
 PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/predicate_mapping.yaml'
-
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/infores_catalog_nodes.tsv'
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
@@ -47,11 +48,28 @@ class Toolkit(object):
 
     def __init__(
         self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH,
-            predicate_map: Url = PREDICATE_MAP
+            predicate_map: Url = PREDICATE_MAP,
+            infores_map: Url = INFORES_MAP
     ) -> None:
         self.view = SchemaView(schema)
         r = requests.get(predicate_map)
         self.pmap = yaml.safe_load(r.text)
+
+        r = requests.get(infores_map)
+        content = r.content.decode('iso-8859-1')
+        self.infores_map = {}
+        for line in csv.reader(content.splitlines(), delimiter='\t'):
+            if line[2] == 'id':
+                continue
+            self.infores_map[line[2]] = {
+                "status": line[0],
+                "name": line[1],
+                "url": line[3],
+                "synonyms": line[4],
+                "has_contributor": line[6],
+                "description": line[7],
+                "category": line[8]
+            }
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements(self, formatted: bool = False) -> List[str]:
@@ -297,6 +315,28 @@ class Toolkit(object):
         if formatted:
             return self._format_all_elements(ancestors)
         return ancestors
+
+    @lru_cache(CACHE_SIZE)
+    def get_infores_details(self, infores_id: str) -> Dict[str]:
+        """
+        Get details of an information resource.
+
+        This method returns a dictionary containing details of a given
+        information resource.
+
+        Parameters
+        ----------
+        infores_id: str
+            The identifier of the information resource
+
+        Returns
+        -------
+        Dict[str, Any]
+            A dictionary containing details of the information resource
+
+        """
+        infores = self.infores_map.get(infores_id)
+        return infores
 
     @lru_cache(CACHE_SIZE)
     def get_predicate_mapping(self, mapped_predicate: str) -> Dict[str, str]:

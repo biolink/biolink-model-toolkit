@@ -51,6 +51,11 @@ def test_predicate_map(toolkit):
     assert mp.get("biolink:object_aspect_qualifier") == 'activity or abundance'
 
 
+def test_infores(toolkit):
+    test = toolkit.get_infores_details("infores:agrkb")
+    print(test)
+
+
 def test_rna(toolkit):
     assert 'molecular entity' in toolkit.get_descendants('biolink:Entity')
     assert 'microRNA' in toolkit.get_descendants('biolink:Entity')
