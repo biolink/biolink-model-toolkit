@@ -428,7 +428,7 @@ def test_get_all_properties_with_class_domain(toolkit):
     assert "predicate" in toolkit.get_all_properties_with_class_domain(
         ASSOCIATION, check_ancestors=True
     )
-    assert BIOLINK_SUBJECT in toolkit.get_all_properties_with_class_domain(
+    assert "biolink:predicate" in toolkit.get_all_properties_with_class_domain(
         ASSOCIATION, check_ancestors=True, formatted=True
     )
 
