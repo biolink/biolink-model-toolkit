@@ -268,7 +268,7 @@ class Toolkit(object):
         return filtered_elements
 
     @lru_cache(CACHE_SIZE)
-    def get_permissible_value_ancestors(self, enum_name: str, permissible_value: str) -> List[str]:
+    def get_permissible_value_ancestors(self, permissible_value: str, enum_name: str, formatted: bool = False) -> List[str]:
         """
         Get ancestors of a permissible value.
 
@@ -288,12 +288,13 @@ class Toolkit(object):
             A list of elements
 
         """
-        enum = self.generator.get_element(enum_name)
-        ancestors = self.view.permissible_value_ancestors(enum.name, permissible_value)
+        ancestors = self.view.permissible_value_ancestors(permissible_value, enum_name)
+        if formatted:
+            return self._format_all_elements(ancestors)
         return ancestors
 
     @lru_cache(CACHE_SIZE)
-    def get_permissible_value_parent(self, enum_name: str, permissible_value: str) -> str:
+    def get_permissible_value_parent(self, permissible_value: str, enum_name: str) -> str:
         """
         Get parent of a permissible value.
 
@@ -313,8 +314,7 @@ class Toolkit(object):
             A list of elements
 
         """
-        enum = self.generator.get_element(enum_name)
-        parent = self.view.permissible_values_parent(enum, permissible_value)
+        parent = self.view.permissible_value_parent(permissible_value, enum_name)
         return parent
 
     @lru_cache(CACHE_SIZE)
