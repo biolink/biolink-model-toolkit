@@ -1328,7 +1328,7 @@ class Toolkit(object):
         self, identifier: str, formatted: bool = False
     ) -> List[str]:
         """
-        Given an identifier as IRI/CURIE, find all Biolink element that corresponds
+        Given an identifier as IRI/CURIE, find all Biolink elements that correspond
         to the given identifier as part of its mappings.
 
         Parameters
@@ -1344,19 +1344,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.get_mappings.get(
-            self.generator.namespaces.uri_for(identifier), set()
-        )
-        exact = set(self.get_element_by_exact_mapping(identifier))
-        mappings.update(exact)
-        close = set(self.get_element_by_close_mapping(identifier))
-        mappings.update(close)
-        related = set(self.get_element_by_related_mapping(identifier))
-        mappings.update(related)
-        narrow = set(self.get_element_by_narrow_mapping(identifier))
-        mappings.update(narrow)
-        broad = set(self.get_element_by_broad_mapping(identifier))
-        mappings.update(broad)
+        mappings = self.generator.get_element_by_mapping(identifier)
         return self._format_all_elements(mappings, formatted)
 
     def _format_all_elements(

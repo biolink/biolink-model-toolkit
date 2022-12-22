@@ -315,12 +315,6 @@ def test_mapping(toolkit):
     assert len(toolkit.get_all_elements_by_mapping("UPHENO:0000001")) == 1
     assert "affects" in toolkit.get_all_elements_by_mapping("UPHENO:0000001")
 
-    assert len(toolkit.get_all_elements_by_mapping("RO:0002211")) == 1
-    assert "regulates" in toolkit.get_all_elements_by_mapping("RO:0002211")
-    assert "biolink:regulates" in toolkit.get_all_elements_by_mapping(
-        "RO:0002211", formatted=True
-    )
-
 
 def test_get_slot_domain(toolkit):
     assert NAMED_THING in toolkit.get_slot_domain("ameliorates")
