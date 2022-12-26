@@ -38,7 +38,7 @@ HAS_ACTIVE_COMPONENT = "has active component"
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.1.0"
+    assert version == "3.1.2"
 
 
 def test_get_id_prefixes(toolkit):
@@ -114,14 +114,14 @@ def test_get_all_associations(toolkit):
 
 def test_get_all_node_properties(toolkit):
     properties = toolkit.get_all_node_properties()
-    assert "name" in properties
+    assert "provided by" in properties
     assert "category" in properties
     assert "has gene" in properties
     assert RELATED_TO not in properties
     assert SUBJECT not in properties
 
     properties = toolkit.get_all_node_properties(formatted=True)
-    assert "biolink:name" in properties
+    assert "biolink:provided_by" in properties
     assert "biolink:category" in properties
     assert "biolink:has_gene" in properties
     assert BIOLINK_SUBJECT not in properties
@@ -201,7 +201,6 @@ def test_is_translator_canonical_predicate(toolkit):
 
 
 def test_has_inverse(toolkit):
-    assert toolkit.has_inverse("superclass of")
     assert toolkit.has_inverse("completed by")
     assert not toolkit.has_inverse("this_does_not_exist")
 
@@ -252,6 +251,12 @@ def test_ancestors(toolkit):
         PHENOTYPIC_FEATURE, mixin=False
     )
     assert THING_WITH_TAXON in toolkit.get_ancestors(PHENOTYPIC_FEATURE)
+
+
+def test_permissible_value_ancestors(toolkit):
+    assert "increased" in toolkit.get_permissible_value_ancestors("upregulated", "DirectionQualifierEnum")
+    assert "modified_form" in toolkit.get_permissible_value_ancestors("snp_form", "ChemicalOrGeneOrGeneProductFormOrVariantEnum")
+    assert "increased" in toolkit.get_permissible_value_parent("upregulated", "DirectionQualifierEnum")
 
 
 def test_ancestors_for_kgx(toolkit):
@@ -316,15 +321,9 @@ def test_mapping(toolkit):
     assert len(toolkit.get_all_elements_by_mapping("UPHENO:0000001")) == 1
     assert "affects" in toolkit.get_all_elements_by_mapping("UPHENO:0000001")
 
-    assert len(toolkit.get_all_elements_by_mapping("RO:0002211")) == 1
-    assert "regulates" in toolkit.get_all_elements_by_mapping("RO:0002211")
-    assert "biolink:regulates" in toolkit.get_all_elements_by_mapping(
-        "RO:0002211", formatted=True
-    )
-
 
 def test_get_slot_domain(toolkit):
-    assert BIOLOGICAL_ENTITY in toolkit.get_slot_domain("ameliorates")
+    assert NAMED_THING in toolkit.get_slot_domain("ameliorates")
     assert "biological process or activity" in toolkit.get_slot_domain(ENABLED_BY)
     assert BIOLOGICAL_ENTITY in toolkit.get_slot_domain(
         ENABLED_BY, include_ancestors=True
@@ -332,7 +331,7 @@ def test_get_slot_domain(toolkit):
     assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_slot_domain(
         ENABLED_BY, include_ancestors=True, formatted=True
     )
-    assert "entity" in toolkit.get_slot_domain("name")
+    # assert "entity" in toolkit.get_slot_domain("name")
     assert "entity" in toolkit.get_slot_domain("category")
     assert ASSOCIATION in toolkit.get_slot_domain("predicate")
 
@@ -347,8 +346,7 @@ def test_get_slot_range(toolkit):
 
 
 def test_get_all_slots_with_class_domain(toolkit):
-    assert "has drug" in toolkit.get_all_slots_with_class_domain(TREATMENT)
-    assert "name" in toolkit.get_all_slots_with_class_domain(
+    assert "has attribute" in toolkit.get_all_slots_with_class_domain(
         "entity", check_ancestors=True, mixin=True
     )
     assert "name" not in toolkit.get_all_slots_with_class_domain(
@@ -360,12 +358,6 @@ def test_get_all_slots_with_class_domain(toolkit):
     # we don't really have this use case in the model right now - where a domain's mixin has an attribute
     assert "has unit" in toolkit.get_all_slots_with_class_domain(
         "quantity value", check_ancestors=False, mixin=True
-    )
-    assert "name" in toolkit.get_all_slots_with_class_domain(
-        "entity", check_ancestors=True, mixin=False
-    )
-    assert "biolink:has_drug" in toolkit.get_all_slots_with_class_domain(
-        TREATMENT, formatted=True
     )
 
 
@@ -409,11 +401,11 @@ def test_get_all_predicates_with_class_domain(toolkit):
 
 def test_get_all_predicates_with_class_range(toolkit):
     assert "manifestation of" in toolkit.get_all_predicates_with_class_range("disease")
-    assert "disease has basis in" in toolkit.get_all_predicates_with_class_range(
+    assert "target for" in toolkit.get_all_predicates_with_class_range(
         "disease", check_ancestors=True
     )
     assert (
-        "biolink:disease_has_basis_in"
+        "biolink:target_for"
         in toolkit.get_all_predicates_with_class_range(
             "disease", check_ancestors=True, formatted=True
         )
@@ -432,11 +424,11 @@ def test_get_all_properties_with_class_domain(toolkit):
         GENE, check_ancestors=True, formatted=True
     )
 
-    assert SUBJECT in toolkit.get_all_properties_with_class_domain(ASSOCIATION)
-    assert SUBJECT in toolkit.get_all_properties_with_class_domain(
+    assert "predicate" in toolkit.get_all_properties_with_class_domain(ASSOCIATION)
+    assert "predicate" in toolkit.get_all_properties_with_class_domain(
         ASSOCIATION, check_ancestors=True
     )
-    assert BIOLINK_SUBJECT in toolkit.get_all_properties_with_class_domain(
+    assert "biolink:predicate" in toolkit.get_all_properties_with_class_domain(
         ASSOCIATION, check_ancestors=True, formatted=True
     )
 

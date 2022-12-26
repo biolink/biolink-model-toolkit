@@ -11,7 +11,6 @@ from linkml_runtime.linkml_model.meta import (
     SlotDefinition,
 )
 
-from bmt.toolkit_generator import ToolkitGenerator
 from bmt.utils import format_element, parse_name
 import logging
 
@@ -19,7 +18,7 @@ Url = str
 Path = str
 
 REMOTE_PATH = (
-    "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.0/biolink-model.yaml"
+    "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/biolink-model.yaml"
 )
 
 NODE_PROPERTY = "node property"
@@ -46,8 +45,7 @@ class Toolkit(object):
     def __init__(
         self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH
     ) -> None:
-        self.generator = ToolkitGenerator(schema)
-        self.generator.serialize()
+        self.generator = SchemaView(schema)
         self.view = SchemaView(schema)
 
     @lru_cache(CACHE_SIZE)
@@ -145,7 +143,7 @@ class Toolkit(object):
 
         """
         types = []
-        for x in self.generator.schema.types:
+        for x in self.generator.all_types():
             types.append(x)
         return self._format_all_elements(types, formatted)
 
@@ -261,13 +259,63 @@ class Toolkit(object):
         """
         filtered_elements = []
         for e in elements:
-            eo = self.generator.obj_for(e)
+            eo = self.generator.get_element(e)
             if isinstance(eo, SlotDefinition):
                 if not eo.alias:
                     filtered_elements.append(e)
             else:
                 filtered_elements.append(e)
         return filtered_elements
+
+    @lru_cache(CACHE_SIZE)
+    def get_permissible_value_ancestors(self, permissible_value: str, enum_name: str, formatted: bool = False) -> List[str]:
+        """
+        Get ancestors of a permissible value.
+
+        This method returns a list containing all the ancestors of a
+        permissible value of a given enum.
+
+        Parameters
+        ----------
+        enum_name: str
+            The name of the enum
+        permissible_value: str
+            The name of the permissible value
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        ancestors = self.view.permissible_value_ancestors(permissible_value, enum_name)
+        if formatted:
+            return self._format_all_elements(ancestors)
+        return ancestors
+
+    @lru_cache(CACHE_SIZE)
+    def get_permissible_value_parent(self, permissible_value: str, enum_name: str) -> str:
+        """
+        Get parent of a permissible value.
+
+        This method returns a list containing all the parent of a
+        permissible value of a given enum.
+
+        Parameters
+        ----------
+        enum_name: str
+            The name of the enum
+        permissible_value: str
+            The name of the permissible value
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        parent = self.view.permissible_value_parent(permissible_value, enum_name)
+        return parent
 
     @lru_cache(CACHE_SIZE)
     def get_ancestors(
@@ -389,7 +437,7 @@ class Toolkit(object):
         children = []
         element = self.get_element(name)
         if element:
-            children = self.generator.children(element.name, mixin)
+            children = self.generator.get_children(element.name, mixin)
         return self._format_all_elements(children, formatted)
 
     @lru_cache(CACHE_SIZE)
@@ -439,14 +487,18 @@ class Toolkit(object):
         """
         parsed_name = parse_name(name)
         logger.debug(parsed_name)
-        element = self.generator.obj_for(parsed_name)
-        if element is None and name in self.generator.aliases:
-            logger.debug("in aliases")
-            logger.debug(self.generator.aliases)
-            element = self.get_element(self.generator.aliases[name])
+        element = self.generator.get_element(parsed_name)
+        if element is None and self.generator.all_aliases() is not None:
+            for e in self.generator.all_aliases():
+                if name in self.generator.all_aliases()[e]:
+                    element = self.generator.get_element(e)
         if element is None and "_" in name:
-            logger.debug("has a _")
+            print("has a _")
             element = self.get_element(name.replace("_", " "))
+        if element is None:
+            for e, el in self.generator.all_elements().items():
+                if el.name.lower() == name.lower():
+                    element = el
         return element
 
     def get_slot_domain(
@@ -771,12 +823,14 @@ class Toolkit(object):
         element = self.get_element(slot_name)
         if element:
             types = self.get_all_types()
+            if element.range is None and self.view.schema.default_range:
+                element.range = self.view.schema.default_range
             if element.range in types:
                 et = element.range
             else:
                 et = "uriorcurie"
             if formatted:
-                element_type = format_element(self.generator.obj_for(et))
+                element_type = format_element(self.generator.get_element(et))
             else:
                 element_type = et
         return element_type
@@ -1010,7 +1064,7 @@ class Toolkit(object):
 
         """
         parsed_name = parse_name(name)
-        element = self.generator.obj_for(parsed_name)
+        element = self.generator.get_element(parsed_name)
         return subset in element.in_subset
 
     @lru_cache(CACHE_SIZE)
@@ -1121,7 +1175,7 @@ class Toolkit(object):
                 logger.debug(a)
                 if a in common_ancestors:
                     if formatted:
-                        element = format_element(self.generator.obj_for(a))
+                        element = format_element(self.generator.get_element(a))
                     else:
                         element = a
                     return element
@@ -1146,7 +1200,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.mappings.get(
+        mappings = self.generator.get_mappings().get(
             self.generator.namespaces.uri_for(identifier), set()
         )
         if not mappings:
@@ -1302,7 +1356,7 @@ class Toolkit(object):
         self, identifier: str, formatted: bool = False
     ) -> List[str]:
         """
-        Given an identifier as IRI/CURIE, find all Biolink element that corresponds
+        Given an identifier as IRI/CURIE, find all Biolink elements that correspond
         to the given identifier as part of its mappings.
 
         Parameters
@@ -1318,19 +1372,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.generator.mappings.get(
-            self.generator.namespaces.uri_for(identifier), set()
-        )
-        exact = set(self.get_element_by_exact_mapping(identifier))
-        mappings.update(exact)
-        close = set(self.get_element_by_close_mapping(identifier))
-        mappings.update(close)
-        related = set(self.get_element_by_related_mapping(identifier))
-        mappings.update(related)
-        narrow = set(self.get_element_by_narrow_mapping(identifier))
-        mappings.update(narrow)
-        broad = set(self.get_element_by_broad_mapping(identifier))
-        mappings.update(broad)
+        mappings = self.generator.get_element_by_mapping(identifier)
         return self._format_all_elements(mappings, formatted)
 
     def _format_all_elements(
@@ -1354,7 +1396,7 @@ class Toolkit(object):
         """
         if formatted:
             formatted_elements = [
-                format_element(self.generator.obj_for(x)) for x in elements
+                format_element(self.generator.get_element(x)) for x in elements
             ]
         else:
             formatted_elements = elements

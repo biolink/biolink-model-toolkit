@@ -54,3 +54,6 @@ html_theme = 'sphinx_rtd_theme'
 
 # Options for autosectionlabel
 autosectionlabel_prefix_document = True
+
+# generate autosummary pages
+autosummary_generate = True

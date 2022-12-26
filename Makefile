@@ -5,7 +5,7 @@ install:
 	poetry install
 
 test:
-	poery run pytest tests/*
+	poetry run pytest tests/*
 
 cleandist:
 	rm -rf dist/
