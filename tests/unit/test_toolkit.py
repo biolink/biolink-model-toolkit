@@ -479,3 +479,8 @@ def test_get_all_types(toolkit):
             })
         except Exception as e:
             assert False, f"Error getting descendants for {element}: {e}"
+
+
+def test_get_all_multivalued_slots(toolkit):
+    assert "synonym" in toolkit.get_all_multivalued_slots()
+    assert "id" not in toolkit.get_all_multivalued_slots()

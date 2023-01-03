@@ -18,7 +18,6 @@ from pprint import pprint
 
 from bmt.utils import format_element, parse_name
 
-
 Url = str
 Path = str
 
@@ -29,7 +28,6 @@ INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/in
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
 RELATED_TO = "related to"
-
 
 CACHE_SIZE = 1024
 
@@ -48,7 +46,7 @@ class Toolkit(object):
     """
 
     def __init__(
-        self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH,
+            self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH,
             predicate_map: Url = PREDICATE_MAP,
             infores_map: Url = INFORES_MAP
     ) -> None:
@@ -292,7 +290,8 @@ class Toolkit(object):
         return filtered_elements
 
     @lru_cache(CACHE_SIZE)
-    def get_permissible_value_ancestors(self, permissible_value: str, enum_name: str, formatted: bool = False) -> List[str]:
+    def get_permissible_value_ancestors(self, permissible_value: str, enum_name: str, formatted: bool = False) -> List[
+        str]:
         """
         Get ancestors of a permissible value.
 
@@ -394,11 +393,11 @@ class Toolkit(object):
 
     @lru_cache(CACHE_SIZE)
     def get_ancestors(
-        self,
-        name: str,
-        reflexive: bool = True,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            name: str,
+            reflexive: bool = True,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> List[str]:
         """
         Gets a list of names of ancestors.
@@ -444,11 +443,11 @@ class Toolkit(object):
 
     @lru_cache(CACHE_SIZE)
     def get_descendants(
-        self,
-        name: str,
-        reflexive: bool = True,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            name: str,
+            reflexive: bool = True,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> List[str]:
         """
         Gets a list of names of descendants.
@@ -488,8 +487,26 @@ class Toolkit(object):
         return self._format_all_elements(filtered_desc, formatted)
 
     @lru_cache(CACHE_SIZE)
+    def get_all_multivalued_slots(self) -> List[str]:
+        """
+        Gets a list of names of all multivalued slots.
+
+        Returns
+        -------
+        List[str]
+            The names of all multivalued slots
+
+        """
+        multivalued_slots = []
+        slots = self.view.all_slots()
+        for slot_name, slot_def in slots.items():
+            if self.view.is_multivalued(slot_name):
+                multivalued_slots.append(slot_name)
+        return multivalued_slots
+
+    @lru_cache(CACHE_SIZE)
     def get_children(
-        self, name: str, formatted: bool = False, mixin: bool = True
+            self, name: str, formatted: bool = False, mixin: bool = True
     ) -> List[str]:
         """
         Gets a list of names of children.
@@ -576,11 +593,11 @@ class Toolkit(object):
         return element
 
     def get_slot_domain(
-        self,
-        slot_name,
-        include_ancestors: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            slot_name,
+            include_ancestors: bool = False,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> List[str]:
         """
         Get the domain for a given slot.
@@ -624,11 +641,11 @@ class Toolkit(object):
         return self._format_all_elements(slot_domain, formatted)
 
     def get_slot_range(
-        self,
-        slot_name,
-        include_ancestors: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            slot_name,
+            include_ancestors: bool = False,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> List[str]:
         """
         Get the range for a given slot.
@@ -661,11 +678,11 @@ class Toolkit(object):
         return self._format_all_elements(slot_range, formatted)
 
     def get_all_slots_with_class_domain(
-        self,
-        class_name,
-        check_ancestors: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            class_name,
+            check_ancestors: bool = False,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> List[str]:
         """
         Given a class, get all the slots where the class is the domain.
@@ -693,11 +710,11 @@ class Toolkit(object):
         return self._format_all_elements(slot_names, formatted)
 
     def get_all_slots_with_class_range(
-        self,
-        class_name,
-        check_ancestors: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            class_name,
+            check_ancestors: bool = False,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> List[str]:
         """
         Given a class, get all the slots where the class is the range.
@@ -725,11 +742,11 @@ class Toolkit(object):
         return self._format_all_elements(slot_names, formatted)
 
     def get_all_predicates_with_class_domain(
-        self,
-        class_name,
-        check_ancestors: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            class_name,
+            check_ancestors: bool = False,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> List[str]:
         """
         Given a class, get all Biolink predicates where the class is the domain.
@@ -763,11 +780,11 @@ class Toolkit(object):
         return self._format_all_elements(filtered_slots, formatted)
 
     def get_all_predicates_with_class_range(
-        self,
-        class_name,
-        check_ancestors: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            class_name,
+            check_ancestors: bool = False,
+            formatted: bool = False,
+            mixin: bool = True,
     ):
         """
         Given a class, get all Biolink predicates where the class is the range.
@@ -801,11 +818,11 @@ class Toolkit(object):
         return self._format_all_elements(filtered_slots, formatted)
 
     def get_all_properties_with_class_domain(
-        self,
-        class_name,
-        check_ancestors: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            class_name,
+            check_ancestors: bool = False,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> List[str]:
         """
         Given a class, get all Biolink properties where the class is the domain.
@@ -839,11 +856,11 @@ class Toolkit(object):
         return self._format_all_elements(filtered_slots, formatted)
 
     def get_all_properties_with_class_range(
-        self,
-        class_name,
-        check_ancestors: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            class_name,
+            check_ancestors: bool = False,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> List[str]:
         """
         Given a class, get all Biolink properties where the class is the range.
@@ -910,7 +927,7 @@ class Toolkit(object):
         return element_type
 
     def _get_all_slots_with_class_domain(
-        self, element: Element, check_ancestors: bool, mixin: bool = True
+            self, element: Element, check_ancestors: bool, mixin: bool = True
     ) -> List[Element]:
         """
         Given a class, get all the slots where the class is the domain.
@@ -943,7 +960,7 @@ class Toolkit(object):
         return slots
 
     def _get_all_slots_with_class_range(
-        self, element: Element, check_ancestors: bool, mixin: bool = True
+            self, element: Element, check_ancestors: bool, mixin: bool = True
     ) -> List[Element]:
         """
         Given a class, get all the slots where the class is the range.
@@ -967,7 +984,7 @@ class Toolkit(object):
         for k, v in self.view.schema.slots.items():
             if check_ancestors:
                 if v.range == element.name or v.range in self.get_ancestors(
-                    element.name, mixin
+                        element.name, mixin
                 ):
                     slots.append(v)
             else:
@@ -1199,11 +1216,11 @@ class Toolkit(object):
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_mapping(
-        self,
-        identifier: str,
-        most_specific: bool = False,
-        formatted: bool = False,
-        mixin: bool = True,
+            self,
+            identifier: str,
+            most_specific: bool = False,
+            formatted: bool = False,
+            mixin: bool = True,
     ) -> Optional[str]:
         """
         Get a Biolink Model element by mapping.
@@ -1296,7 +1313,7 @@ class Toolkit(object):
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_exact_mapping(
-        self, identifier: str, formatted: bool = False
+            self, identifier: str, formatted: bool = False
     ) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -1323,7 +1340,7 @@ class Toolkit(object):
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_close_mapping(
-        self, identifier: str, formatted: bool = False
+            self, identifier: str, formatted: bool = False
     ) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -1349,7 +1366,7 @@ class Toolkit(object):
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_related_mapping(
-        self, identifier: str, formatted: bool = False
+            self, identifier: str, formatted: bool = False
     ) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -1375,7 +1392,7 @@ class Toolkit(object):
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_narrow_mapping(
-        self, identifier: str, formatted: bool = False
+            self, identifier: str, formatted: bool = False
     ) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -1401,7 +1418,7 @@ class Toolkit(object):
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_broad_mapping(
-        self, identifier: str, formatted: bool = False
+            self, identifier: str, formatted: bool = False
     ) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find a Biolink element that corresponds
@@ -1427,7 +1444,7 @@ class Toolkit(object):
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements_by_mapping(
-        self, identifier: str, formatted: bool = False
+            self, identifier: str, formatted: bool = False
     ) -> List[str]:
         """
         Given an identifier as IRI/CURIE, find all Biolink elements that correspond
@@ -1450,7 +1467,7 @@ class Toolkit(object):
         return self._format_all_elements(mappings, formatted)
 
     def _format_all_elements(
-        self, elements: List[str], formatted: bool = False
+            self, elements: List[str], formatted: bool = False
     ) -> List[str]:
         """
         Format all the elements in a given list.
