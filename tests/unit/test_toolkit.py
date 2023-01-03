@@ -460,3 +460,27 @@ def test_get_value_type_for_slot(toolkit):
     assert "biolink:CategoryType" in toolkit.get_value_type_for_slot(
         "category", formatted=True
     )
+
+
+def test_get_all_types(toolkit):
+    basic_descendants = {}
+
+    # get_all_types()
+    types = toolkit.get_all_types()
+
+    for element in types:
+        try:
+            basic_descendants.update({
+                element: toolkit.get_descendants(
+                    element,
+                    reflexive=False,
+                    mixin=False,
+                )
+            })
+        except Exception as e:
+            assert False, f"Error getting descendants for {element}: {e}"
+
+
+def test_get_all_multivalued_slots(toolkit):
+    assert "synonym" in toolkit.get_all_multivalued_slots()
+    assert "id" not in toolkit.get_all_multivalued_slots()
