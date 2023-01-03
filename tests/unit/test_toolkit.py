@@ -460,3 +460,20 @@ def test_get_value_type_for_slot(toolkit):
     assert "biolink:CategoryType" in toolkit.get_value_type_for_slot(
         "category", formatted=True
     )
+
+
+def test_get_all_types(toolkit):
+    types = toolkit.get_all_types()
+    basic_descendants = {}
+    for element in types:
+        try:
+            basic_descendants.update({
+                element: toolkit.get_descendants(
+                    element,
+                    reflexive=False,
+                    mixin=False,
+                )
+
+            })
+        except Exception as e:
+            print(e, element)

@@ -568,7 +568,6 @@ class Toolkit(object):
                 if name in self.view.all_aliases()[e]:
                     element = self.view.get_element(e)
         if element is None and "_" in name:
-            print("has a _")
             element = self.get_element(name.replace("_", " "))
         if element is None:
             for e, el in self.view.all_elements().items():
