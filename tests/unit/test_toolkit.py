@@ -46,6 +46,16 @@ def test_get_id_prefixes(toolkit):
     print(tclass.id_prefixes)
 
 
+def test_predicate_map(toolkit):
+    mp = toolkit.get_predicate_mapping("augments")
+    assert mp.get("biolink:object_aspect_qualifier") == 'activity or abundance'
+
+
+def test_infores(toolkit):
+    aragorn = toolkit.get_infores_details("infores:aragorn")
+    assert aragorn["name"] == "ARAGORN"
+
+
 def test_rna(toolkit):
     assert 'molecular entity' in toolkit.get_descendants('biolink:Entity')
     assert 'microRNA' in toolkit.get_descendants('biolink:Entity')
