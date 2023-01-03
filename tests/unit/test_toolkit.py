@@ -52,8 +52,8 @@ def test_predicate_map(toolkit):
 
 
 def test_infores(toolkit):
-    test = toolkit.get_infores_details("infores:agrkb")
-    print(test)
+    aragorn = toolkit.get_infores_details("infores:aragorn")
+    assert aragorn["name"] == "ARAGORN"
 
 
 def test_rna(toolkit):

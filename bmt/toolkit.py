@@ -14,6 +14,7 @@ from linkml_runtime.linkml_model.meta import (
     ClassDefinition,
     SlotDefinition,
 )
+from pprint import pprint
 
 from bmt.utils import format_element, parse_name
 
@@ -317,7 +318,7 @@ class Toolkit(object):
         return ancestors
 
     @lru_cache(CACHE_SIZE)
-    def get_infores_details(self, infores_id: str) -> Dict[str]:
+    def get_infores_details(self, infores_id: str):
         """
         Get details of an information resource.
 
@@ -335,6 +336,7 @@ class Toolkit(object):
             A dictionary containing details of the information resource
 
         """
+        pprint(self.infores_map)
         infores = self.infores_map.get(infores_id)
         return infores
 
