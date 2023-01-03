@@ -463,8 +463,11 @@ def test_get_value_type_for_slot(toolkit):
 
 
 def test_get_all_types(toolkit):
-    types = toolkit.get_all_types()
     basic_descendants = {}
+
+    # get_all_types()
+    types = toolkit.get_all_types()
+
     for element in types:
         try:
             basic_descendants.update({
@@ -473,7 +476,6 @@ def test_get_all_types(toolkit):
                     reflexive=False,
                     mixin=False,
                 )
-
             })
         except Exception as e:
-            print(e, element)
+            assert False, f"Error getting descendants for {element}: {e}"
