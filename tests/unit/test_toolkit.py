@@ -35,6 +35,53 @@ TREATMENT = "treatment"
 ACTIVE_IN = "active in"
 HAS_ACTIVE_COMPONENT = "has active component"
 
+#
+# Example 'reachable_from' tagged enum from Biolink 3.1.1
+#
+#   AnatomicalContextQualifierEnum:
+#     reachable_from:
+#       source_ontology: bioregistry:uberon
+#       source_nodes:
+#         - UBERON:0001062
+#       is_direct: false
+#       relationship_types:
+#         - rdfs:subClassOf
+ANATOMICAL_CONTEXT_QUALIFIER_ENUM="AnatomicalContextQualifierEnum"
+
+SUBJECT_DIRECTION_QUALIFIER="subject direction qualifier"
+SUBJECT_DIRECTION_QUALIFIER_CURIE="biolink:subject_direction_qualifier"
+
+#
+# Example 'permissible_values' tagged enum from Biolink 3.1.1
+#
+#   DirectionQualifierEnum:
+#     permissible_values:
+#       increased:
+#       upregulated:
+#         is_a: increased
+#         close_mappings:
+#           - RO:0002336
+#         exact_mappings:
+#           - RO:0002213
+#         narrow_mappings:
+#           - RO:0004032
+#           - RO:0004034
+#           - RO:0002629
+#       decreased:
+#       downregulated:
+#         is_a: decreased
+#         exact_mappings:
+#           - RO:0004035
+#           - RO:0002212
+#         close_mappings:
+#           # This RTX contributed term is tagged as an inverse of this Biolink predicate
+#           - RO:0002335
+#         broad_mappings:
+#           # This term is slightly broader in that it includes that A acts within B as well
+#           - RO:0004033
+DIRECTION_QUALIFIER_ENUM="DirectionQualifierEnum"
+DIRECTION_QUALIFIER_ENUM_CURIE="DirectionQualifierEnum"
+
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
@@ -229,6 +276,42 @@ def test_category(toolkit):
     assert not toolkit.is_category("affects")
     assert not toolkit.is_category("gene or gene product")
 
+
+def test_is_qualifier(toolkit):
+    assert toolkit.is_qualifier(SUBJECT_DIRECTION_QUALIFIER)
+    assert toolkit.is_qualifier(SUBJECT_DIRECTION_QUALIFIER_CURIE)
+    assert not toolkit.is_qualifier(DIRECTION_QUALIFIER_ENUM)
+    assert not toolkit.is_qualifier(NAMED_THING)
+    assert not toolkit.is_qualifier(CAUSES)
+    assert not toolkit.is_qualifier("affects")
+    assert not toolkit.is_qualifier("gene or gene product")
+
+
+def test_is_enum(toolkit):
+    assert toolkit.is_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM)
+    assert toolkit.is_enum(DIRECTION_QUALIFIER_ENUM)
+    assert not toolkit.is_enum(NAMED_THING)
+    assert not toolkit.is_enum(CAUSES)
+    assert not toolkit.is_enum("affects")
+    assert not toolkit.is_enum("gene or gene product")
+
+
+def test_is_reachable_from_enum(toolkit):
+    assert toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM, "UBERON:0001981")  # Blood Vessel
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "upregulated")
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "RO:0002336")  # close mapping
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "RO:0004033")  # broad mapping
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "RO:0002213")  # exact mapping
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "RO:0004032")  # narrow mapping
+
+
+def test_is_permissible_value_of_enum(toolkit):
+    assert not toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM, "UBERON:0001981")  # Blood Vessel
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "upregulated")
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "RO:0002336")  # close mapping
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "RO:0004033")  # broad mapping
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "RO:0002213")  # exact mapping
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "RO:0004032")  # narrow mapping
 
 def test_ancestors(toolkit):
     assert RELATED_TO in toolkit.get_ancestors(CAUSES)
