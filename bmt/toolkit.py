@@ -1182,6 +1182,7 @@ class Toolkit(object):
     @lru_cache(CACHE_SIZE)
     def is_qualifier(self, name: str) -> bool:
         """
+        Predicate to test (by name) if a given Biolink Model element is an Edge Qualifier.
 
         Parameters
         ----------
@@ -1191,30 +1192,184 @@ class Toolkit(object):
         Returns
         -------
         bool
-            That the named element is a valid edge qualifier in Biolink Model
+            That the named element is a valid edge qualifier in the Biolink Model
         """
         element: Element = self.get_element(name)
         if not element:
             return False  # TODO: should probably raise an exception here instead?
         else:
-            # TODO: naive test of existence of qualifier... can we do better?
+            # TODO: naive test of existence of qualifier...
+            #       Not very robust....can we do better?
             return element.name.endswith("qualifier")
 
     @lru_cache(CACHE_SIZE)
-    def is_enum(self, identifier: str) -> bool:
-        raise NotImplementedError("Implement Me!")
+    def is_enum(self, name: str) -> bool:
+        """
+        Predicate to test (by name) if a given Biolink Model element is an Enum.
+
+        Parameters
+        ----------
+        name : str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is a valid enum in the Biolink Model
+        """
+        element: Element = self.get_element(name)
+        if not element:
+            return False  # TODO: should probably raise an exception here instead?
+        else:
+            # TODO: naive name-driven test of existence of qualifier...
+            #       Not very robust....can we do better?
+            return element.name.lower().endswith("enum")
 
     @lru_cache(CACHE_SIZE)
     def is_reachable_from_enum(self, enum_name: str, value) -> bool:
+        """
+        Predicate to test (by name) if a candidate
+        'reachable value' ontology term is associated with the given Enum
+
+        Parameters
+        ----------
+        enum_name : str
+            The name or alias of an Enum in the Biolink Model
+        value : Any
+            The name or alias of the candidate 'reachable value' associated with the given Enum
+
+        Returns
+        -------
+        bool
+            That the named element is a valid 'reachable value' in the Enum
+        """
+        #  'reachable_from' a given ontology. e.g. in Enums like:
+        #
+        #   AnatomicalContextQualifierEnum:
+        #     reachable_from:
+        #       source_ontology: bioregistry:uberon
+        #       source_nodes:
+        #         - UBERON:0001062
+        #       is_direct: false
+        #       relationship_types:
+        #         - rdfs:subClassOf
         raise NotImplementedError("Implement Me!")
 
     @lru_cache(CACHE_SIZE)
     def is_permissible_value_of_enum(self, enum_name: str, value) -> bool:
+        """
+        Predicate to test (by name) if a candidate
+        'permissible value' is associated with the given Enum
+
+        Parameters
+        ----------
+        enum_name : str
+            The name or alias of an Enum in the Biolink Model
+        value : Any
+            The name or alias of the candidate 'permissible value' associated with the given Enum
+
+        Returns
+        -------
+        bool
+            That the named element is in the set of 'permissible values' of the Enum
+        """
+        # Is this a 'permissible_value' in a local data_type enumeration
+        #  or in Enums like...
+        #     DirectionQualifierEnum:
+        #     permissible_values:
+        #       increased:
+        #       upregulated:
+        #         is_a: increased
+        #         close_mappings:
+        #           - RO:0002336
+        #         exact_mappings:
+        #           - RO:0002213
+        #         narrow_mappings:
+        #           - RO:0004032
+        #           - RO:0004034
+        #           - RO:0002629
+        #       decreased:
+        #       downregulated:
+        #         is_a: decreased
+        #         exact_mappings:
+        #           - RO:0004035
+        #           - RO:0002212
+        #         close_mappings:
+        #           # This RTX contributed term is tagged as an inverse of this Biolink predicate
+        #           - RO:0002335
+        #         broad_mappings:
+        #           # This term is slightly broader in that it includes that A acts within B as well
+        #           - RO:0004033
+        # UNSURE HOW USEFUL THIS IS...
+        # qualifier_value_ancestors = \
+        #     self.bmt.get_permissible_value_ancestors(
+        #         permissible_value=qualifier_value,
+        #         enum_name=data_type_name
+        #     )
         raise NotImplementedError("Implement Me!")
 
     @lru_cache(CACHE_SIZE)
     def is_enum_value(self, enum_name: str, value) -> bool:
-        raise NotImplementedError("Implement Me!")
+        """
+        Predicate to test (by name) if a candidate value
+        of any time is associated with the given Enum.
+
+        Parameters
+        ----------
+        enum_name : str
+            The name or alias of an Enum in the Biolink Model
+        value : Any
+            The name or alias of the candidate value of any kind associated with the given Enum
+
+        Returns
+        -------
+        bool
+            That the given value is in the set of Enum members.
+        """
+        #       a 'permissible_value' in a local data_type enumeration or
+        #       'reachable_from' a given ontology. e.g.
+        #  in Enums like...
+        #   AnatomicalContextQualifierEnum:
+        #     reachable_from:
+        #       source_ontology: bioregistry:uberon
+        #       source_nodes:
+        #         - UBERON:0001062
+        #       is_direct: false
+        #       relationship_types:
+        #         - rdfs:subClassOf
+        #  or in Enums like...
+        #     DirectionQualifierEnum:
+        #     permissible_values:
+        #       increased:
+        #       upregulated:
+        #         is_a: increased
+        #         close_mappings:
+        #           - RO:0002336
+        #         exact_mappings:
+        #           - RO:0002213
+        #         narrow_mappings:
+        #           - RO:0004032
+        #           - RO:0004034
+        #           - RO:0002629
+        #       decreased:
+        #       downregulated:
+        #         is_a: decreased
+        #         exact_mappings:
+        #           - RO:0004035
+        #           - RO:0002212
+        #         close_mappings:
+        #           # This RTX contributed term is tagged as an inverse of this Biolink predicate
+        #           - RO:0002335
+        #         broad_mappings:
+        #           # This term is slightly broader in that it includes that A acts within B as well
+        #           - RO:0004033
+        #
+        if self.is_permissible_value_of_enum(enum_name, value):
+            return True
+        elif self.is_reachable_from_enum(enum_name, value):
+            return True
+        else:
+            return False
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_prefix(
