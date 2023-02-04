@@ -1180,6 +1180,43 @@ class Toolkit(object):
         return "named thing" in self.get_ancestors(name, mixin)
 
     @lru_cache(CACHE_SIZE)
+    def is_qualifier(self, name: str) -> bool:
+        """
+
+        Parameters
+        ----------
+        name : str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is a valid edge qualifier in Biolink Model
+        """
+        element: Element = self.get_element(name)
+        if not element:
+            return False  # TODO: should probably raise an exception here instead?
+        else:
+            # TODO: naive test of existence of qualifier... can we do better?
+            return element.name.endswith("qualifier")
+
+    @lru_cache(CACHE_SIZE)
+    def is_enum(self, identifier: str) -> bool:
+        raise NotImplementedError("Implement Me!")
+
+    @lru_cache(CACHE_SIZE)
+    def is_reachable_from_enum(self, enum_name: str, value) -> bool:
+        raise NotImplementedError("Implement Me!")
+
+    @lru_cache(CACHE_SIZE)
+    def is_permissible_value_of_enum(self, enum_name: str, value) -> bool:
+        raise NotImplementedError("Implement Me!")
+
+    @lru_cache(CACHE_SIZE)
+    def is_enum_value(self, enum_name: str, value) -> bool:
+        raise NotImplementedError("Implement Me!")
+
+    @lru_cache(CACHE_SIZE)
     def get_element_by_prefix(
             self,
             identifier: str

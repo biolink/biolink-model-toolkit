@@ -46,9 +46,10 @@ HAS_ACTIVE_COMPONENT = "has active component"
 #       is_direct: false
 #       relationship_types:
 #         - rdfs:subClassOf
-ANATOMICAL_CONTEXT_QUALIFIER_ENUM="AnatomicalContextQualifierEnum"
+ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME= "AnatomicalContextQualifierEnum"
+ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE="biolink:AnatomicalContextQualifierEnum"
 
-SUBJECT_DIRECTION_QUALIFIER="subject direction qualifier"
+SUBJECT_DIRECTION_QUALIFIER_NAME= "subject direction qualifier"
 SUBJECT_DIRECTION_QUALIFIER_CURIE="biolink:subject_direction_qualifier"
 
 #
@@ -79,8 +80,8 @@ SUBJECT_DIRECTION_QUALIFIER_CURIE="biolink:subject_direction_qualifier"
 #         broad_mappings:
 #           # This term is slightly broader in that it includes that A acts within B as well
 #           - RO:0004033
-DIRECTION_QUALIFIER_ENUM="DirectionQualifierEnum"
-DIRECTION_QUALIFIER_ENUM_CURIE="DirectionQualifierEnum"
+DIRECTION_QUALIFIER_ENUM_NAME= "DirectionQualifierEnum"
+DIRECTION_QUALIFIER_ENUM_CURIE="biolink:DirectionQualifierEnum"
 
 
 def test_get_model_version(toolkit):
@@ -278,9 +279,9 @@ def test_category(toolkit):
 
 
 def test_is_qualifier(toolkit):
-    assert toolkit.is_qualifier(SUBJECT_DIRECTION_QUALIFIER)
+    assert toolkit.is_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME)
     assert toolkit.is_qualifier(SUBJECT_DIRECTION_QUALIFIER_CURIE)
-    assert not toolkit.is_qualifier(DIRECTION_QUALIFIER_ENUM)
+    assert not toolkit.is_qualifier(DIRECTION_QUALIFIER_ENUM_NAME)
     assert not toolkit.is_qualifier(NAMED_THING)
     assert not toolkit.is_qualifier(CAUSES)
     assert not toolkit.is_qualifier("affects")
@@ -288,8 +289,8 @@ def test_is_qualifier(toolkit):
 
 
 def test_is_enum(toolkit):
-    assert toolkit.is_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM)
-    assert toolkit.is_enum(DIRECTION_QUALIFIER_ENUM)
+    assert toolkit.is_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME)
+    assert toolkit.is_enum(DIRECTION_QUALIFIER_ENUM_NAME)
     assert not toolkit.is_enum(NAMED_THING)
     assert not toolkit.is_enum(CAUSES)
     assert not toolkit.is_enum("affects")
@@ -297,21 +298,32 @@ def test_is_enum(toolkit):
 
 
 def test_is_reachable_from_enum(toolkit):
-    assert toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM, "UBERON:0001981")  # Blood Vessel
-    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "upregulated")
-    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "RO:0002336")  # close mapping
-    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "RO:0004033")  # broad mapping
-    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "RO:0002213")  # exact mapping
-    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM, "RO:0004032")  # narrow mapping
+    assert toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
+    assert toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE, "UBERON:0001981")  # Blood Vessel
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM_NAME, "upregulated")
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002336") # close mapping to upregulated
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004033") # broad mapping to downregulated
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002213") # exact mapping to upregulated
+    assert not toolkit.is_reachable_from_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004032") # narrow mapping to upregulated
 
 
 def test_is_permissible_value_of_enum(toolkit):
-    assert not toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM, "UBERON:0001981")  # Blood Vessel
-    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "upregulated")
-    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "RO:0002336")  # close mapping
-    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "RO:0004033")  # broad mapping
-    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "RO:0002213")  # exact mapping
-    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM, "RO:0004032")  # narrow mapping
+    assert not toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "upregulated")
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_CURIE, "upregulated")
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002336") # close mapping to upregulated
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004033") # broad mapping to downregulated
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002213") # exact mapping to upregulated
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004032") # narrow mapping to upregulated
+
+
+def test_is_enum_value(toolkit):
+    assert toolkit.is_enum_value(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
+    assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "upregulated")
+    assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002336")  # close mapping to upregulated
+    assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004033")  # broad mapping to downregulated
+    assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002213")  # exact mapping to upregulated
+    assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004032")  # narrow mapping to upregulated
 
 def test_ancestors(toolkit):
     assert RELATED_TO in toolkit.get_ancestors(CAUSES)
