@@ -1228,7 +1228,7 @@ class Toolkit(object):
     @lru_cache(CACHE_SIZE)
     def is_reachable_from_enum(self, enum_name: str, value) -> bool:
         """
-        Predicate to test (by name) if a candidate
+        method to test (by name) if a candidate
         'reachable value' ontology term is associated with the given Enum
 
         Parameters
@@ -1258,7 +1258,7 @@ class Toolkit(object):
     @lru_cache(CACHE_SIZE)
     def is_permissible_value_of_enum(self, enum_name: str, value) -> bool:
         """
-        Predicate to test (by name) if a candidate
+        method to test (by name) if a candidate
         'permissible value' is associated with the given Enum
 
         Parameters
@@ -1273,62 +1273,10 @@ class Toolkit(object):
         bool
             That the named element is in the set of 'permissible values' of the Enum
         """
-        # Is this a 'permissible_value' in a local data_type enumeration
-        #  or in Enums like...
-        #     DirectionQualifierEnum:
-        #     permissible_values:
-        #       increased:
-        #       upregulated:
-        #         is_a: increased
-        #         close_mappings:
-        #           - RO:0002336
-        #         exact_mappings:
-        #           - RO:0002213
-        #         narrow_mappings:
-        #           - RO:0004032
-        #           - RO:0004034
-        #           - RO:0002629
-        #       decreased:
-        #       downregulated:
-        #         is_a: decreased
-        #         exact_mappings:
-        #           - RO:0004035
-        #           - RO:0002212
-        #         close_mappings:
-        #           # This RTX contributed term is tagged as an inverse of this Biolink predicate
-        #           - RO:0002335
-        #         broad_mappings:
-        #           # This term is slightly broader in that it includes that A acts within B as well
-        #           - RO:0004033
-        # UNSURE HOW USEFUL THIS IS...
-        # qualifier_value_ancestors = \
-        #     self.bmt.get_permissible_value_ancestors(
-        #         permissible_value=qualifier_value,
-        #         enum_name=data_type_name
-        #     )
-        raise NotImplementedError("Implement Me!")
 
-    @lru_cache(CACHE_SIZE)
-    def is_enum_value(self, enum_name: str, value) -> bool:
-        """
-        Method to test (by name) if a candidate value
-        is associated with the given Enum.
-
-        Parameters
-        ----------
-        enum_name : str
-            The name or alias of an Enum in the Biolink Model
-        value : Any
-            The name or alias of the candidate value of any kind associated with the given Enum
-
-        Returns
-        -------
-        bool
-            That the given value is in the set of Enum members.
-        """
-        for pv in self.view.get_enum(enum_name):
-            if pv == value:
-                return True
+        enum = self.view.get_enum(enum_name, strict=True)
+        if enum and value in enum.permissible_values:
+            return True
         return False
 
     @lru_cache(CACHE_SIZE)
