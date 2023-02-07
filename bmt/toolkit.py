@@ -1195,9 +1195,7 @@ class Toolkit(object):
             That the named element is a valid edge qualifier in the Biolink Model
         """
 
-        if ":" in name:
-            name = snakecase_to_sentencecase(name.split(":")[1])
-        if self.view.get_slot(name) and "qualifier" in self.view.slot_ancestors(name):
+        if self.view.get_slot(parse_name(name)) and "qualifier" in self.view.slot_ancestors(parse_name(name)):
             return True
         else:
             return False
@@ -1217,7 +1215,7 @@ class Toolkit(object):
         bool
             That the named element is a valid enum in the Biolink Model
         """
-        enum = self.view.get_enum(name)
+        enum = self.view.get_enum(parse_name(name))
         if not enum:
             return False
         return True

@@ -35,8 +35,8 @@ TREATMENT = "treatment"
 ACTIVE_IN = "active in"
 HAS_ACTIVE_COMPONENT = "has active component"
 
-ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME= "AnatomicalContextQualifierEnum"
-ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE="biolink:AnatomicalContextQualifierEnum"
+ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME = "AnatomicalContextQualifierEnum"
+ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE = "biolink:AnatomicalContextQualifierEnum"
 
 SUBJECT_DIRECTION_QUALIFIER_NAME = "subject direction qualifier"
 SUBJECT_DIRECTION_QUALIFIER_CURIE = "biolink:subject_direction_qualifier"
@@ -251,6 +251,7 @@ def test_is_qualifier(toolkit):
 
 def test_is_enum(toolkit):
     assert toolkit.is_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME)
+    assert toolkit.is_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE)
     assert toolkit.is_enum(DIRECTION_QUALIFIER_ENUM_NAME)
     assert not toolkit.is_enum(NAMED_THING)
     assert not toolkit.is_enum(CAUSES)
