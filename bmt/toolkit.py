@@ -16,14 +16,14 @@ from linkml_runtime.linkml_model.meta import (
 )
 from pprint import pprint
 
-from bmt.utils import format_element, parse_name
+from bmt.utils import format_element, parse_name, snakecase_to_sentencecase
 
 Url = str
 Path = str
 
-REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/biolink-model.yaml"
-PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/predicate_mapping.yaml'
-INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/infores_catalog_nodes.tsv'
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/predicate_mapping.yaml'
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/infores_catalog_nodes.tsv'
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
@@ -1194,13 +1194,13 @@ class Toolkit(object):
         bool
             That the named element is a valid edge qualifier in the Biolink Model
         """
-        element: Element = self.get_element(name)
-        if not element:
-            return False  # TODO: should probably raise an exception here instead?
+
+        if ":" in name:
+            name = snakecase_to_sentencecase(name.split(":")[1])
+        if self.view.get_slot(name) and "qualifier" in self.view.slot_ancestors(name):
+            return True
         else:
-            # TODO: naive test of existence of qualifier...
-            #       Not very robust....can we do better?
-            return element.name.endswith("qualifier")
+            return False
 
     @lru_cache(CACHE_SIZE)
     def is_enum(self, name: str) -> bool:
