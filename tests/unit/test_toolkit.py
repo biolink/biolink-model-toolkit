@@ -35,53 +35,14 @@ TREATMENT = "treatment"
 ACTIVE_IN = "active in"
 HAS_ACTIVE_COMPONENT = "has active component"
 
-#
-# Example 'reachable_from' tagged enum from Biolink 3.1.1
-#
-#   AnatomicalContextQualifierEnum:
-#     reachable_from:
-#       source_ontology: bioregistry:uberon
-#       source_nodes:
-#         - UBERON:0001062
-#       is_direct: false
-#       relationship_types:
-#         - rdfs:subClassOf
 ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME= "AnatomicalContextQualifierEnum"
 ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE="biolink:AnatomicalContextQualifierEnum"
 
-SUBJECT_DIRECTION_QUALIFIER_NAME= "subject direction qualifier"
-SUBJECT_DIRECTION_QUALIFIER_CURIE="biolink:subject_direction_qualifier"
-
-#
-# Example 'permissible_values' tagged enum from Biolink 3.1.1
-#
-#   DirectionQualifierEnum:
-#     permissible_values:
-#       increased:
-#       upregulated:
-#         is_a: increased
-#         close_mappings:
-#           - RO:0002336
-#         exact_mappings:
-#           - RO:0002213
-#         narrow_mappings:
-#           - RO:0004032
-#           - RO:0004034
-#           - RO:0002629
-#       decreased:
-#       downregulated:
-#         is_a: decreased
-#         exact_mappings:
-#           - RO:0004035
-#           - RO:0002212
-#         close_mappings:
-#           # This RTX contributed term is tagged as an inverse of this Biolink predicate
-#           - RO:0002335
-#         broad_mappings:
-#           # This term is slightly broader in that it includes that A acts within B as well
-#           - RO:0004033
+SUBJECT_DIRECTION_QUALIFIER_NAME = "subject direction qualifier"
+SUBJECT_DIRECTION_QUALIFIER_CURIE = "biolink:subject_direction_qualifier"
 DIRECTION_QUALIFIER_ENUM_NAME = "DirectionQualifierEnum"
 DIRECTION_QUALIFIER_ENUM_CURIE = "biolink:DirectionQualifierEnum"
+BIOLINK_ENTITY = 'biolink:Entity'
 
 
 def test_get_model_version(toolkit):
@@ -105,9 +66,9 @@ def test_infores(toolkit):
 
 
 def test_rna(toolkit):
-    assert 'molecular entity' in toolkit.get_descendants('biolink:Entity')
-    assert 'microRNA' in toolkit.get_descendants('biolink:Entity')
-    assert 'biolink:MicroRNA' in toolkit.get_descendants('biolink:Entity', formatted=True)
+    assert 'molecular entity' in toolkit.get_descendants(BIOLINK_ENTITY)
+    assert 'microRNA' in toolkit.get_descendants(BIOLINK_ENTITY)
+    assert 'biolink:MicroRNA' in toolkit.get_descendants(BIOLINK_ENTITY, formatted=True)
 
 
 def test_get_element_by_mapping(toolkit):
