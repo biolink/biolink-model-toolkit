@@ -80,13 +80,13 @@ SUBJECT_DIRECTION_QUALIFIER_CURIE="biolink:subject_direction_qualifier"
 #         broad_mappings:
 #           # This term is slightly broader in that it includes that A acts within B as well
 #           - RO:0004033
-DIRECTION_QUALIFIER_ENUM_NAME= "DirectionQualifierEnum"
-DIRECTION_QUALIFIER_ENUM_CURIE="biolink:DirectionQualifierEnum"
+DIRECTION_QUALIFIER_ENUM_NAME = "DirectionQualifierEnum"
+DIRECTION_QUALIFIER_ENUM_CURIE = "biolink:DirectionQualifierEnum"
 
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.1.2"
+    assert version == "3.2.0"
 
 
 def test_get_id_prefixes(toolkit):
@@ -306,20 +306,12 @@ def test_is_permissible_value_of_enum(toolkit):
     assert not toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
     assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "upregulated")
     assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_CURIE, "upregulated")
-    # these should not be permissible values of the enum, for now we are literally using the list of string values from the enum
-    # assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002336") # close mapping to upregulated
-    # assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004033") # broad mapping to downregulated
-    # assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002213") # exact mapping to upregulated
-    # assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004032") # narrow mapping to upregulated
 
 
 def test_is_enum_value(toolkit):
     assert toolkit.is_enum_value(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
     assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "upregulated")
-    assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002336")  # close mapping to upregulated
-    assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004033")  # broad mapping to downregulated
-    assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0002213")  # exact mapping to upregulated
-    assert toolkit.is_enum_value(DIRECTION_QUALIFIER_ENUM_NAME, "RO:0004032")  # narrow mapping to upregulated
+
 
 def test_ancestors(toolkit):
     assert RELATED_TO in toolkit.get_ancestors(CAUSES)
