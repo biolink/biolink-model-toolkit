@@ -1217,13 +1217,10 @@ class Toolkit(object):
         bool
             That the named element is a valid enum in the Biolink Model
         """
-        element: Element = self.get_element(name)
-        if not element:
-            return False  # TODO: should probably raise an exception here instead?
-        else:
-            # TODO: naive name-driven test of existence of qualifier...
-            #       Not very robust....can we do better?
-            return element.name.lower().endswith("enum")
+        enum = self.view.get_enum(name)
+        if not enum:
+            return False
+        return True
 
     @lru_cache(CACHE_SIZE)
     def is_reachable_from_enum(self, enum_name: str, value) -> bool:
