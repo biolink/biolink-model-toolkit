@@ -1311,8 +1311,8 @@ class Toolkit(object):
     @lru_cache(CACHE_SIZE)
     def is_enum_value(self, enum_name: str, value) -> bool:
         """
-        Predicate to test (by name) if a candidate value
-        of any time is associated with the given Enum.
+        Method to test (by name) if a candidate value
+        is associated with the given Enum.
 
         Parameters
         ----------
@@ -1326,50 +1326,10 @@ class Toolkit(object):
         bool
             That the given value is in the set of Enum members.
         """
-        #       a 'permissible_value' in a local data_type enumeration or
-        #       'reachable_from' a given ontology. e.g.
-        #  in Enums like...
-        #   AnatomicalContextQualifierEnum:
-        #     reachable_from:
-        #       source_ontology: bioregistry:uberon
-        #       source_nodes:
-        #         - UBERON:0001062
-        #       is_direct: false
-        #       relationship_types:
-        #         - rdfs:subClassOf
-        #  or in Enums like...
-        #     DirectionQualifierEnum:
-        #     permissible_values:
-        #       increased:
-        #       upregulated:
-        #         is_a: increased
-        #         close_mappings:
-        #           - RO:0002336
-        #         exact_mappings:
-        #           - RO:0002213
-        #         narrow_mappings:
-        #           - RO:0004032
-        #           - RO:0004034
-        #           - RO:0002629
-        #       decreased:
-        #       downregulated:
-        #         is_a: decreased
-        #         exact_mappings:
-        #           - RO:0004035
-        #           - RO:0002212
-        #         close_mappings:
-        #           # This RTX contributed term is tagged as an inverse of this Biolink predicate
-        #           - RO:0002335
-        #         broad_mappings:
-        #           # This term is slightly broader in that it includes that A acts within B as well
-        #           - RO:0004033
-        #
-        if self.is_permissible_value_of_enum(enum_name, value):
-            return True
-        elif self.is_reachable_from_enum(enum_name, value):
-            return True
-        else:
-            return False
+        for pv in self.view.get_enum(enum_name):
+            if pv == value:
+                return True
+        return False
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_prefix(
