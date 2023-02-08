@@ -236,7 +236,7 @@ def test_category(toolkit):
     assert toolkit.is_category(GENE)
     assert not toolkit.is_category(CAUSES)
     assert not toolkit.is_category("affects")
-    assert not toolkit.is_category("gene or gene product")
+    assert not toolkit.is_category(GENE_OR_GENE_PRODUCT)
 
 
 def test_is_qualifier(toolkit):
@@ -246,7 +246,7 @@ def test_is_qualifier(toolkit):
     assert not toolkit.is_qualifier(NAMED_THING)
     assert not toolkit.is_qualifier(CAUSES)
     assert not toolkit.is_qualifier("affects")
-    assert not toolkit.is_qualifier("gene or gene product")
+    assert not toolkit.is_qualifier(GENE_OR_GENE_PRODUCT)
 
 
 def test_is_enum(toolkit):
@@ -256,7 +256,7 @@ def test_is_enum(toolkit):
     assert not toolkit.is_enum(NAMED_THING)
     assert not toolkit.is_enum(CAUSES)
     assert not toolkit.is_enum("affects")
-    assert not toolkit.is_enum("gene or gene product")
+    assert not toolkit.is_enum(GENE_OR_GENE_PRODUCT)
 
 
 def test_is_reachable_from_enum(toolkit):
