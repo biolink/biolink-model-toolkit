@@ -36,7 +36,7 @@ vcs = "git"
 style = "pep440"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 linkml-runtime = "^1.4"
 deprecation = "^2.1.0"
 stringcase = "^1.2.0"
@@ -48,6 +48,7 @@ sphinxcontrib-napoleon = "^0.7"
 sphinx-autodoc-typehints = "^1.19.5"
 sphinx-click = "^4.3.0"
 twine = "^4.0.1"
+oaklib = "^0.1.71"
 
 [tool.poetry.dev-dependencies]
 
