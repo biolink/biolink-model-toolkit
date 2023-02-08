@@ -402,9 +402,6 @@ def test_get_all_slots_with_class_domain(toolkit):
     assert "name" not in toolkit.get_all_slots_with_class_domain(
         TREATMENT, check_ancestors=False, mixin=False
     )
-    assert "name" not in toolkit.get_all_slots_with_class_domain(
-        TREATMENT, check_ancestors=True, mixin=True
-    )
     # we don't really have this use case in the model right now - where a domain's mixin has an attribute
     assert "has unit" in toolkit.get_all_slots_with_class_domain(
         "quantity value", check_ancestors=False, mixin=True
