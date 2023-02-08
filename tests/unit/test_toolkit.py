@@ -55,6 +55,11 @@ def test_get_id_prefixes(toolkit):
     print(tclass.id_prefixes)
 
 
+def test_get_element_via_alias(toolkit):
+    el = toolkit.get_element('definition')
+    assert el.name == 'description'
+
+
 def test_predicate_map(toolkit):
     mp = toolkit.get_predicate_mapping("augments")
     assert mp.get("biolink:object_aspect_qualifier") == 'activity or abundance'
