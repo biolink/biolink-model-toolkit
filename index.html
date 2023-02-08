@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome to Biolink Model Toolkit’s documentation! &mdash; bmt  documentation</title>
@@ -28,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> bmt
+
+          
+          
+          <a href="#" class="icon icon-home">
+            bmt
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -56,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a></li>
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Welcome to Biolink Model Toolkit’s documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
@@ -86,7 +90,7 @@
 </ul>
 <span class="target" id="module-bmt.toolkit"></span><dl class="py class">
 <dt class="sig sig-object py" id="bmt.toolkit.Toolkit">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bmt.toolkit.</span></span><span class="sig-name descname"><span class="pre">Toolkit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">TextIO</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SchemaDefinition</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/biolink-model.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/predicate_mapping.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infores_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/infores_catalog_nodes.tsv'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bmt.toolkit.Toolkit" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bmt.toolkit.</span></span><span class="sig-name descname"><span class="pre">Toolkit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">TextIO</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">SchemaDefinition</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/biolink-model.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/predicate_mapping.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infores_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/infores_catalog_nodes.tsv'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bmt.toolkit.Toolkit" title="Permalink to this definition"></a></dt>
 <dd><p>Provides a series of methods for performing lookups on the Biolink Model</p>
 <section id="parameters">
 <h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading"></a></h2>
@@ -1067,19 +1071,39 @@ Biolink Model. An element is a category if it descends from
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_mixin">
-<span class="sig-name descname"><span class="pre">is_mixin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_mixin" title="Permalink to this definition"></a></dt>
-<dd><p>Determines whether the given name is the name of a mixin
-in the Biolink Model. An element is a mixin if one of its properties is “is_mixin:true”</p>
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_enum">
+<span class="sig-name descname"><span class="pre">is_enum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_enum" title="Permalink to this definition"></a></dt>
+<dd><p>Predicate to test (by name) if a given Biolink Model element is an Enum.</p>
 <section id="id78">
 <h3>Parameters<a class="headerlink" href="#id78" title="Permalink to this heading"></a></h3>
 <dl class="simple">
-<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+<dt>name<span class="classifier">str</span></dt><dd><p>The name or alias of an element in the Biolink Model</p>
 </dd>
 </dl>
 </section>
 <section id="id79">
 <h3>Returns<a class="headerlink" href="#id79" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid enum in the Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_mixin">
+<span class="sig-name descname"><span class="pre">is_mixin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_mixin" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is the name of a mixin
+in the Biolink Model. An element is a mixin if one of its properties is “is_mixin:true”</p>
+<section id="id80">
+<h3>Parameters<a class="headerlink" href="#id80" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+</dl>
+</section>
+<section id="id81">
+<h3>Returns<a class="headerlink" href="#id81" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt>bool</dt><dd><p>That the named element is a valid mixin in Biolink Model</p>
 </dd>
@@ -1093,30 +1117,6 @@ in the Biolink Model. An element is a mixin if one of its properties is “is_mi
 <dd><p>Determines whether the given name is the name of a node property
 in the Biolink Model. An element is a node property if it descends from
 <cite>NODE_PROPERTY</cite></p>
-<section id="id80">
-<h3>Parameters<a class="headerlink" href="#id80" title="Permalink to this heading"></a></h3>
-<dl class="simple">
-<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
-</dd>
-<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
-</dd>
-</dl>
-</section>
-<section id="id81">
-<h3>Returns<a class="headerlink" href="#id81" title="Permalink to this heading"></a></h3>
-<dl class="simple">
-<dt>bool</dt><dd><p>That the named element is a valid node property in Biolink Model</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_predicate">
-<span class="sig-name descname"><span class="pre">is_predicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_predicate" title="Permalink to this definition"></a></dt>
-<dd><p>Determines whether the given name is the name of a relation/predicate
-in the Biolink Model. An element is a predicate if it descends from
-<cite>RELATED_TO</cite></p>
 <section id="id82">
 <h3>Parameters<a class="headerlink" href="#id82" title="Permalink to this heading"></a></h3>
 <dl class="simple">
@@ -1129,7 +1129,97 @@ in the Biolink Model. An element is a predicate if it descends from
 <section id="id83">
 <h3>Returns<a class="headerlink" href="#id83" title="Permalink to this heading"></a></h3>
 <dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid node property in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_permissible_value_of_enum">
+<span class="sig-name descname"><span class="pre">is_permissible_value_of_enum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enum_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_permissible_value_of_enum" title="Permalink to this definition"></a></dt>
+<dd><p>method to test (by name) if a candidate
+‘permissible value’ is associated with the given Enum</p>
+<section id="id84">
+<h3>Parameters<a class="headerlink" href="#id84" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>enum_name<span class="classifier">str</span></dt><dd><p>The name or alias of an Enum in the Biolink Model</p>
+</dd>
+<dt>value<span class="classifier">Any</span></dt><dd><p>The name or alias of the candidate ‘permissible value’ associated with the given Enum</p>
+</dd>
+</dl>
+</section>
+<section id="id85">
+<h3>Returns<a class="headerlink" href="#id85" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is in the set of ‘permissible values’ of the Enum</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_predicate">
+<span class="sig-name descname"><span class="pre">is_predicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mixin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_predicate" title="Permalink to this definition"></a></dt>
+<dd><p>Determines whether the given name is the name of a relation/predicate
+in the Biolink Model. An element is a predicate if it descends from
+<cite>RELATED_TO</cite></p>
+<section id="id86">
+<h3>Parameters<a class="headerlink" href="#id86" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+<dt>mixin: bool</dt><dd><p>If True, then that means we want to find mixin ancestors as well as is_a ancestors</p>
+</dd>
+</dl>
+</section>
+<section id="id87">
+<h3>Returns<a class="headerlink" href="#id87" title="Permalink to this heading"></a></h3>
+<dl class="simple">
 <dt>bool</dt><dd><p>That the named element is a valid relation/predicate in Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_qualifier">
+<span class="sig-name descname"><span class="pre">is_qualifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_qualifier" title="Permalink to this definition"></a></dt>
+<dd><p>Predicate to test (by name) if a given Biolink Model element is an Edge Qualifier.</p>
+<section id="id88">
+<h3>Parameters<a class="headerlink" href="#id88" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>name<span class="classifier">str</span></dt><dd><p>The name or alias of an element in the Biolink Model</p>
+</dd>
+</dl>
+</section>
+<section id="id89">
+<h3>Returns<a class="headerlink" href="#id89" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid edge qualifier in the Biolink Model</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.is_reachable_from_enum">
+<span class="sig-name descname"><span class="pre">is_reachable_from_enum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enum_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.is_reachable_from_enum" title="Permalink to this definition"></a></dt>
+<dd><p>method to test (by name) if a candidate
+‘reachable value’ ontology term is associated with the given Enum</p>
+<section id="id90">
+<h3>Parameters<a class="headerlink" href="#id90" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>enum_name<span class="classifier">str</span></dt><dd><p>The name or alias of an Enum in the Biolink Model</p>
+</dd>
+<dt>value<span class="classifier">Any</span></dt><dd><p>The name or alias of the candidate ‘reachable value’ associated with the given Enum</p>
+</dd>
+</dl>
+</section>
+<section id="id91">
+<h3>Returns<a class="headerlink" href="#id91" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>That the named element is a valid ‘reachable value’ in the Enum</p>
 </dd>
 </dl>
 </section>
@@ -1141,8 +1231,8 @@ in the Biolink Model. An element is a predicate if it descends from
 <dd><p>Determines whether the given name is the name of a canonical relation/predicate
 in the Biolink Model. An element is a canonical predicate if it descends from
 <cite>RELATED_TO</cite> and is tagged with the annotation ‘biolink:canonical_predicate’</p>
-<section id="id84">
-<h3>Parameters<a class="headerlink" href="#id84" title="Permalink to this heading"></a></h3>
+<section id="id92">
+<h3>Parameters<a class="headerlink" href="#id92" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
 </dd>
@@ -1150,8 +1240,8 @@ in the Biolink Model. An element is a canonical predicate if it descends from
 </dd>
 </dl>
 </section>
-<section id="id85">
-<h3>Returns<a class="headerlink" href="#id85" title="Permalink to this heading"></a></h3>
+<section id="id93">
+<h3>Returns<a class="headerlink" href="#id93" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt>bool</dt><dd><p>That the named element is a valid translator canonical prediacte in Biolink Model</p>
 </dd>
@@ -1173,6 +1263,28 @@ in the Biolink Model. An element is a canonical predicate if it descends from
 <dd><div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 0.2.0: </span>This will be removed in 1.0. Use get_parent method instead</p>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.validate_qualifier">
+<span class="sig-name descname"><span class="pre">validate_qualifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qualifier_type_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualifier_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.validate_qualifier" title="Permalink to this definition"></a></dt>
+<dd><p>Validates a qualifier.</p>
+<section id="id94">
+<h3>Parameters<a class="headerlink" href="#id94" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>qualifier_type_id: str</dt><dd><p>The name or alias of a qualifier in the Biolink Model</p>
+</dd>
+<dt>qualifier_value: str</dt><dd><p>The value of the qualifier</p>
+</dd>
+</dl>
+</section>
+<section id="id95">
+<h3>Returns<a class="headerlink" href="#id95" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>Whether or not the given qualifier is valid</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 </section>
