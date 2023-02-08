@@ -23,7 +23,7 @@ from bmt.utils import format_element, parse_name, snakecase_to_sentencecase
 Url = str
 Path = str
 
-REMOTE_PATH = "https://github.com/biolink/biolink-model/blob/rdfs_type/biolink-model.yaml"
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/rdfs_type/biolink-model.yaml"
 PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/predicate_mapping.yaml'
 INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/infores_catalog_nodes.tsv'
 
