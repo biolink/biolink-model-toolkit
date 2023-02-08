@@ -264,6 +264,11 @@ def test_is_reachable_from_enum(toolkit):
     assert not toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "pax:0001981")  # Blood Vessel
 
 
+def test_validate_qualifier(toolkit):
+    assert toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME, "upregulated")  # Blood Vessel
+    assert not toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME, "pax:0001981")  # Blood Vessel
+
+
 def test_is_permissible_value_of_enum(toolkit):
     assert toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
     assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "upregulated")

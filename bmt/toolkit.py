@@ -680,6 +680,34 @@ class Toolkit(object):
                 slot_range.extend(ancs)
         return self._format_all_elements(slot_range, formatted)
 
+    def validate_qualifier(self, qualifier_type_id: str, qualifier_value: str) -> bool:
+        """
+        Validates a qualifier.
+
+        Parameters
+        ----------
+        qualifier_type_id: str
+            The name or alias of a qualifier in the Biolink Model
+        qualifier_value: str
+            The value of the qualifier
+
+        Returns
+        -------
+        bool
+            Whether or not the given qualifier is valid
+
+        """
+        if self.is_qualifier(qualifier_type_id):
+            qualifier_slot = self.view.get_slot(qualifier_type_id)
+            if self.is_enum(qualifier_slot.range):
+                enum = self.view.get_enum(qualifier_slot.range)
+                if self.is_permissible_value_of_enum(enum.name, qualifier_value):
+                    return True
+                else:
+                    return False
+        else:
+            return False
+
     def get_all_slots_with_class_domain(
             self,
             class_name,
@@ -1246,7 +1274,7 @@ class Toolkit(object):
         """
         if self.is_enum(enum_name):
             enum = self.view.get_enum(enum_name)
-            if enum.reachable_from.source_ontology:
+            if enum.reachable_from is not None and enum.reachable_from.source_ontology:
                 if value in self.oi.descendants(enum.reachable_from.source_nodes,
                                                 enum.reachable_from.relationship_types):
                     return True
