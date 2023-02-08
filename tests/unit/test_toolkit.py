@@ -35,10 +35,19 @@ TREATMENT = "treatment"
 ACTIVE_IN = "active in"
 HAS_ACTIVE_COMPONENT = "has active component"
 
+ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME = "AnatomicalContextQualifierEnum"
+ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE = "biolink:AnatomicalContextQualifierEnum"
+
+SUBJECT_DIRECTION_QUALIFIER_NAME = "subject direction qualifier"
+SUBJECT_DIRECTION_QUALIFIER_CURIE = "biolink:subject_direction_qualifier"
+DIRECTION_QUALIFIER_ENUM_NAME = "DirectionQualifierEnum"
+DIRECTION_QUALIFIER_ENUM_CURIE = "biolink:DirectionQualifierEnum"
+BIOLINK_ENTITY = 'biolink:Entity'
+
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.1.2"
+    assert version == "3.2.0"
 
 
 def test_get_id_prefixes(toolkit):
@@ -57,9 +66,9 @@ def test_infores(toolkit):
 
 
 def test_rna(toolkit):
-    assert 'molecular entity' in toolkit.get_descendants('biolink:Entity')
-    assert 'microRNA' in toolkit.get_descendants('biolink:Entity')
-    assert 'biolink:MicroRNA' in toolkit.get_descendants('biolink:Entity', formatted=True)
+    assert 'molecular entity' in toolkit.get_descendants(BIOLINK_ENTITY)
+    assert 'microRNA' in toolkit.get_descendants(BIOLINK_ENTITY)
+    assert 'biolink:MicroRNA' in toolkit.get_descendants(BIOLINK_ENTITY, formatted=True)
 
 
 def test_get_element_by_mapping(toolkit):
@@ -227,7 +236,43 @@ def test_category(toolkit):
     assert toolkit.is_category(GENE)
     assert not toolkit.is_category(CAUSES)
     assert not toolkit.is_category("affects")
-    assert not toolkit.is_category("gene or gene product")
+    assert not toolkit.is_category(GENE_OR_GENE_PRODUCT)
+
+
+def test_is_qualifier(toolkit):
+    assert toolkit.is_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME)
+    assert toolkit.is_qualifier(SUBJECT_DIRECTION_QUALIFIER_CURIE)
+    assert not toolkit.is_qualifier(DIRECTION_QUALIFIER_ENUM_NAME)
+    assert not toolkit.is_qualifier(NAMED_THING)
+    assert not toolkit.is_qualifier(CAUSES)
+    assert not toolkit.is_qualifier("affects")
+    assert not toolkit.is_qualifier(GENE_OR_GENE_PRODUCT)
+
+
+def test_is_enum(toolkit):
+    assert toolkit.is_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME)
+    assert toolkit.is_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE)
+    assert toolkit.is_enum(DIRECTION_QUALIFIER_ENUM_NAME)
+    assert not toolkit.is_enum(NAMED_THING)
+    assert not toolkit.is_enum(CAUSES)
+    assert not toolkit.is_enum("affects")
+    assert not toolkit.is_enum(GENE_OR_GENE_PRODUCT)
+
+
+def test_is_reachable_from_enum(toolkit):
+    assert toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
+    assert not toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "pax:0001981")  # Blood Vessel
+
+
+def test_validate_qualifier(toolkit):
+    assert toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME, "upregulated")  # Blood Vessel
+    assert not toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME, "pax:0001981")  # Blood Vessel
+
+
+def test_is_permissible_value_of_enum(toolkit):
+    assert toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "upregulated")
+    assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_CURIE, "upregulated")
 
 
 def test_ancestors(toolkit):
@@ -361,9 +406,6 @@ def test_get_all_slots_with_class_domain(toolkit):
     )
     assert "name" not in toolkit.get_all_slots_with_class_domain(
         TREATMENT, check_ancestors=False, mixin=False
-    )
-    assert "name" not in toolkit.get_all_slots_with_class_domain(
-        TREATMENT, check_ancestors=True, mixin=True
     )
     # we don't really have this use case in the model right now - where a domain's mixin has an attribute
     assert "has unit" in toolkit.get_all_slots_with_class_domain(

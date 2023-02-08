@@ -3,7 +3,9 @@ import yaml
 import csv
 import deprecation
 import requests
+from oaklib.implementations import UbergraphImplementation
 from functools import lru_cache, reduce
+
 from typing import List, Union, TextIO, Optional, Dict
 from linkml_runtime.utils.schemaview import SchemaView
 from linkml_runtime.linkml_model.meta import (
@@ -16,14 +18,14 @@ from linkml_runtime.linkml_model.meta import (
 )
 from pprint import pprint
 
-from bmt.utils import format_element, parse_name
+from bmt.utils import format_element, parse_name, snakecase_to_sentencecase
 
 Url = str
 Path = str
 
-REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/biolink-model.yaml"
-PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/predicate_mapping.yaml'
-INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.1.2/infores_catalog_nodes.tsv'
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/predicate_mapping.yaml'
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/infores_catalog_nodes.tsv'
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
@@ -50,6 +52,7 @@ class Toolkit(object):
             predicate_map: Url = PREDICATE_MAP,
             infores_map: Url = INFORES_MAP
     ) -> None:
+        self.oi = UbergraphImplementation()
         self.view = SchemaView(schema)
         r = requests.get(predicate_map)
         self.pmap = yaml.safe_load(r.text)
@@ -677,6 +680,34 @@ class Toolkit(object):
                 slot_range.extend(ancs)
         return self._format_all_elements(slot_range, formatted)
 
+    def validate_qualifier(self, qualifier_type_id: str, qualifier_value: str) -> bool:
+        """
+        Validates a qualifier.
+
+        Parameters
+        ----------
+        qualifier_type_id: str
+            The name or alias of a qualifier in the Biolink Model
+        qualifier_value: str
+            The value of the qualifier
+
+        Returns
+        -------
+        bool
+            Whether or not the given qualifier is valid
+
+        """
+        if self.is_qualifier(qualifier_type_id):
+            qualifier_slot = self.view.get_slot(qualifier_type_id)
+            if self.is_enum(qualifier_slot.range):
+                enum = self.view.get_enum(qualifier_slot.range)
+                if self.is_permissible_value_of_enum(enum.name, qualifier_value):
+                    return True
+                else:
+                    return False
+        else:
+            return False
+
     def get_all_slots_with_class_domain(
             self,
             class_name,
@@ -1178,6 +1209,109 @@ class Toolkit(object):
             That the named element is a valid category in Biolink Model
         """
         return "named thing" in self.get_ancestors(name, mixin)
+
+    @lru_cache(CACHE_SIZE)
+    def is_qualifier(self, name: str) -> bool:
+        """
+        Predicate to test (by name) if a given Biolink Model element is an Edge Qualifier.
+
+        Parameters
+        ----------
+        name : str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is a valid edge qualifier in the Biolink Model
+        """
+
+        if self.view.get_slot(parse_name(name)) and "qualifier" in self.view.slot_ancestors(parse_name(name)):
+            return True
+        else:
+            return False
+
+    @lru_cache(CACHE_SIZE)
+    def is_enum(self, name: str) -> bool:
+        """
+        Predicate to test (by name) if a given Biolink Model element is an Enum.
+
+        Parameters
+        ----------
+        name : str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is a valid enum in the Biolink Model
+        """
+        if ":" in name:
+            enum = self.view.get_enum(name.split(":")[1])
+        else:
+            enum = self.view.get_enum(name)
+        if not enum:
+            return False
+        return True
+
+    @lru_cache(CACHE_SIZE)
+    def is_reachable_from_enum(self, enum_name: str, value) -> bool:
+        """
+        method to test (by name) if a candidate
+        'reachable value' ontology term is associated with the given Enum
+
+        Parameters
+        ----------
+        enum_name : str
+            The name or alias of an Enum in the Biolink Model
+        value : Any
+            The name or alias of the candidate 'reachable value' associated with the given Enum
+
+        Returns
+        -------
+        bool
+            That the named element is a valid 'reachable value' in the Enum
+        """
+        if self.is_enum(enum_name):
+            enum = self.view.get_enum(enum_name)
+            if enum.reachable_from is not None and enum.reachable_from.source_ontology:
+                if value in self.oi.descendants(enum.reachable_from.source_nodes,
+                                                enum.reachable_from.relationship_types):
+                    return True
+                else:
+                    return False
+        else:
+            return False
+
+    @lru_cache(CACHE_SIZE)
+    def is_permissible_value_of_enum(self, enum_name: str, value) -> bool:
+        """
+        method to test (by name) if a candidate
+        'permissible value' is associated with the given Enum
+
+        Parameters
+        ----------
+        enum_name : str
+            The name or alias of an Enum in the Biolink Model
+        value : Any
+            The name or alias of the candidate 'permissible value' associated with the given Enum
+
+        Returns
+        -------
+        bool
+            That the named element is in the set of 'permissible values' of the Enum
+        """
+
+        if ":" in enum_name:
+            enum = self.view.get_enum(enum_name.split(":")[1])
+        else:
+            enum = self.view.get_enum(enum_name, strict=True)
+        if enum and value in enum.permissible_values:
+            return True
+        if self.is_reachable_from_enum(enum_name, value):
+            return True
+        else:
+            return False
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_prefix(
