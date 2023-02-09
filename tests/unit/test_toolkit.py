@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import pytest
 from bmt import Toolkit
 
@@ -35,6 +37,9 @@ TREATMENT = "treatment"
 ACTIVE_IN = "active in"
 HAS_ACTIVE_COMPONENT = "has active component"
 
+# aspect qualifier is abstract so not really a valid qualifier
+ASPECT_QUALIFIER_NAME = "aspect qualifier"
+
 ANATOMICAL_CONTEXT_QUALIFIER_NAME = "anatomical context qualifier"
 ANATOMICAL_CONTEXT_QUALIFIER_CURIE = "biolink:anatomical_context_qualifier"
 ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME = "AnatomicalContextQualifierEnum"
@@ -45,8 +50,16 @@ SUBJECT_DIRECTION_QUALIFIER_CURIE = "biolink:subject_direction_qualifier"
 DIRECTION_QUALIFIER_ENUM_NAME = "DirectionQualifierEnum"
 DIRECTION_QUALIFIER_ENUM_CURIE = "biolink:DirectionQualifierEnum"
 
-SPECIES_CONTEXT_QUALIFIER="species context qualifier"
+SPECIES_CONTEXT_QUALIFIER_NAME= "species context qualifier"
 SPECIES_CONTEXT_QUALIFIER_CURIE="biolink:species_context_qualifier"
+
+# 'catalyst qualifier' has a mixin range 'macromolecular machine mixin'
+CATALYST_QUALIFIER_NAME="catalyst qualifier"
+CATALYST_QUALIFIER_CURIE="biolink:catalyst_qualifier"
+
+# 'qualified predicate' is a qualifier use case in a class of its own
+QUALIFIED_PREDICATE_NAME="qualified predicate"
+QUALIFIED_PREDICATE_CURIE="biolink:qualified_predicate"
 
 BIOLINK_ENTITY = 'biolink:Entity'
 
@@ -270,15 +283,60 @@ def test_is_reachable_from_enum(toolkit):
     assert not toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "pax:0001981")
 
 
-def test_validate_qualifier(toolkit):
-    assert toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME, "upregulated")
-    assert not toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME, "UBERON:0001981")
-    assert toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_CURIE, "upregulated")
-    assert toolkit.validate_qualifier(ANATOMICAL_CONTEXT_QUALIFIER_NAME, "UBERON:0001981")
-    assert not toolkit.validate_qualifier(ANATOMICAL_CONTEXT_QUALIFIER_CURIE, "upregulated")
-    assert toolkit.validate_qualifier(SPECIES_CONTEXT_QUALIFIER, "NCBITaxon:9606")
-    assert toolkit.validate_qualifier(SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606")
-    assert not toolkit.validate_qualifier(SPECIES_CONTEXT_QUALIFIER, "upregulated")
+@pytest.mark.parametrize(
+    "query",
+    [
+        # method called with empty arguments fails gracefully
+        ("", "", False), # Q0
+        (SUBJECT_DIRECTION_QUALIFIER_NAME, "", False), # Q1
+        ("", "upregulated", False), # Q2
+
+        # 'aspect qualifier' is 'abstract', hence can't be instantiated (doesn't have a 'range')
+        (ASPECT_QUALIFIER_NAME, "upregulated", False), # Q3
+
+        # qualifier with value drawn from enum 'permissible values'
+        (SUBJECT_DIRECTION_QUALIFIER_NAME, "upregulated", True), # Q4
+        (SUBJECT_DIRECTION_QUALIFIER_CURIE, "upregulated", True), # Q5 - CURIE accepted here too
+
+        # *** Use case currently not supported: RO term is exact_match to 'upregulated' enum
+        # (SUBJECT_DIRECTION_QUALIFIER_NAME, "RO:0002213", True),  # Qx -
+
+        # qualifier with value drawn from enum 'reachable from'
+        (ANATOMICAL_CONTEXT_QUALIFIER_NAME, "UBERON:0001981", True), # Q6
+        (ANATOMICAL_CONTEXT_QUALIFIER_CURIE, "UBERON:0001981", True), # Q7 - CURIE accepted here too
+
+        # qualifier with value drawn from concrete Biolink category identifier spaces
+        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", True), # Q8
+        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", True), # Q9 - CURIE accepted here too
+
+        # qualifier with value drawn from concrete Biolink category identifier spaces
+        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", True), # Q10
+        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", True), # Q11 - CURIE accepted here too
+
+        # *** Another currently unsupported use case...
+        # 'catalyst qualifier' has a mixin range 'macromolecular machine mixin'
+        # 'GO:0032991' is exact match to 'macromolecular complex' which has
+        #   'macromolecular machine mixin' as a mixin and also has id_prefixes including GO, so...
+        # (CATALYST_QUALIFIER_NAME, "GO:0032991", True), # Qxx
+        # (CATALYST_QUALIFIER_CURIE, "GO:0032991", True), # Qxx - CURIE accepted here too
+
+        # mis-matched qualifier values or value types
+        (SUBJECT_DIRECTION_QUALIFIER_NAME, "UBERON:0001981", False), # Q12
+        (SPECIES_CONTEXT_QUALIFIER_NAME, "upregulated", False), # Q13
+        (ANATOMICAL_CONTEXT_QUALIFIER_NAME, "upregulated", False), # Q14
+
+        # *** Yetanuder currently unsupported use case...
+        # 'qualified predicate' is a qualifier use case in a class of its own
+        # Validation will require a priori knowledge of
+        # the biolink:Association subclass e.g. biolink:ChemicalAffectsGeneAssociation,
+        # that constrains the semantics of the edge in question
+        # (QUALIFIED_PREDICATE_NAME, "causes", True),  # Qxx
+        # (QUALIFIED_PREDICATE_CURIE, "causes", True),  # Qxx - CURIE accepted here too
+    ]
+)
+def test_validate_qualifier(toolkit, query: Tuple[str, str, bool]):
+    assert toolkit.validate_qualifier(query[0], query[1]) is query[2]
+
 
 def test_is_permissible_value_of_enum(toolkit):
     assert toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel

@@ -697,14 +697,16 @@ class Toolkit(object):
             Whether or not the given qualifier is valid
 
         """
-        if self.is_qualifier(qualifier_type_id):
+        if qualifier_type_id and qualifier_value and self.is_qualifier(qualifier_type_id):
             qualifier_slot = self.view.get_slot(parse_name(qualifier_type_id))
-            if qualifier_slot:
+            # slot may just be missing from the model or
+            # the range will be None for abstract/mixin qualifiers,
+            # or the range may be just plain missing from the model
+            if qualifier_slot and qualifier_slot.range is not None:
                 if self.is_enum(qualifier_slot.range):
                     enum = self.view.get_enum(qualifier_slot.range)
-                    if self.is_permissible_value_of_enum(enum.name, qualifier_value):
-                        return True
-                    elif self.is_reachable_from_enum(enum.name, qualifier_value):
+                    if self.is_permissible_value_of_enum(enum.name, qualifier_value) or \
+                            self.is_reachable_from_enum(enum.name, qualifier_value):
                         return True
                 else:  # possible Biolink categorical qualifier
                     categories = self.get_element_by_prefix(qualifier_value)
