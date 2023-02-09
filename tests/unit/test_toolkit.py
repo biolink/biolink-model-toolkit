@@ -35,6 +35,8 @@ TREATMENT = "treatment"
 ACTIVE_IN = "active in"
 HAS_ACTIVE_COMPONENT = "has active component"
 
+ANATOMICAL_CONTEXT_QUALIFIER_NAME = "anatomical context qualifier"
+ANATOMICAL_CONTEXT_QUALIFIER_CURIE = "biolink:anatomical_context_qualifier"
 ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME = "AnatomicalContextQualifierEnum"
 ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE = "biolink:AnatomicalContextQualifierEnum"
 
@@ -42,6 +44,10 @@ SUBJECT_DIRECTION_QUALIFIER_NAME = "subject direction qualifier"
 SUBJECT_DIRECTION_QUALIFIER_CURIE = "biolink:subject_direction_qualifier"
 DIRECTION_QUALIFIER_ENUM_NAME = "DirectionQualifierEnum"
 DIRECTION_QUALIFIER_ENUM_CURIE = "biolink:DirectionQualifierEnum"
+
+SPECIES_CONTEXT_QUALIFIER="species context qualifier"
+SPECIES_CONTEXT_QUALIFIER_CURIE="biolink:species_context_qualifier"
+
 BIOLINK_ENTITY = 'biolink:Entity'
 
 
@@ -271,9 +277,13 @@ def test_is_reachable_from_enum(toolkit):
 
 def test_validate_qualifier(toolkit):
     assert toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME, "upregulated")
-    assert not toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME, "pax:0001981")
+    assert not toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_NAME, "UBERON:0001981")
     assert toolkit.validate_qualifier(SUBJECT_DIRECTION_QUALIFIER_CURIE, "upregulated")
-
+    assert toolkit.validate_qualifier(ANATOMICAL_CONTEXT_QUALIFIER_NAME, "UBERON:0001981")
+    assert not toolkit.validate_qualifier(ANATOMICAL_CONTEXT_QUALIFIER_CURIE, "upregulated")
+    assert toolkit.validate_qualifier(SPECIES_CONTEXT_QUALIFIER, "NCBITaxon:9606")
+    assert toolkit.validate_qualifier(SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606")
+    assert not toolkit.validate_qualifier(SPECIES_CONTEXT_QUALIFIER, "upregulated")
 
 def test_is_permissible_value_of_enum(toolkit):
     assert toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
