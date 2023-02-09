@@ -18,14 +18,14 @@ from linkml_runtime.linkml_model.meta import (
 )
 from pprint import pprint
 
-from bmt.utils import format_element, parse_name, snakecase_to_sentencecase
+from bmt.utils import format_element, parse_name
 
 Url = str
 Path = str
 
-REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/biolink-model.yaml"
-PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/predicate_mapping.yaml'
-INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.0/infores_catalog_nodes.tsv'
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.1/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.1/predicate_mapping.yaml'
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.1/infores_catalog_nodes.tsv'
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
