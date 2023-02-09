@@ -699,10 +699,17 @@ class Toolkit(object):
         """
         if self.is_qualifier(qualifier_type_id):
             qualifier_slot = self.view.get_slot(parse_name(qualifier_type_id))
-            if qualifier_slot and self.is_enum(qualifier_slot.range):
-                enum = self.view.get_enum(qualifier_slot.range)
-                if self.is_permissible_value_of_enum(enum.name, qualifier_value):
-                    return True
+            if qualifier_slot:
+                if self.is_enum(qualifier_slot.range):
+                    enum = self.view.get_enum(qualifier_slot.range)
+                    if self.is_permissible_value_of_enum(enum.name, qualifier_value):
+                        return True
+                    elif self.is_reachable_from_enum(enum.name, qualifier_value):
+                        return True
+                else:  # possible Biolink categorical qualifier
+                    categories = self.get_element_by_prefix(qualifier_value)
+                    if categories and qualifier_slot.range in categories:
+                        return True
         return False
 
     def get_all_slots_with_class_domain(
