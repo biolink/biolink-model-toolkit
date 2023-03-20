@@ -17,7 +17,6 @@ from linkml_runtime.linkml_model.meta import (
     SlotDefinition,
 )
 from pprint import pprint
-
 from bmt.utils import format_element, parse_name
 
 Url = str

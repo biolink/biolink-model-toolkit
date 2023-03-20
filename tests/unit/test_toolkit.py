@@ -450,6 +450,7 @@ def test_mapping(toolkit):
     assert len(toolkit.get_all_elements_by_mapping("UPHENO:0000001")) == 1
     assert "affects" in toolkit.get_all_elements_by_mapping("UPHENO:0000001")
 
+    assert toolkit.get_element_by_mapping("BFO:0000001", most_specific=True, formatted=True, mixin=True) == 'biolink:NamedThing'
     assert toolkit.get_element_by_mapping('STY:T071', most_specific=True, formatted=True, mixin=True) == 'biolink:NamedThing'
     assert toolkit.get_element_by_mapping('STY:T044', most_specific=True, formatted=True, mixin=True) == 'biolink:MolecularActivity'
 
