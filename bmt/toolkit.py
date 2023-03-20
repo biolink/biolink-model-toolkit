@@ -7,7 +7,7 @@ from oaklib.implementations import UbergraphImplementation
 from functools import lru_cache, reduce
 
 from typing import List, Union, TextIO, Optional, Dict
-from linkml_runtime.utils.schemaview import SchemaView
+from linkml_runtime.utils.schemaview import SchemaView, Namespaces
 from linkml_runtime.linkml_model.meta import (
     SchemaDefinition,
     Element,
