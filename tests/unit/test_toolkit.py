@@ -71,7 +71,7 @@ def test_get_model_version(toolkit):
 
 def test_get_id_prefixes(toolkit):
     tclass = toolkit.get_element('biolink:Gene')
-    print(tclass.id_prefixes)
+    assert tclass.class_uri == "biolink:Gene"
 
 
 def test_get_element_via_alias(toolkit):
@@ -351,6 +351,10 @@ def test_is_permissible_value_of_enum(toolkit):
 
 def test_ancestors(toolkit):
     assert RELATED_TO in toolkit.get_ancestors(CAUSES)
+    a = toolkit.get_ancestors(GENE)
+    ancs = [toolkit.get_element(ai)['class_uri'] for ai in a]
+    assert "biolink:NamedThing" in ancs
+
     assert "biolink:ChemicalEntityOrGeneOrGeneProduct" in toolkit.get_ancestors(
         GENE, formatted=True
     )
@@ -380,6 +384,8 @@ def test_ancestors(toolkit):
         PHENOTYPIC_FEATURE, mixin=False
     )
     assert THING_WITH_TAXON in toolkit.get_ancestors(PHENOTYPIC_FEATURE)
+
+    assert GENE not in toolkit.get_ancestors("biolink:ChemicalEntity", reflexive=False)
 
 
 def test_permissible_value_ancestors(toolkit):
