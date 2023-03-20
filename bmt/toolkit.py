@@ -1471,12 +1471,15 @@ class Toolkit(object):
         """
         mapping_index = self.view.get_mapping_index()
         elements = self.view.get_element_by_mapping(identifier)
-        for element in elements:
-            if mapping_index.get(identifier)[0] == 'exact' and mapping_index.get(identifier)[1] == element:
-                formatted_element = format_element(element)
-                return [formatted_element]
-            else:
-                return []
+        if elements:
+            for element in elements:
+                if mapping_index.get(identifier)[0] == 'exact' and mapping_index.get(identifier)[1] == element:
+                    formatted_element = format_element(element)
+                    return [formatted_element]
+                else:
+                    return []
+        else:
+            return []
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_close_mapping(
@@ -1501,12 +1504,15 @@ class Toolkit(object):
         """
         mapping_index = self.view.get_mapping_index()
         elements = self.view.get_element_by_mapping(identifier)
-        for element in elements:
-            if mapping_index.get(identifier)[0] == 'close' and mapping_index.get(identifier)[1] == element:
-                formatted_element = format_element(element)
-                return [formatted_element]
-            else:
-                return []
+        if elements:
+            for element in elements:
+                if mapping_index.get(identifier)[0] == 'close' and mapping_index.get(identifier)[1] == element:
+                    formatted_element = format_element(element)
+                    return [formatted_element]
+                else:
+                    return []
+        else:
+            return []
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_related_mapping(
@@ -1531,13 +1537,15 @@ class Toolkit(object):
         """
         mapping_index = self.view.get_mapping_index()
         elements = self.view.get_element_by_mapping(identifier)
-        for element in elements:
-            if mapping_index.get(identifier)[0] == 'related' and mapping_index.get(identifier)[1] == element:
-                formatted_element = format_element(element)
-                return [formatted_element]
-            else:
-                return []
-
+        if elements:
+            for element in elements:
+                if mapping_index.get(identifier)[0] == 'related' and mapping_index.get(identifier)[1] == element:
+                    formatted_element = format_element(element)
+                    return [formatted_element]
+                else:
+                    return []
+        else:
+            return []
     @lru_cache(CACHE_SIZE)
     def get_element_by_narrow_mapping(
             self, identifier: str, formatted: bool = False
@@ -1561,12 +1569,15 @@ class Toolkit(object):
         """
         mapping_index = self.view.get_mapping_index()
         elements = self.view.get_element_by_mapping(identifier)
-        for element in elements:
-            if mapping_index.get(identifier)[0] == 'narrow' and mapping_index.get(identifier)[1] == element:
-                formatted_element = format_element(element)
-                return [formatted_element]
-            else:
-                return []
+        if elements:
+            for element in elements:
+                if mapping_index.get(identifier)[0] == 'narrow' and mapping_index.get(identifier)[1] == element:
+                    formatted_element = format_element(element)
+                    return [formatted_element]
+                else:
+                    return []
+        else:
+            return []
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_broad_mapping(
@@ -1591,12 +1602,15 @@ class Toolkit(object):
         """
         mapping_index = self.view.get_mapping_index()
         elements = self.view.get_element_by_mapping(identifier)
-        for element in elements:
-            if mapping_index.get(identifier)[0] == 'broad' and mapping_index.get(identifier)[1] == element:
-                formatted_element = format_element(element)
-                return [formatted_element]
-            else:
-                return []
+        if elements:
+            for element in elements:
+                if mapping_index.get(identifier)[0] == 'broad' and mapping_index.get(identifier)[1] == element:
+                    formatted_element = format_element(element)
+                    return [formatted_element]
+                else:
+                    return []
+        else:
+            return []
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements_by_mapping(
