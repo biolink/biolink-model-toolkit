@@ -1430,9 +1430,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.view.get_mappings().get(
-            self.view.namespaces.uri_for(identifier), set()
-        )
+        mappings = self.view.get_element_by_mapping(identifier)
         if not mappings:
             exact = set(self.get_element_by_exact_mapping(identifier))
             mappings.update(exact)
@@ -1471,11 +1469,14 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.view.exact_mappings.get(
-            self.view.namespaces.uri_for(identifier), set()
-        )
-        logger.debug(mappings)
-        return self._format_all_elements(mappings, formatted)
+        mapping_index = self.view.get_mapping_index()
+        elements = self.view.get_element_by_mapping(identifier)
+        for element in elements:
+            if mapping_index.get(identifier)[0] == 'exact' and mapping_index.get(identifier)[1] == element:
+                formatted_element = format_element(element)
+                return [formatted_element]
+            else:
+                return []
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_close_mapping(
@@ -1498,10 +1499,14 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.view.close_mappings.get(
-            self.view.namespaces.uri_for(identifier), set()
-        )
-        return self._format_all_elements(mappings, formatted)
+        mapping_index = self.view.get_mapping_index()
+        elements = self.view.get_element_by_mapping(identifier)
+        for element in elements:
+            if mapping_index.get(identifier)[0] == 'close' and mapping_index.get(identifier)[1] == element:
+                formatted_element = format_element(element)
+                return [formatted_element]
+            else:
+                return []
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_related_mapping(
@@ -1524,10 +1529,14 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.view.related_mappings.get(
-            self.view.namespaces.uri_for(identifier), set()
-        )
-        return self._format_all_elements(mappings, formatted)
+        mapping_index = self.view.get_mapping_index()
+        elements = self.view.get_element_by_mapping(identifier)
+        for element in elements:
+            if mapping_index.get(identifier)[0] == 'related' and mapping_index.get(identifier)[1] == element:
+                formatted_element = format_element(element)
+                return [formatted_element]
+            else:
+                return []
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_narrow_mapping(
@@ -1550,10 +1559,14 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.view.narrow_mappings.get(
-            self.view.namespaces.uri_for(identifier), set()
-        )
-        return self._format_all_elements(mappings, formatted)
+        mapping_index = self.view.get_mapping_index()
+        elements = self.view.get_element_by_mapping(identifier)
+        for element in elements:
+            if mapping_index.get(identifier)[0] == 'narrow' and mapping_index.get(identifier)[1] == element:
+                formatted_element = format_element(element)
+                return [formatted_element]
+            else:
+                return []
 
     @lru_cache(CACHE_SIZE)
     def get_element_by_broad_mapping(
@@ -1576,10 +1589,14 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.view.broad_mappings.get(
-            self.view.namespaces.uri_for(identifier), set()
-        )
-        return self._format_all_elements(mappings, formatted)
+        mapping_index = self.view.get_mapping_index()
+        elements = self.view.get_element_by_mapping(identifier)
+        for element in elements:
+            if mapping_index.get(identifier)[0] == 'broad' and mapping_index.get(identifier)[1] == element:
+                formatted_element = format_element(element)
+                return [formatted_element]
+            else:
+                return []
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements_by_mapping(
