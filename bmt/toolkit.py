@@ -1430,7 +1430,7 @@ class Toolkit(object):
             A list of Biolink elements that correspond to the given identifier IRI/CURIE
 
         """
-        mappings = self.view.get_element_by_mapping(identifier)
+        mappings = set(self.view.get_element_by_mapping(identifier))
         if not mappings:
             exact = set(self.get_element_by_exact_mapping(identifier))
             mappings.update(exact)

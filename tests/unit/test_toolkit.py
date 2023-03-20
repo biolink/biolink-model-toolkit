@@ -454,7 +454,7 @@ def test_mapping(toolkit):
     assert toolkit.get_element_by_mapping('STY:T071', most_specific=True, formatted=True, mixin=True) == 'biolink:NamedThing'
     assert toolkit.get_element_by_mapping('STY:T044', most_specific=True, formatted=True, mixin=True) == 'biolink:MolecularActivity'
 
-    print(toolkit.get_element_by_mapping('STY:T066666', most_specific=True, formatted=True, mixin=True))
+    assert toolkit.get_element_by_mapping('STY:T066666', most_specific=True, formatted=True, mixin=True) is None
 
 
 def test_get_slot_domain(toolkit):
