@@ -592,6 +592,11 @@ class Toolkit(object):
             for e, el in self.view.all_elements().items():
                 if el.name.lower() == name.lower():
                     element = el
+
+        if type(element) == ClassDefinition and element.class_uri is None:
+            element.class_uri = format_element(element)
+        if type(element) == SlotDefinition and element.slot_uri is None:
+            element.slot_uri = format_element(element)
         return element
 
     def get_slot_domain(
