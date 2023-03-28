@@ -26,6 +26,7 @@ REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.4/bi
 PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.4/predicate_mapping.yaml'
 INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.4/infores_catalog_nodes.tsv'
 
+
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
 RELATED_TO = "related to"
