@@ -110,6 +110,12 @@ def test_get_element_by_prefix(toolkit):
     elements = toolkit.get_element_by_prefix("TEST:1234")
     assert "anatomical entity" not in elements
 
+    elements = toolkit.get_element_by_prefix("EDAM-DATA:123345")
+    assert "attribute" in elements
+
+    elements = toolkit.get_element_by_prefix("BSPO:123345")
+    assert "original predicate" in elements
+
 
 def test_get_all_elements(toolkit):
     elements = toolkit.get_all_elements()

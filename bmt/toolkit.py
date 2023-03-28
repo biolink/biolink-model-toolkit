@@ -1330,7 +1330,6 @@ class Toolkit(object):
     ) -> List[str]:
         """
         Get a Biolink Model element by prefix.
-        This method return the common ancestor of the set of elements referenced by uriorcurie.
 
         Parameters
         ----------
