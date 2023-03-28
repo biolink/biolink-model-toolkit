@@ -66,7 +66,7 @@ BIOLINK_ENTITY = 'biolink:Entity'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.2.0"
+    assert version == "3.2.2"
 
 
 def test_get_id_prefixes(toolkit):
@@ -109,6 +109,12 @@ def test_get_element_by_prefix(toolkit):
 
     elements = toolkit.get_element_by_prefix("TEST:1234")
     assert "anatomical entity" not in elements
+
+    elements = toolkit.get_element_by_prefix("EDAM-DATA:123345")
+    assert "attribute" in elements
+
+    elements = toolkit.get_element_by_prefix("BSPO:123345")
+    assert "original predicate" in elements
 
 
 def test_get_all_elements(toolkit):

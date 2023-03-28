@@ -22,9 +22,9 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.1/biolink-model.yaml"
-PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.1/predicate_mapping.yaml'
-INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.1/infores_catalog_nodes.tsv'
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.2/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.2/predicate_mapping.yaml'
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.2/infores_catalog_nodes.tsv'
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
@@ -1330,7 +1330,6 @@ class Toolkit(object):
     ) -> List[str]:
         """
         Get a Biolink Model element by prefix.
-        This method return the common ancestor of the set of elements referenced by uriorcurie.
 
         Parameters
         ----------
