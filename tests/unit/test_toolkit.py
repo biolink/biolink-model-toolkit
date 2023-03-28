@@ -66,7 +66,7 @@ BIOLINK_ENTITY = 'biolink:Entity'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.2.0"
+    assert version == "3.2.2"
 
 
 def test_get_id_prefixes(toolkit):
