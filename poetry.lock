@@ -244,7 +244,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7
 name = "commonmark"
 version = "0.9.1"
 description = "Python parser for the CommonMark Markdown spec"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -998,7 +998,7 @@ viz = ["pygraphviz"]
 
 [[package]]
 name = "oaklib"
-version = "0.2.8"
+version = "0.3.1"
 description = "Ontology Access Kit: Python library for common ontology operations over a variety of backends"
 category = "main"
 optional = false
@@ -1502,7 +1502,7 @@ md = ["cmarkgfm (>=0.8.0)"]
 name = "recommonmark"
 version = "0.7.1"
 description = "A docutils-compatibility bridge to CommonMark, enabling you to write CommonMark inside of Docutils & Sphinx projects."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -2202,7 +2202,7 @@ docs = []
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "9721dcf4ebce142232e30c9f36d4b4cd5e845875853c37fdae83f4981d3e1376"
+content-hash = "06d14c513dc49ea54e9635f38ce71533abc83bf1bb13059c8820e2e85cacb1c6"
 
 [metadata.files]
 aiohttp = [
@@ -3137,8 +3137,8 @@ nxontology = [
     {file = "nxontology-0.4.1.tar.gz", hash = "sha256:8f1e5d6d7787542e9414be4ae34bb09e369dbaf2d6c646bba2d18b122c083d44"},
 ]
 oaklib = [
-    {file = "oaklib-0.2.8-py3-none-any.whl", hash = "sha256:202729f6ebf16f725f412152926f08709e5b001ec1743e512363aa93fbaa6377"},
-    {file = "oaklib-0.2.8.tar.gz", hash = "sha256:dc501b6b4ddd7a2d1e06aa62901b8579d830897c5898b28f0616913177b2f6c2"},
+    {file = "oaklib-0.3.1-py3-none-any.whl", hash = "sha256:7f951cc841d4ffadcf2d2633aa41af5428931da0f3f00c55bb9f450fee85ed78"},
+    {file = "oaklib-0.3.1.tar.gz", hash = "sha256:23c5911e27e42cb0ea07df403f23be8589ec7b95b1a0d0ec64bf58c404ff0386"},
 ]
 ols-client = [
     {file = "ols_client-0.1.3-py3-none-any.whl", hash = "sha256:911dd71ded4df772b4b2d88fdd35a21bbfe3b0203f999e2f61ceed1195db141e"},
