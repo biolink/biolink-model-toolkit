@@ -22,9 +22,9 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.4/biolink-model.yaml"
-PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.4/predicate_mapping.yaml'
-INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.4/infores_catalog_nodes.tsv'
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.5/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.5/predicate_mapping.yaml'
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.5/infores_catalog_nodes.tsv'
 
 
 NODE_PROPERTY = "node property"
