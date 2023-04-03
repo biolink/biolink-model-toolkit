@@ -70,9 +70,12 @@ def test_get_model_version(toolkit):
 
 
 def test_get_denormalized_association_slots(toolkit):
-    annotations = toolkit.get_denormalized_association_slots()
+    annotations = toolkit.get_denormalized_association_slots(formatted=True)
     print(annotations)
     assert "biolink:subject_closure" in annotations
+    assert "gene" not in annotations
+    annotations = toolkit.get_denormalized_association_slots(formatted=False)
+    assert "subject closure" in annotations
     assert "gene" not in annotations
 
 

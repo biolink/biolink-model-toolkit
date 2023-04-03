@@ -1098,7 +1098,7 @@ class Toolkit(object):
         return RELATED_TO in self.get_ancestors(name, mixin)
 
     @lru_cache(CACHE_SIZE)
-    def get_denormalized_association_slots(self) -> List[Element]:
+    def get_denormalized_association_slots(self, formatted) -> List[Element]:
         """
         Gets all association slots that are denormalized
 
@@ -1111,7 +1111,10 @@ class Toolkit(object):
         slots = []
         for k, v in self.view.schema.slots.items():
             if v.annotations and "denormalized" in v.annotations:
-                slots.append(format_element(v))
+                if formatted:
+                    slots.append(format_element(v))
+                else:
+                    slots.append(k)
         return slots
 
     @lru_cache(CACHE_SIZE)
