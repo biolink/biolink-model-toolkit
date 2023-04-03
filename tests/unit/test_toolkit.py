@@ -66,7 +66,14 @@ BIOLINK_ENTITY = 'biolink:Entity'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.2.5"
+    assert version == "3.2.6"
+
+
+def test_get_denormalized_association_slots(toolkit):
+    annotations = toolkit.get_denormalized_association_slots()
+    print(annotations)
+    assert "biolink:subject_closure" in annotations
+    assert "gene" not in annotations
 
 
 def test_get_id_prefixes(toolkit):

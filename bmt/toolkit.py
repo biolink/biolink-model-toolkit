@@ -22,9 +22,9 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.5/biolink-model.yaml"
-PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.5/predicate_mapping.yaml'
-INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.5/infores_catalog_nodes.tsv'
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.6/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.6/predicate_mapping.yaml'
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.6/infores_catalog_nodes.tsv'
 
 
 NODE_PROPERTY = "node property"
@@ -1096,6 +1096,23 @@ class Toolkit(object):
             That the named element is a valid relation/predicate in Biolink Model
         """
         return RELATED_TO in self.get_ancestors(name, mixin)
+
+    @lru_cache(CACHE_SIZE)
+    def get_denormalized_association_slots(self) -> List[Element]:
+        """
+        Gets all association slots that are denormalized
+
+        Returns
+        -------
+        List[linkml_model.meta.Element]
+            A list of association slots
+
+        """
+        slots = []
+        for k, v in self.view.schema.slots.items():
+            if v.annotations and "denormalized" in v.annotations:
+                slots.append(format_element(v))
+        return slots
 
     @lru_cache(CACHE_SIZE)
     def is_translator_canonical_predicate(self, name: str, mixin: bool = True) -> bool:
