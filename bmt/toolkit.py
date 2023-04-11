@@ -1339,8 +1339,6 @@ class Toolkit(object):
             enum = self.view.get_enum(enum_name, strict=True)
         if enum and value in enum.permissible_values:
             return True
-        if self.is_reachable_from_enum(enum_name, value):
-            return True
         else:
             return False
 
