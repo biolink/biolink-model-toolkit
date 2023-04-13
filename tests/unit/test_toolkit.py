@@ -360,7 +360,10 @@ def test_validate_qualifier(toolkit, query: Tuple[str, str, bool]):
 
 
 def test_is_permissible_value_of_enum(toolkit):
-    assert toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
+    # Embedding a call to is_reachable_from_enum() inside is_permissible_value_of_enum()
+    # doesn't actually make Biolink semantic sense, so it was removed (11 April 2023),
+    # thus ensuring failure of the following assert test!
+    # assert toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")
     assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "upregulated")
     assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_CURIE, "upregulated")
 
