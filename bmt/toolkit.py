@@ -710,8 +710,7 @@ class Toolkit(object):
             if qualifier_slot and qualifier_slot.range is not None:
                 if self.is_enum(qualifier_slot.range):
                     enum = self.view.get_enum(qualifier_slot.range)
-                    if self.is_permissible_value_of_enum(enum.name, qualifier_value) or \
-                            self.is_reachable_from_enum(enum.name, qualifier_value):
+                    if self.is_permissible_value_of_enum(enum.name, qualifier_value):
                         return True
                 else:  # possible Biolink categorical qualifier
                     categories = self.get_element_by_prefix(qualifier_value)
