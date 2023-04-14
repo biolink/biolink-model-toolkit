@@ -22,9 +22,9 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.7/biolink-model.yaml"
-PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.7/predicate_mapping.yaml'
-INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.7/infores_catalog_nodes.tsv'
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.2.8/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.2.8/predicate_mapping.yaml'
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/master/infores_catalog_nodes.tsv'
 
 
 NODE_PROPERTY = "node property"
@@ -56,7 +56,6 @@ class Toolkit(object):
         self.view = SchemaView(schema)
         r = requests.get(predicate_map)
         self.pmap = yaml.safe_load(r.text)
-
         r = requests.get(infores_map)
         content = r.content.decode('iso-8859-1')
         self.infores_map = {}
@@ -953,6 +952,7 @@ class Toolkit(object):
         """
         element_type = None
         element = self.get_element(slot_name)
+        print(element)
         if element:
             types = self.get_all_types()
             if element.range is None and self.view.schema.default_range:

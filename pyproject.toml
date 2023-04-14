@@ -36,10 +36,10 @@ style = "pep440"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-linkml-runtime = "^1.4.9"
+linkml-runtime = "^1.5.0"
 deprecation = "^2.1.0"
 stringcase = "^1.2.0"
-oaklib = "^0.3.1"
+oaklib = "^0.5.1"
 recommonmark = "^0.7.1"
 
 [tool.poetry.dev-dependencies]
