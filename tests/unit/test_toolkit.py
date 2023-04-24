@@ -513,8 +513,8 @@ def test_get_slot_domain(toolkit):
 
 def test_get_slot_range(toolkit):
     assert "disease or phenotypic feature" in toolkit.get_slot_range("treats")
-    assert BIOLOGICAL_ENTITY in toolkit.get_slot_range("treats", include_ancestors=True)
-    assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_slot_range(
+    assert "disease" in toolkit.get_slot_range("treats", include_ancestors=True)
+    assert "biolink:Disease" in toolkit.get_slot_range(
         "treats", include_ancestors=True, formatted=True
     )
     assert "label type" in toolkit.get_slot_range("name")

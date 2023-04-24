@@ -685,7 +685,7 @@ class Toolkit(object):
                             slot_range.append(tk_element.range)
             if slot_range:
                 for range in slot_range:
-                    slot_domain_desc = self.get_descendants(range, reflexive=True, mixin=mixin)
+                    slot_range_desc = self.get_descendants(range, reflexive=True, mixin=mixin)
                 slot_range.extend(slot_range_desc)
         return self._format_all_elements(slot_range, formatted)
 
