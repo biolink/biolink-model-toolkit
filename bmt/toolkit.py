@@ -705,17 +705,29 @@ class Toolkit(object):
             print(predicate)
             predicate_domains = self.get_slot_domain(predicate, include_ancestors=True, mixin=True, formatted=True)
             predicate_ranges = self.get_slot_range(predicate, include_ancestors=True, mixin=True, formatted=True)
-            if ancestors and not predicate_domains:
-                predicate_domains.extend(self.get_ancestors(subject, reflexive=True, formatted=True))
-            if ancestors and not predicate_ranges:
-                predicate_ranges.extend(self.get_ancestors(p_object, reflexive=True, formatted=True))
-            print("subject", subject)
-            print("p_object", p_object)
-            print("predicate_domains", predicate_domains)
-            print("predicate_ranges", predicate_ranges)
-            if subject in predicate_domains:
-                print("true?? reallly?")
+            if subject in predicate_domains and p_object in predicate_ranges:
                 return True
+            else:
+                subject_entity = self.get_element(subject)
+                object_entity = self.get_element(p_object)
+                if subject_entity and object_entity:
+                    subject_ancestors = self.get_ancestors(subject_entity.name, formatted=True)
+                    object_ancestors = self.get_ancestors(object_entity.name, formatted=True)
+                    subject_in_domain = False
+                    object_in_range = False
+                    for subject_ancestor in subject_ancestors:
+                        print("subject ancestors", subject_ancestor)
+                        if subject_ancestor in predicate_domains:
+                            subject_in_domain = True
+                    for object_ancestor in object_ancestors:
+                        print("object ancestors", object_ancestor)
+                        if object_ancestor in predicate_ranges:
+                            object_in_range = True
+                    if subject_in_domain and object_in_range:
+                        return True
+                else:
+                    return False
+
         return False
 
     def validate_qualifier(self, qualifier_type_id: str, qualifier_value: str) -> bool:
