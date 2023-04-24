@@ -84,6 +84,20 @@ def test_get_id_prefixes(toolkit):
     assert tclass.class_uri == "biolink:Gene"
 
 
+def test_validate_edge(toolkit):
+    subject = "biolink:ChemicalEntity"
+    predicate = "biolink:affects"
+    p_object = "biolink:Gene"
+    assert toolkit.validate_edge(subject, predicate, p_object, ancestors=True)
+
+
+def test_not_valid_edge(toolkit):
+    subject = "biolink:NamedThing"
+    predicate = "biolink:has_target"
+    p_object = "biolink:Gene"
+    assert not toolkit.validate_edge(subject, predicate, p_object, ancestors=True)
+
+
 def test_get_element_via_alias(toolkit):
     el = toolkit.get_element('definition')
     assert el.name == 'description'
@@ -484,11 +498,12 @@ def test_mapping(toolkit):
 
 def test_get_slot_domain(toolkit):
     assert NAMED_THING in toolkit.get_slot_domain("ameliorates")
+    assert "biological process" in toolkit.get_slot_domain(ENABLED_BY)
     assert "biological process or activity" in toolkit.get_slot_domain(ENABLED_BY)
-    assert BIOLOGICAL_ENTITY in toolkit.get_slot_domain(
+    assert "pathway" in toolkit.get_slot_domain(
         ENABLED_BY, include_ancestors=True
     )
-    assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_slot_domain(
+    assert "biolink:BiologicalProcessOrActivity" in toolkit.get_slot_domain(
         ENABLED_BY, include_ancestors=True, formatted=True
     )
     # assert "entity" in toolkit.get_slot_domain("name")
@@ -498,8 +513,8 @@ def test_get_slot_domain(toolkit):
 
 def test_get_slot_range(toolkit):
     assert "disease or phenotypic feature" in toolkit.get_slot_range("treats")
-    assert BIOLOGICAL_ENTITY in toolkit.get_slot_range("treats", include_ancestors=True)
-    assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_slot_range(
+    assert "disease" in toolkit.get_slot_range("treats", include_ancestors=True)
+    assert "biolink:Disease" in toolkit.get_slot_range(
         "treats", include_ancestors=True, formatted=True
     )
     assert "label type" in toolkit.get_slot_range("name")

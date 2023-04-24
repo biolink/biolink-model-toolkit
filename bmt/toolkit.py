@@ -337,7 +337,6 @@ class Toolkit(object):
             A dictionary containing details of the information resource
 
         """
-        pprint(self.infores_map)
         infores = self.infores_map.get(infores_id)
         return infores
 
@@ -627,24 +626,21 @@ class Toolkit(object):
 
         """
         slot_domain = []
-        domain_classes = set()
+        slot_domain_desc = []
         element = self.get_element(slot_name)
-        if element and element.domain:
-            domain_classes.add(element.domain)
-            if include_ancestors:
-                slot_domain.extend(
-                    self.get_ancestors(element.domain, reflexive=True, mixin=mixin)
-                )
-            else:
+        if element:
+            if element.domain:
                 slot_domain.append(element.domain)
-        for d in element.domain_of:
-            if d not in domain_classes:
+            else:
                 if include_ancestors:
-                    slot_domain.extend(
-                        self.get_ancestors(d, reflexive=True, mixin=mixin)
-                    )
-                else:
-                    slot_domain.append(d)
+                    for element in self.get_ancestors(element.name):
+                        tk_element = self.get_element(element)
+                        if tk_element and tk_element.domain:
+                            slot_domain.append(tk_element.domain)
+            if slot_domain:
+                for domain in slot_domain:
+                    slot_domain_desc = self.get_descendants(domain, reflexive=True, mixin=mixin)
+                slot_domain.extend(slot_domain_desc)
         return self._format_all_elements(slot_domain, formatted)
 
     def get_slot_range(
@@ -676,13 +672,69 @@ class Toolkit(object):
 
         """
         slot_range = []
+        slot_range_desc = []
         element = self.get_element(slot_name)
-        if element and element.range:
-            slot_range.append(element.range)
-            if include_ancestors:
-                ancs = self.get_ancestors(element.range, reflexive=False, mixin=mixin)
-                slot_range.extend(ancs)
+        if element:
+            if element.range:
+                slot_range.append(element.range)
+            else:
+                if include_ancestors:
+                    for element in self.get_ancestors(element.name):
+                        tk_element = self.get_element(element)
+                        if tk_element and tk_element.range:
+                            slot_range.append(tk_element.range)
+            if slot_range:
+                for range in slot_range:
+                    slot_range_desc = self.get_descendants(range, reflexive=True, mixin=mixin)
+                slot_range.extend(slot_range_desc)
         return self._format_all_elements(slot_range, formatted)
+
+    def validate_edge(self, subject: str, predicate: str, p_object: str, ancestors: bool = True) -> bool:
+        """
+        Validates an edge.
+
+        Parameters
+        ----------
+        subject: str
+            The name or alias of a subject in the Biolink Model
+        predicate: str
+            The name or alias of a predicate in the Biolink Model
+        p_object: str
+            The name or alias of an object in the Biolink Model
+        ancestors: bool
+            Whether to include ancestors of the domain and range classes
+
+        Returns
+        -------
+        bool
+            Whether or not the given edge is valid
+
+        """
+        if self.is_predicate(predicate):
+            predicate_domains = self.get_slot_domain(predicate, include_ancestors=True, mixin=True, formatted=True)
+            predicate_ranges = self.get_slot_range(predicate, include_ancestors=True, mixin=True, formatted=True)
+            if subject in predicate_domains and p_object in predicate_ranges:
+                return True
+            else:
+                subject_entity = self.get_element(subject)
+                object_entity = self.get_element(p_object)
+                if subject_entity and object_entity:
+                    subject_ancestors = self.get_ancestors(subject_entity.name, formatted=True)
+                    object_ancestors = self.get_ancestors(object_entity.name, formatted=True)
+                    subject_in_domain = False
+                    object_in_range = False
+                    for subject_ancestor in subject_ancestors:
+                        if subject_ancestor in predicate_domains:
+                            subject_in_domain = True
+                    for object_ancestor in object_ancestors:
+                        if object_ancestor in predicate_ranges:
+                            object_in_range = True
+                    if subject_in_domain and object_in_range:
+                        return True
+                else:
+                    return False
+
+        return False
 
     def validate_qualifier(self, qualifier_type_id: str, qualifier_value: str) -> bool:
         """
@@ -952,7 +1004,6 @@ class Toolkit(object):
         """
         element_type = None
         element = self.get_element(slot_name)
-        print(element)
         if element:
             types = self.get_all_types()
             if element.range is None and self.view.schema.default_range:
