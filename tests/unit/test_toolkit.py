@@ -498,11 +498,12 @@ def test_mapping(toolkit):
 
 def test_get_slot_domain(toolkit):
     assert NAMED_THING in toolkit.get_slot_domain("ameliorates")
+    assert "biological process" in toolkit.get_slot_domain(ENABLED_BY)
     assert "biological process or activity" in toolkit.get_slot_domain(ENABLED_BY)
-    assert BIOLOGICAL_ENTITY in toolkit.get_slot_domain(
+    assert "pathway" in toolkit.get_slot_domain(
         ENABLED_BY, include_ancestors=True
     )
-    assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_slot_domain(
+    assert "biolink:BiologicalProcessOrActivity" in toolkit.get_slot_domain(
         ENABLED_BY, include_ancestors=True, formatted=True
     )
     # assert "entity" in toolkit.get_slot_domain("name")

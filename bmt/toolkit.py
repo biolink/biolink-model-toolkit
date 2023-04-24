@@ -337,7 +337,6 @@ class Toolkit(object):
             A dictionary containing details of the information resource
 
         """
-        pprint(self.infores_map)
         infores = self.infores_map.get(infores_id)
         return infores
 
@@ -627,6 +626,7 @@ class Toolkit(object):
 
         """
         slot_domain = []
+        slot_domain_desc = []
         element = self.get_element(slot_name)
         if element:
             if element.domain:
@@ -637,6 +637,10 @@ class Toolkit(object):
                         tk_element = self.get_element(element)
                         if tk_element and tk_element.domain:
                             slot_domain.append(tk_element.domain)
+            if slot_domain:
+                for domain in slot_domain:
+                    slot_domain_desc = self.get_descendants(domain, reflexive=True, mixin=mixin)
+                slot_domain.extend(slot_domain_desc)
         return self._format_all_elements(slot_domain, formatted)
 
     def get_slot_range(
@@ -702,7 +706,6 @@ class Toolkit(object):
 
         """
         if self.is_predicate(predicate):
-            print(predicate)
             predicate_domains = self.get_slot_domain(predicate, include_ancestors=True, mixin=True, formatted=True)
             predicate_ranges = self.get_slot_range(predicate, include_ancestors=True, mixin=True, formatted=True)
             if subject in predicate_domains and p_object in predicate_ranges:
@@ -716,11 +719,9 @@ class Toolkit(object):
                     subject_in_domain = False
                     object_in_range = False
                     for subject_ancestor in subject_ancestors:
-                        print("subject ancestors", subject_ancestor)
                         if subject_ancestor in predicate_domains:
                             subject_in_domain = True
                     for object_ancestor in object_ancestors:
-                        print("object ancestors", object_ancestor)
                         if object_ancestor in predicate_ranges:
                             object_in_range = True
                     if subject_in_domain and object_in_range:
@@ -998,7 +999,6 @@ class Toolkit(object):
         """
         element_type = None
         element = self.get_element(slot_name)
-        print(element)
         if element:
             types = self.get_all_types()
             if element.range is None and self.view.schema.default_range:
