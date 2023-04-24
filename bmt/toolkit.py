@@ -627,24 +627,16 @@ class Toolkit(object):
 
         """
         slot_domain = []
-        domain_classes = set()
         element = self.get_element(slot_name)
-        if element and element.domain:
-            domain_classes.add(element.domain)
-            if include_ancestors:
-                slot_domain.extend(
-                    self.get_ancestors(element.domain, reflexive=True, mixin=mixin)
-                )
+        if element:
+            if element.domain:
+                slot_domain.extend(element.domain)
             else:
-                slot_domain.append(element.domain)
-        for d in element.domain_of:
-            if d not in domain_classes:
                 if include_ancestors:
-                    slot_domain.extend(
-                        self.get_ancestors(d, reflexive=True, mixin=mixin)
-                    )
-                else:
-                    slot_domain.append(d)
+                    for element in self.get_ancestors(element.name):
+                        tk_element = self.get_element(element)
+                        if tk_element and tk_element.domain:
+                            slot_domain.append(tk_element.domain)
         return self._format_all_elements(slot_domain, formatted)
 
     def get_slot_range(
@@ -677,12 +669,50 @@ class Toolkit(object):
         """
         slot_range = []
         element = self.get_element(slot_name)
-        if element and element.range:
-            slot_range.append(element.range)
-            if include_ancestors:
-                ancs = self.get_ancestors(element.range, reflexive=False, mixin=mixin)
-                slot_range.extend(ancs)
+        if element:
+            if element.range:
+                slot_range.extend(element.domain)
+            else:
+                if include_ancestors:
+                    for element in self.get_ancestors(element.name):
+                        tk_element = self.get_element(element)
+                        if tk_element and tk_element.domain:
+                            slot_range.append(tk_element.domain)
         return self._format_all_elements(slot_range, formatted)
+
+    def validate_edge(self, subject: str, predicate: str, object: str)-> bool:
+        """
+        Validates an edge.
+
+        Parameters
+        ----------
+        subject: str
+            The name or alias of a subject in the Biolink Model
+        predicate: str
+            The name or alias of a predicate in the Biolink Model
+        object: str
+            The name or alias of an object in the Biolink Model
+
+        Returns
+        -------
+        bool
+            Whether or not the given edge is valid
+
+        """
+        if subject and predicate and object:
+            predicate_domains = []
+            predicate_ranges = []
+            if self.is_predicate(predicate):
+                print(predicate)
+                predicate_domains = self.get_slot_domain(predicate, include_ancestors=True, mixin=True, formatted=True)
+                print("predicate_domains", predicate_domains)
+                predicate_ranges = self.get_slot_range(predicate, include_ancestors=True, mixin=True, formatted=True)
+                print("predicate_ranges", predicate_ranges)
+            if subject in predicate_domains and object in predicate_ranges:
+                return True
+            else:
+                return False
+        return False
 
     def validate_qualifier(self, qualifier_type_id: str, qualifier_value: str) -> bool:
         """

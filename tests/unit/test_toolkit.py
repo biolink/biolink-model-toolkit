@@ -84,6 +84,13 @@ def test_get_id_prefixes(toolkit):
     assert tclass.class_uri == "biolink:Gene"
 
 
+def test_validate_edge(toolkit):
+    subject = "biolink:ChemicalEntity"
+    predicate = "biolink:affects"
+    p_object = "biolink:Gene"
+    assert toolkit.validate_edge(subject, predicate, p_object)
+
+
 def test_get_element_via_alias(toolkit):
     el = toolkit.get_element('definition')
     assert el.name == 'description'
