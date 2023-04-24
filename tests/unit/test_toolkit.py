@@ -88,7 +88,14 @@ def test_validate_edge(toolkit):
     subject = "biolink:ChemicalEntity"
     predicate = "biolink:affects"
     p_object = "biolink:Gene"
-    assert toolkit.validate_edge(subject, predicate, p_object)
+    assert toolkit.validate_edge(subject, predicate, p_object, ancestors=True)
+
+
+def test_not_valid_edge(toolkit):
+    subject = "biolink:NamedThing"
+    predicate = "biolink:has_target"
+    p_object = "biolink:Gene"
+    assert not toolkit.validate_edge(subject, predicate, p_object, ancestors=True)
 
 
 def test_get_element_via_alias(toolkit):

@@ -630,7 +630,7 @@ class Toolkit(object):
         element = self.get_element(slot_name)
         if element:
             if element.domain:
-                slot_domain.extend(element.domain)
+                slot_domain.append(element.domain)
             else:
                 if include_ancestors:
                     for element in self.get_ancestors(element.name):
@@ -671,16 +671,16 @@ class Toolkit(object):
         element = self.get_element(slot_name)
         if element:
             if element.range:
-                slot_range.extend(element.domain)
+                slot_range.append(element.range)
             else:
                 if include_ancestors:
                     for element in self.get_ancestors(element.name):
                         tk_element = self.get_element(element)
-                        if tk_element and tk_element.domain:
-                            slot_range.append(tk_element.domain)
+                        if tk_element and tk_element.range:
+                            slot_range.append(tk_element.range)
         return self._format_all_elements(slot_range, formatted)
 
-    def validate_edge(self, subject: str, predicate: str, object: str)-> bool:
+    def validate_edge(self, subject: str, predicate: str, p_object: str, ancestors: bool = True) -> bool:
         """
         Validates an edge.
 
@@ -690,8 +690,10 @@ class Toolkit(object):
             The name or alias of a subject in the Biolink Model
         predicate: str
             The name or alias of a predicate in the Biolink Model
-        object: str
+        p_object: str
             The name or alias of an object in the Biolink Model
+        ancestors: bool
+            Whether to include ancestors of the domain and range classes
 
         Returns
         -------
@@ -699,19 +701,21 @@ class Toolkit(object):
             Whether or not the given edge is valid
 
         """
-        if subject and predicate and object:
-            predicate_domains = []
-            predicate_ranges = []
-            if self.is_predicate(predicate):
-                print(predicate)
-                predicate_domains = self.get_slot_domain(predicate, include_ancestors=True, mixin=True, formatted=True)
-                print("predicate_domains", predicate_domains)
-                predicate_ranges = self.get_slot_range(predicate, include_ancestors=True, mixin=True, formatted=True)
-                print("predicate_ranges", predicate_ranges)
-            if subject in predicate_domains and object in predicate_ranges:
+        if self.is_predicate(predicate):
+            print(predicate)
+            predicate_domains = self.get_slot_domain(predicate, include_ancestors=True, mixin=True, formatted=True)
+            predicate_ranges = self.get_slot_range(predicate, include_ancestors=True, mixin=True, formatted=True)
+            if ancestors and not predicate_domains:
+                predicate_domains.extend(self.get_ancestors(subject, reflexive=True, formatted=True))
+            if ancestors and not predicate_ranges:
+                predicate_ranges.extend(self.get_ancestors(p_object, reflexive=True, formatted=True))
+            print("subject", subject)
+            print("p_object", p_object)
+            print("predicate_domains", predicate_domains)
+            print("predicate_ranges", predicate_ranges)
+            if subject in predicate_domains:
+                print("true?? reallly?")
                 return True
-            else:
-                return False
         return False
 
     def validate_qualifier(self, qualifier_type_id: str, qualifier_value: str) -> bool:
