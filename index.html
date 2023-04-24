@@ -1278,11 +1278,37 @@ in the Biolink Model. An element is a canonical predicate if it descends from
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="bmt.toolkit.Toolkit.validate_edge">
+<span class="sig-name descname"><span class="pre">validate_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ancestors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.validate_edge" title="Permalink to this definition"></a></dt>
+<dd><p>Validates an edge.</p>
+<section id="id95">
+<h3>Parameters<a class="headerlink" href="#id95" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>subject: str</dt><dd><p>The name or alias of a subject in the Biolink Model</p>
+</dd>
+<dt>predicate: str</dt><dd><p>The name or alias of a predicate in the Biolink Model</p>
+</dd>
+<dt>p_object: str</dt><dd><p>The name or alias of an object in the Biolink Model</p>
+</dd>
+<dt>ancestors: bool</dt><dd><p>Whether to include ancestors of the domain and range classes</p>
+</dd>
+</dl>
+</section>
+<section id="id96">
+<h3>Returns<a class="headerlink" href="#id96" title="Permalink to this heading"></a></h3>
+<dl class="simple">
+<dt>bool</dt><dd><p>Whether or not the given edge is valid</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="bmt.toolkit.Toolkit.validate_qualifier">
 <span class="sig-name descname"><span class="pre">validate_qualifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qualifier_type_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualifier_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.validate_qualifier" title="Permalink to this definition"></a></dt>
 <dd><p>Validates a qualifier.</p>
-<section id="id95">
-<h3>Parameters<a class="headerlink" href="#id95" title="Permalink to this heading"></a></h3>
+<section id="id97">
+<h3>Parameters<a class="headerlink" href="#id97" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt>qualifier_type_id: str</dt><dd><p>The name or alias of a qualifier in the Biolink Model</p>
 </dd>
@@ -1290,8 +1316,8 @@ in the Biolink Model. An element is a canonical predicate if it descends from
 </dd>
 </dl>
 </section>
-<section id="id96">
-<h3>Returns<a class="headerlink" href="#id96" title="Permalink to this heading"></a></h3>
+<section id="id98">
+<h3>Returns<a class="headerlink" href="#id98" title="Permalink to this heading"></a></h3>
 <dl class="simple">
 <dt>bool</dt><dd><p>Whether or not the given qualifier is valid</p>
 </dd>
