@@ -672,6 +672,7 @@ class Toolkit(object):
 
         """
         slot_range = []
+        slot_range_desc = []
         element = self.get_element(slot_name)
         if element:
             if element.range:
@@ -682,6 +683,10 @@ class Toolkit(object):
                         tk_element = self.get_element(element)
                         if tk_element and tk_element.range:
                             slot_range.append(tk_element.range)
+            if slot_range:
+                for range in slot_range:
+                    slot_domain_desc = self.get_descendants(range, reflexive=True, mixin=mixin)
+                slot_range.extend(slot_range_desc)
         return self._format_all_elements(slot_range, formatted)
 
     def validate_edge(self, subject: str, predicate: str, p_object: str, ancestors: bool = True) -> bool:
