@@ -713,16 +713,25 @@ class Toolkit(object):
         if self.is_predicate(predicate):
             predicate_domains = self.get_slot_domain(predicate, include_ancestors=True, mixin=True, formatted=True)
             predicate_ranges = self.get_slot_range(predicate, include_ancestors=True, mixin=True, formatted=True)
+
             if subject in predicate_domains and p_object in predicate_ranges:
                 return True
             else:
                 subject_entity = self.get_element(subject)
                 object_entity = self.get_element(p_object)
+
                 if subject_entity and object_entity:
-                    subject_ancestors = self.get_ancestors(subject_entity.name, formatted=True)
-                    object_ancestors = self.get_ancestors(object_entity.name, formatted=True)
+                    subject_ancestors = self.get_ancestors(subject_entity.name, formatted=True, mixin=True)
+                    object_ancestors = self.get_ancestors(object_entity.name, formatted=True, mixin=True)
+                    # this is kind of hacky, the issue is that mixins don't descend from any shared class
+                    # like NamedThing. 
+                    if self.is_mixin(subject_entity.name):
+                        subject_ancestors.append("biolink:NamedThing")
+                    if self.is_mixin(object_entity.name):
+                        object_ancestors.append("biolink:NamedThing")
                     subject_in_domain = False
                     object_in_range = False
+                    pprint(subject_ancestors)
                     for subject_ancestor in subject_ancestors:
                         if subject_ancestor in predicate_domains:
                             subject_in_domain = True

@@ -91,6 +91,13 @@ def test_validate_edge(toolkit):
     assert toolkit.validate_edge(subject, predicate, p_object, ancestors=True)
 
 
+def test_mixin_validate_edge(toolkit):
+    subject = "biolink:GenomicEntity"
+    predicate = "biolink:coexists_with"
+    p_object = "biolink:SmallMolecule"
+    assert toolkit.validate_edge(subject, predicate, p_object, ancestors=True)
+
+
 def test_not_valid_edge(toolkit):
     subject = "biolink:NamedThing"
     predicate = "biolink:has_target"
