@@ -66,7 +66,7 @@ BIOLINK_ENTITY = 'biolink:Entity'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.2.8"
+    assert version == "3.3.0"
 
 
 def test_get_denormalized_association_slots(toolkit):
@@ -88,6 +88,13 @@ def test_validate_edge(toolkit):
     subject = "biolink:ChemicalEntity"
     predicate = "biolink:affects"
     p_object = "biolink:Gene"
+    assert toolkit.validate_edge(subject, predicate, p_object, ancestors=True)
+
+
+def test_mixin_validate_edge(toolkit):
+    subject = "biolink:GenomicEntity"
+    predicate = "biolink:coexists_with"
+    p_object = "biolink:SmallMolecule"
     assert toolkit.validate_edge(subject, predicate, p_object, ancestors=True)
 
 
