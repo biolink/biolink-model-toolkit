@@ -66,7 +66,7 @@ BIOLINK_ENTITY = 'biolink:Entity'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.3.0"
+    assert version == "3.3.1"
 
 
 def test_get_denormalized_association_slots(toolkit):
