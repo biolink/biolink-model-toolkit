@@ -67,9 +67,7 @@ class Toolkit(object):
                 "name": line[1],
                 "url": line[3],
                 "synonyms": line[4],
-                "has_contributor": line[6],
-                "description": line[7],
-                "category": line[8]
+                "description": line[5],
             }
 
     @lru_cache(CACHE_SIZE)
