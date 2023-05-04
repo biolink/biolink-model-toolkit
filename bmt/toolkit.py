@@ -22,8 +22,8 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.3.1/biolink-model.yaml"
-PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.3.1/predicate_mapping.yaml'
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.3.2/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.3.2/predicate_mapping.yaml'
 INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/master/infores_catalog_nodes.tsv'
 
 
@@ -67,9 +67,7 @@ class Toolkit(object):
                 "name": line[1],
                 "url": line[3],
                 "synonyms": line[4],
-                "has_contributor": line[6],
-                "description": line[7],
-                "category": line[8]
+                "description": line[5],
             }
 
     @lru_cache(CACHE_SIZE)
