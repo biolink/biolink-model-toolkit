@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bmt"
-version = "0.0.0"
+version = "1.0.13"
 description = "Biolink Model Toolkit: A Python API for working with the Biolink Model"
 authors = ["Sierra Taylor Moxon <sierra.taylor@gmail.com>"]
 license = "BSD"
@@ -30,7 +30,7 @@ packages = [
 ]
 
 [tool.poetry-dynamic-versioning]
-enable = true
+enable = false
 vcs = "git"
 style = "pep440"
 
@@ -39,7 +39,7 @@ python = "^3.9"
 linkml-runtime = "^1.5.0"
 deprecation = "^2.1.0"
 stringcase = "^1.2.0"
-oaklib = "^0.5.1"
+oaklib = "^0.5.5"
 recommonmark = "^0.7.1"
 
 [tool.poetry.dev-dependencies]
