@@ -24,7 +24,7 @@ Path = str
 
 REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.3.2/biolink-model.yaml"
 PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.3.2/predicate_mapping.yaml'
-INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/master/infores_catalog_nodes.tsv'
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.3.2/infores_catalog_nodes.tsv'
 
 
 NODE_PROPERTY = "node property"
