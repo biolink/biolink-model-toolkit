@@ -1794,6 +1794,14 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "rustsim"
+version = "0.1.12"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "scipy"
 version = "1.9.3"
 description = "Fundamental algorithms for scientific computing in Python"
@@ -2416,6 +2424,7 @@ docs = []
 lock-version = "1.1"
 python-versions = "^3.9"
 content-hash = "62f547264413d0e40ff6f101d051d84a6217ded29ddf925ea60d5802e817d5e2"
+
 
 [metadata.files]
 airium = [
@@ -3660,6 +3669,43 @@ ruamel-yaml-clib = [
     {file = "ruamel.yaml.clib-0.2.7-cp39-cp39-win32.whl", hash = "sha256:d5e51e2901ec2366b79f16c2299a03e74ba4531ddcfacc1416639c557aef0ad8"},
     {file = "ruamel.yaml.clib-0.2.7-cp39-cp39-win_amd64.whl", hash = "sha256:184faeaec61dbaa3cace407cffc5819f7b977e75360e8d5ca19461cd851a5fc5"},
     {file = "ruamel.yaml.clib-0.2.7.tar.gz", hash = "sha256:1f08fd5a2bea9c4180db71678e850b995d2a5f4537be0e94557668cf0f5f9497"},
+]
+rustsim = [
+    {file = "rustsim-0.1.12-cp310-cp310-macosx_10_7_x86_64.whl", hash = "sha256:71592f3aaf8951d3f3b3dd8ab1922812f1ecde66dd29d6d77f3175b5d89daafb"},
+    {file = "rustsim-0.1.12-cp310-cp310-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:b376ef3b6d7cf3c0a3ef127d440521807a1bf35d65eb8fc210d5337bd0a3c725"},
+    {file = "rustsim-0.1.12-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:91b546079ca148f045b4372c0be5df50c53e7a751ad5acb3dab076ba8ff20f46"},
+    {file = "rustsim-0.1.12-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ab3a18eb0eec2fe8228741c6aa44cd680a068e445ad79599be98f540f511a663"},
+    {file = "rustsim-0.1.12-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:7b3e7340707bb8554ccccca21000f1d563cf24c91db3fc259116d5288f2db4d3"},
+    {file = "rustsim-0.1.12-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:864b3e67a042cdc0e7c7f332241e74f65b615582c770b2528559a64cf2ecc114"},
+    {file = "rustsim-0.1.12-cp310-none-win_amd64.whl", hash = "sha256:034b979fc627f72e399b56fada93275a30624c34bc8a0b5cbf368df286b11232"},
+    {file = "rustsim-0.1.12-cp311-cp311-macosx_10_7_x86_64.whl", hash = "sha256:1c19c36d9b64355e4b27dc4eee92864cd147e7ac06f39c551580904d33fe025e"},
+    {file = "rustsim-0.1.12-cp311-cp311-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:7becc971bdae6731b2d6c34de15627a6d8d5613398e54e157647a71a08a07f66"},
+    {file = "rustsim-0.1.12-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5d06eb8f893e9d6d974be2fb368ba99f2d9070a444e1049ab4595b5f29798eef"},
+    {file = "rustsim-0.1.12-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:75ad84d138659cd600113f447a60f2f71d8dcf1453421b1c2c894918dfa66dbd"},
+    {file = "rustsim-0.1.12-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:46b5ad23d95faed996bee268246914ded5f111dbf0dd7048d1ba117b130bb3cb"},
+    {file = "rustsim-0.1.12-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:96cb7bf7a0e4971c2f2b837f8c1424691b3a6ad575a1ba2709f85e29d96d6a32"},
+    {file = "rustsim-0.1.12-cp311-none-win_amd64.whl", hash = "sha256:d10861ccb5534ae284c1851e5ea7b95443341b78c8f30caa382c51249b5e9b48"},
+    {file = "rustsim-0.1.12-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:01ea9b0a984f19f0ac30d7e2696e690d5e9bef55535d2d2822380d6fe693d34e"},
+    {file = "rustsim-0.1.12-cp37-cp37m-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:bfe26527441cabc3de6c0068c3b7a00d6be2352c0623aabacee2fd2ac470e96d"},
+    {file = "rustsim-0.1.12-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:796259044394d90f7a311bb9b31a20bf412038fcf8d2b634e979b4e24a9806a9"},
+    {file = "rustsim-0.1.12-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:14913d511f833c092da89e67b3053011ee8d30c69247c891237ff48169941ef4"},
+    {file = "rustsim-0.1.12-cp37-cp37m-musllinux_1_2_aarch64.whl", hash = "sha256:4155f01e1f07c94cb73ac42a9649694e6e6d4f0c7711378a49d14e23e27a850b"},
+    {file = "rustsim-0.1.12-cp37-cp37m-musllinux_1_2_x86_64.whl", hash = "sha256:01d462fa7bbffa0fb16c3a68951af46e7ade033e5a54c79dd6e92825215b8d3b"},
+    {file = "rustsim-0.1.12-cp37-none-win_amd64.whl", hash = "sha256:d867c7e2534f0cc4c8308389667d6685200f2cfcd0b5043e2364a44338ba385a"},
+    {file = "rustsim-0.1.12-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:a396851f225c2addfa460e8dfb90da77d03189f0d94470e6ece1db387843e02f"},
+    {file = "rustsim-0.1.12-cp38-cp38-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:782f9de29ec2c30a62a74c491a118144cdd8fcd0be32544fcddceef75f697be0"},
+    {file = "rustsim-0.1.12-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b204536134828fe9f1f260393cc048436ef5202ea55e6961ff8c0f3ebcb6d3b4"},
+    {file = "rustsim-0.1.12-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8fe2d6e836c45878376db553c835c04165c3f98852a9f21219623350e223df29"},
+    {file = "rustsim-0.1.12-cp38-cp38-musllinux_1_2_aarch64.whl", hash = "sha256:80bf5e7612569518d21b1f5b0b7a88d15026ddf01cf15b97596256173311b814"},
+    {file = "rustsim-0.1.12-cp38-cp38-musllinux_1_2_x86_64.whl", hash = "sha256:a46d1394075d64fb275b5a9a273980b1c9b78ed8d4f5b35b0834dffba2157d7a"},
+    {file = "rustsim-0.1.12-cp38-none-win_amd64.whl", hash = "sha256:9321eade4339a9fada6b4d1b0691d6c62314403192b72688d4b37a54e3abe63e"},
+    {file = "rustsim-0.1.12-cp39-cp39-macosx_10_7_x86_64.whl", hash = "sha256:405c2ab8687cddcfbf9a8db3986d968e6a4c668ace7eae36b38d74a112b02142"},
+    {file = "rustsim-0.1.12-cp39-cp39-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:d8bf880de367ed76488285501f31eb80ae88a14bab48a369f4960fdc931e1aa4"},
+    {file = "rustsim-0.1.12-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ee81b1e407b31773c2ee7711b14fc65c739f2fc6941aa05fe14adb1d90964a8a"},
+    {file = "rustsim-0.1.12-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e55197aef47894b005792e0b15f5dff74caccbc0e6ba000ef1b4b61134d49575"},
+    {file = "rustsim-0.1.12-cp39-cp39-musllinux_1_2_aarch64.whl", hash = "sha256:1f6f329492c3fcc991b282a2da32eecd88234442767a6f5957c5c37618af3f40"},
+    {file = "rustsim-0.1.12-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:d92b424f02313ae9ddde46ff75b1e36875419e3365d18de42931300cc86cb86b"},
+    {file = "rustsim-0.1.12-cp39-none-win_amd64.whl", hash = "sha256:56cab80f06ed3bea47ebc8be4d5ad34b0fd86aae31d143d7eb01854f5549d0d7"},
 ]
 scipy = [
     {file = "scipy-1.9.3-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:1884b66a54887e21addf9c16fb588720a8309a57b2e258ae1c7986d4444d3bc0"},
