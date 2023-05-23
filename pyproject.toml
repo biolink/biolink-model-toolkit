@@ -36,19 +36,17 @@ style = "pep440"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-rustsim = "<=0.1.12"
 linkml-runtime = "^1.5.0"
 deprecation = "^2.1.0"
 stringcase = "^1.2.0"
-oaklib = "^0.5.5"
-recommonmark = "^0.7.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.2.2"
 Sphinx = "^5.3.0"
 sphinx-rtd-theme = "^1.1.1"
 sphinxcontrib-napoleon = "^0.7"
-sphinx-autodoc-typehints = "^1.19.5"
+recommonmark = "^0.7.1"
+# sphinx-autodoc-typehints = "^1.19.5"
 sphinx-click = "^4.3.0"
 twine = "^4.0.1"
 
