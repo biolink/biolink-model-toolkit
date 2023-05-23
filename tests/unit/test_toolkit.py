@@ -115,11 +115,6 @@ def test_predicate_map(toolkit):
     assert mp.get("biolink:object_aspect_qualifier") == 'activity or abundance'
 
 
-def test_infores(toolkit):
-    aragorn = toolkit.get_infores_details("infores:aragorn")
-    assert aragorn["name"] == "ARAGORN"
-
-
 def test_rna(toolkit):
     assert 'molecular entity' in toolkit.get_descendants(BIOLINK_ENTITY)
     assert 'microRNA' in toolkit.get_descendants(BIOLINK_ENTITY)
@@ -320,10 +315,6 @@ def test_is_enum(toolkit):
     assert not toolkit.is_enum(GENE_OR_GENE_PRODUCT)
 
 
-def test_is_reachable_from_enum(toolkit):
-    assert toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
-    assert not toolkit.is_reachable_from_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "pax:0001981")
-
 
 @pytest.mark.parametrize(
     "query",
@@ -343,10 +334,6 @@ def test_is_reachable_from_enum(toolkit):
         # *** Use case currently not supported: RO term is exact_match to 'upregulated' enum
         # (SUBJECT_DIRECTION_QUALIFIER_NAME, "RO:0002213", True),  # Qx -
 
-        # qualifier with value drawn from enum 'reachable from'
-        (ANATOMICAL_CONTEXT_QUALIFIER_NAME, "UBERON:0001981", True), # Q6
-        (ANATOMICAL_CONTEXT_QUALIFIER_CURIE, "UBERON:0001981", True), # Q7 - CURIE accepted here too
-
         # qualifier with value drawn from concrete Biolink category identifier spaces
         (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", True), # Q8
         (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", True), # Q9 - CURIE accepted here too
@@ -365,7 +352,6 @@ def test_is_reachable_from_enum(toolkit):
         # mis-matched qualifier values or value types
         (SUBJECT_DIRECTION_QUALIFIER_NAME, "UBERON:0001981", False), # Q12
         (SPECIES_CONTEXT_QUALIFIER_NAME, "upregulated", False), # Q13
-        (ANATOMICAL_CONTEXT_QUALIFIER_NAME, "upregulated", False), # Q14
 
         # *** Yetanuder currently unsupported use case...
         # 'qualified predicate' is a qualifier use case in a class of its own
@@ -381,7 +367,6 @@ def test_validate_qualifier(toolkit, query: Tuple[str, str, bool]):
 
 
 def test_is_permissible_value_of_enum(toolkit):
-    assert toolkit.is_permissible_value_of_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME, "UBERON:0001981")  # Blood Vessel
     assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_NAME, "upregulated")
     assert toolkit.is_permissible_value_of_enum(DIRECTION_QUALIFIER_ENUM_CURIE, "upregulated")
 

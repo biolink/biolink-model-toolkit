@@ -3,7 +3,6 @@ import yaml
 import csv
 import deprecation
 import requests
-from oaklib.implementations import UbergraphImplementation
 from functools import lru_cache, reduce
 
 from typing import List, Union, TextIO, Optional, Dict
@@ -24,7 +23,7 @@ Path = str
 
 REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.3.2/biolink-model.yaml"
 PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.3.2/predicate_mapping.yaml'
-INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.3.2/infores_catalog_nodes.tsv'
+INFORES_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/master/infores_catalog_nodes.tsv'
 
 
 NODE_PROPERTY = "node property"
@@ -49,26 +48,11 @@ class Toolkit(object):
 
     def __init__(
             self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH,
-            predicate_map: Url = PREDICATE_MAP,
-            infores_map: Url = INFORES_MAP
+            predicate_map: Url = PREDICATE_MAP
     ) -> None:
-        self.oi = UbergraphImplementation()
         self.view = SchemaView(schema)
         r = requests.get(predicate_map)
         self.pmap = yaml.safe_load(r.text)
-        r = requests.get(infores_map)
-        content = r.content.decode('iso-8859-1')
-        self.infores_map = {}
-        for line in csv.reader(content.splitlines(), delimiter='\t'):
-            if line[2] == 'id':
-                continue
-            self.infores_map[line[2]] = {
-                "status": line[0],
-                "name": line[1],
-                "url": line[3],
-                "synonyms": line[4],
-                "description": line[5],
-            }
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements(self, formatted: bool = False) -> List[str]:
@@ -315,28 +299,6 @@ class Toolkit(object):
         if formatted:
             return self._format_all_elements(ancestors)
         return ancestors
-
-    @lru_cache(CACHE_SIZE)
-    def get_infores_details(self, infores_id: str):
-        """
-        Get details of an information resource.
-
-        This method returns a dictionary containing details of a given
-        information resource.
-
-        Parameters
-        ----------
-        infores_id: str
-            The identifier of the information resource
-
-        Returns
-        -------
-        Dict[str, Any]
-            A dictionary containing details of the information resource
-
-        """
-        infores = self.infores_map.get(infores_id)
-        return infores
 
     @lru_cache(CACHE_SIZE)
     def get_predicate_mapping(self, mapped_predicate: str) -> Dict[str, str]:
@@ -1342,35 +1304,6 @@ class Toolkit(object):
         return True
 
     @lru_cache(CACHE_SIZE)
-    def is_reachable_from_enum(self, enum_name: str, value) -> bool:
-        """
-        method to test (by name) if a candidate
-        'reachable value' ontology term is associated with the given Enum
-
-        Parameters
-        ----------
-        enum_name : str
-            The name or alias of an Enum in the Biolink Model
-        value : Any
-            The name or alias of the candidate 'reachable value' associated with the given Enum
-
-        Returns
-        -------
-        bool
-            That the named element is a valid 'reachable value' in the Enum
-        """
-        if self.is_enum(enum_name):
-            enum = self.view.get_enum(enum_name)
-            if enum.reachable_from is not None and enum.reachable_from.source_ontology:
-                if value in self.oi.descendants(enum.reachable_from.source_nodes,
-                                                enum.reachable_from.relationship_types):
-                    return True
-                else:
-                    return False
-        else:
-            return False
-
-    @lru_cache(CACHE_SIZE)
     def is_permissible_value_of_enum(self, enum_name: str, value) -> bool:
         """
         method to test (by name) if a candidate
@@ -1395,8 +1328,8 @@ class Toolkit(object):
             enum = self.view.get_enum(enum_name, strict=True)
         if enum and value in enum.permissible_values:
             return True
-        if self.is_reachable_from_enum(enum_name, value):
-            return True
+        # if self.is_reachable_from_enum(enum_name, value):
+        #     return True
         else:
             return False
 
