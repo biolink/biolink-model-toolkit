@@ -48,7 +48,6 @@ sphinxcontrib-napoleon = "^0.7"
 recommonmark = "^0.7.1"
 # sphinx-autodoc-typehints = "^1.19.5"
 sphinx-click = "^4.3.0"
-twine = "^4.0.1"
 
 [tool.poetry.extras]
 docs = ["Sphinx", "sphinxcontrib-mermaid"]
