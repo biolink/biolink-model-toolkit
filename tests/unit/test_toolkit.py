@@ -66,7 +66,7 @@ BIOLINK_ENTITY = 'biolink:Entity'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.3.2"
+    assert version == "3.4.2"
 
 
 def test_get_denormalized_association_slots(toolkit):
@@ -306,8 +306,6 @@ def test_is_qualifier(toolkit):
 
 
 def test_is_enum(toolkit):
-    assert toolkit.is_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_NAME)
-    assert toolkit.is_enum(ANATOMICAL_CONTEXT_QUALIFIER_ENUM_CURIE)
     assert toolkit.is_enum(DIRECTION_QUALIFIER_ENUM_NAME)
     assert not toolkit.is_enum(NAMED_THING)
     assert not toolkit.is_enum(CAUSES)
@@ -533,12 +531,6 @@ def test_get_all_slots_with_class_range(toolkit):
     )
     assert SUBJECT in toolkit.get_all_slots_with_class_range(
         ORGANISM_TAXON, check_ancestors=True, mixin=False
-    )
-    assert "primary knowledge source" in toolkit.get_all_slots_with_class_range(
-        "information resource", check_ancestors=True, mixin=False
-    )
-    assert "knowledge source" in toolkit.get_all_slots_with_class_range(
-        "information resource", check_ancestors=True, mixin=True
     )
 
 
