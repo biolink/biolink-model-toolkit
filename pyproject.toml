@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bmt"
-version = "1.0.13"
+version = "0.0.0"
 description = "Biolink Model Toolkit: A Python API for working with the Biolink Model"
 authors = ["Sierra Taylor Moxon <sierra.taylor@gmail.com>"]
 license = "BSD"
@@ -30,7 +30,7 @@ packages = [
 ]
 
 [tool.poetry-dynamic-versioning]
-enable = false
+enable = true
 vcs = "git"
 style = "pep440"
 
