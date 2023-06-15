@@ -1208,7 +1208,7 @@ class Toolkit(object):
         Returns
         -------
         bool
-            That the named element is a valid mixin in Biolink Model
+            That the named element is a predicate with an inverse in the Biolink Model
         """
         element = self.get_element(name)
         has_inverse = element.inverse if isinstance(element, SlotDefinition) else False
