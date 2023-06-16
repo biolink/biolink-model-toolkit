@@ -962,20 +962,20 @@ a given predicate.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="bmt.toolkit.Toolkit.has_inverse">
 <span class="sig-name descname"><span class="pre">has_inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#bmt.toolkit.Toolkit.has_inverse" title="Permalink to this definition"></a></dt>
-<dd><p>Determines whether the given name is a predicate and if that predicate has an inverse defined
-in the Biolink Model. An element is a predicate if it descends from
-<cite>RELATED_TO</cite></p>
+<dd><p>Determines whether the given name exists and has an inverse defined in the Biolink Model.
+An element is a predicate if it descends from <cite>RELATED_TO</cite> but this is
+not directly tested here (use the method ‘is_predicate()’ to be sure).</p>
 <section id="id69">
 <h3>Parameters<a class="headerlink" href="#id69" title="Permalink to this heading"></a></h3>
 <dl class="simple">
-<dt>name: str</dt><dd><p>The name or alias of an element in the Biolink Model</p>
+<dt>name: str</dt><dd><p>The name or alias of an slot element in the Biolink Model</p>
 </dd>
 </dl>
 </section>
 <section id="id70">
 <h3>Returns<a class="headerlink" href="#id70" title="Permalink to this heading"></a></h3>
 <dl class="simple">
-<dt>bool</dt><dd><p>That the named element is a valid mixin in Biolink Model</p>
+<dt>bool</dt><dd><p>That the named element is a slot element with an inverse in the Biolink Model</p>
 </dd>
 </dl>
 </section>
