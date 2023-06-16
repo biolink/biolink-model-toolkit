@@ -1196,19 +1196,19 @@ class Toolkit(object):
     @lru_cache(CACHE_SIZE)
     def has_inverse(self, name: str) -> bool:
         """
-        Determines whether the given name is a predicate and if that predicate has an inverse defined
-        in the Biolink Model. An element is a predicate if it descends from
-        `RELATED_TO`
+        Determines whether the given name exists and has an inverse defined in the Biolink Model.
+        An element is a predicate if it descends from `RELATED_TO` but this is
+        not directly tested here (use the method 'is_predicate()' to be sure).
 
         Parameters
         ----------
         name: str
-            The name or alias of an element in the Biolink Model
+            The name or alias of an slot element in the Biolink Model
 
         Returns
         -------
         bool
-            That the named element is a valid mixin in Biolink Model
+            That the named element is a slot element with an inverse in the Biolink Model
         """
         element = self.get_element(name)
         has_inverse = element.inverse if isinstance(element, SlotDefinition) else False
