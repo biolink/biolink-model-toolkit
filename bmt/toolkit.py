@@ -417,11 +417,11 @@ class Toolkit(object):
         name: str
             The name of an element in the Biolink Model
         reflexive: bool
-            Whether to include the query element in the list of ancestors
+            Whether to include the query element in the list of descendants
         formatted: bool
             Whether to format element names as CURIEs
         mixin: bool
-            If True, then that means we want to find mixin ancestors as well as is_a ancestors
+            If True, then that means we want to find mixin descendants as well as is_a ancestors
 
         Returns
         -------
