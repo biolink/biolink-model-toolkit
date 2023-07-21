@@ -179,13 +179,51 @@ class Toolkit(object):
         """
         Get all associations from Biolink Model.
 
-        This method returns a list containing all the classes
-        that are descendants of the class ``association``.
+        This method returns a list of names or (optionally) curies
+        designating classes that are descendants of the class ``association``.
 
         Parameters
         ----------
         formatted: bool
             Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        elements = self.get_descendants("association")
+        return self._format_all_elements(elements, formatted)
+
+    def get_associations(
+            self,
+            subject_categories: Optional[List[str]] = None,
+            predicates: Optional[List[str]] = None,
+            object_categories: Optional[List[str]] = None,
+            specific: bool = True,
+            formatted: bool = False
+    ) -> List[str]:
+        """
+        Get associations from Biolink Model constrained by
+        subject categories, predicates and/or object categories.
+
+        This method returns a list of names or (optionally) curies
+        designating classes that are descendants of the class ``association``.
+
+        Parameters
+        ----------
+        subject_categories: Optional[List[str]]
+            List of node categories that the associations must match for the subject node; default: None
+        predicates: Optional[List[str]]
+            List of edge predicates that the associations allowed for matching associations; default: None
+        object_categories: Optional[List[str]]
+            List of node categories that the associations must match for the object node; default: None
+        specific: bool
+            Whether to return only the most specific subclass of biolink:Association
+            that matches provided subject, predicate and object constraints; default: True
+        formatted: bool
+            Whether to format element names as CURIEs; default: False
 
         Returns
         -------

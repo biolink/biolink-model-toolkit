@@ -187,6 +187,25 @@ def test_get_all_associations(toolkit):
     assert BIOLINK_NAMED_THING not in associations
 
 
+def test_get_associations_without_parameters(toolkit):
+    # Empty argument versions of get_associations()
+    # are equivalent to get_all_associations()
+    associations = toolkit.get_associations()
+    assert ASSOCIATION in associations
+    assert "gene to gene association" in associations
+    assert NAMED_THING not in associations
+
+    associations = toolkit.get_associations(formatted=True)
+    assert "biolink:Association" in associations
+    assert "biolink:GeneToGeneAssociation" in associations
+    assert BIOLINK_NAMED_THING not in associations
+
+
+@pytest.mark.skip(reason="test_get_associations_with_parameters() unit tests not yet implemented!")
+def test_get_associations_with_parameters(toolkit):
+    assert False, "test_get_associations_with_parameters() unit tests not yet implemented!"
+
+
 def test_get_all_node_properties(toolkit):
     properties = toolkit.get_all_node_properties()
     assert "provided by" in properties
