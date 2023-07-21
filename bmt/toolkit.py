@@ -230,8 +230,9 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants("association", formatted)
+        elements = self.get_descendants("association", formatted=formatted)
         return elements
+
     @lru_cache(CACHE_SIZE)
     def get_all_node_properties(self, formatted: bool = False) -> List[str]:
         """
