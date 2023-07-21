@@ -193,8 +193,7 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants("association", formatted=formatted)
-        return elements
+        return self.get_descendants("association", formatted=formatted)
 
     def get_associations(
             self,
@@ -231,9 +230,8 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants("association")
-        return self._format_all_elements(elements, formatted)
-
+        elements = self.get_descendants("association", formatted)
+        return elements
     @lru_cache(CACHE_SIZE)
     def get_all_node_properties(self, formatted: bool = False) -> List[str]:
         """
