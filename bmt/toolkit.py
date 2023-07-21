@@ -193,8 +193,8 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants("association")
-        return self._format_all_elements(elements, formatted)
+        elements = self.get_descendants("association", formatted=formatted)
+        return elements
 
     def get_associations(
             self,
