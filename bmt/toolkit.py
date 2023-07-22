@@ -195,12 +195,58 @@ class Toolkit(object):
         """
         return self.get_descendants("association", formatted=formatted)
 
+    def match_slot_usage(self, element, slot: str, slot_values: List[str], strict: bool) -> bool:
+        """
+        Match slot_values against expected slot_usage for
+        specified slot in specified (association) element.
+
+        Parameters
+        ----------
+        element: Element
+            Target element against which slot_usage is being assessed.
+        slot: str
+            Name of target slot in given element, against which slot_usage is being assessed.
+        slot_values: List[str]
+            List of slot value (strings) e.g. categories, predicates, etc. - being assessed against slot_usage
+        strict: bool
+            Specified slot (name) must be present in the element slot_usage for the method; returns False otherwise
+
+        Returns
+        -------
+        bool
+            Returns 'True' if slot_values are compatible with slot usage within given element
+
+        """
+        # scope of method sanity check for now
+        assert slot in ["subject", "object", "predicate"]
+        try:
+            slot_usage = element.slot_usage
+            if slot in slot_usage:
+                # assess slot_values against stipulated constraint
+                slot_definition = slot_usage[slot]
+                if slot == "predicate":
+                    # "predicate" filter
+                    return False  # NotImplemented yet
+                else:
+                    # "subject" or "object" category filter
+                    return False  # NotImplemented yet
+
+        except AttributeError as ae:
+            # if the slot_usage is not defined...
+            # our final decision depends on the 'strict' flag
+            pass
+
+        if strict:
+            return False
+        else:
+            return True
+
     def get_associations(
             self,
             subject_categories: Optional[List[str]] = None,
             predicates: Optional[List[str]] = None,
             object_categories: Optional[List[str]] = None,
-            specific: bool = True,
+            strict: bool = True,
             formatted: bool = False
     ) -> List[str]:
         """
@@ -213,14 +259,14 @@ class Toolkit(object):
         Parameters
         ----------
         subject_categories: Optional[List[str]]
-            List of node categories that the associations must match for the subject node; default: None
+            List of node categories (as CURIES) that the associations must match for the subject node; default: None
         predicates: Optional[List[str]]
-            List of edge predicates that the associations allowed for matching associations; default: None
+            List of edge predicates (as CURIES) that the associations allowed for matching associations; default: None
         object_categories: Optional[List[str]]
-            List of node categories that the associations must match for the object node; default: None
-        specific: bool
-            Whether to return only the most specific subclass of biolink:Association
-            that matches provided subject, predicate and object constraints; default: True
+            List of node categories (as CURIES) that the associations must match for the object node; default: None
+        strict: bool
+            Designates strict matching to return only the most specific subclass of biolink:Association
+            whose slot_usage matches provided subject, predicate and object constraints; default: True
         formatted: bool
             Whether to format element names as CURIEs; default: False
 
@@ -230,8 +276,36 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants("association", formatted=formatted)
-        return elements
+        elements = self.get_descendants("association")
+        filtered_elements: List[str] = list()
+        if subject_categories or predicates or object_categories:
+            # This feels like a bit of a brute force approach as an implementation,
+            # but we just use the list of all association names to retrieve each
+            # association record for filtering against the constraints?
+            for name in elements:
+                association: Optional[Element] = self.get_element(name)
+
+                # sanity checks, probably not necessary
+                # assert association, f"'{name}' not a Biolink Element?"
+                # assert isinstance(association, ClassDefinition), f"'{name}' not a ClassDefinition?"
+
+                if subject_categories:
+                    if not self.match_slot_usage(association, "subject", subject_categories, strict=strict):
+                        continue
+                if predicates:
+                    if not self.match_slot_usage(association, "predicate", predicates, strict=strict):
+                        continue
+                if object_categories:
+                    if not self.match_slot_usage(association, "object", object_categories, strict=strict):
+                        continue
+
+                # this association is assumed to pass stipulated constraints
+                filtered_elements.append(association.name)
+        else:
+            # no filtering equivalent to get_all_associations()
+            filtered_elements = elements
+
+        return self._format_all_elements(filtered_elements, formatted)
 
     @lru_cache(CACHE_SIZE)
     def get_all_node_properties(self, formatted: bool = False) -> List[str]:

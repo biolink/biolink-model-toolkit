@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional, List
 
 import pytest
 from bmt import Toolkit
@@ -201,9 +201,122 @@ def test_get_associations_without_parameters(toolkit):
     assert BIOLINK_NAMED_THING not in associations
 
 
-@pytest.mark.skip(reason="test_get_associations_with_parameters() unit tests not yet implemented!")
-def test_get_associations_with_parameters(toolkit):
-    assert False, "test_get_associations_with_parameters() unit tests not yet implemented!"
+@pytest.mark.parametrize(
+    "subject_categories,predicates,object_categories,strict,result",
+    [
+        (   # Q0 - all parameters None => same (formatted) result as get_all_associations(); strict == False (ignored)
+            None,   # subject_categories: Optional[List[str]],
+            None,   # predicates: Optional[List[str]],
+            None,   # object_categories: Optional[List[str]],
+            False,  # strict: bool
+            ["biolink:GeneToGeneAssociation"]  # result: List[str]
+        ),
+        (   # Q1 - subject_categories set to a value and all other parameters == None; strict == False
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            None,
+            None,
+            False,
+            ["biolink:GeneToGeneAssociation"]
+        ),
+        (   # Q2 - subject_categories set to a value and all other parameters == None; strict == True
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            None,
+            None,
+            True,
+            ["biolink:GeneToGeneAssociation"]
+        ),
+        (   # Q3 - subject_categories, object_categories given non-None values and predicates == None; strict == False
+            #   gene to disease association:
+            #     is_a: gene to disease or phenotypic feature association
+            #     comments:
+            #       - NCIT:R176 refers to the inverse relationship
+            #     exact_mappings:
+            #       - SIO:000983
+            #     close_mappings:
+            #       - dcid:DiseaseGeneAssociation
+            #     defining_slots:
+            #       - subject
+            #       - object
+            #     mixins:
+            #       - entity to disease association mixin
+            #       - gene to entity association mixin
+            #     slot_usage:
+            #       subject:
+            #         range: gene or gene product
+            #         description: >-
+            #           gene in which variation is correlated with the disease,
+            #           may be protective or causative or associative, or as a model
+            #       object:
+            #         range: disease
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            None,
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            False,
+            ["biolink:GeneToDiseaseAssociation"]
+        ),
+        (   # Q4 - subject_categories, object_categories given non-None values and predicates == None; strict == True
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            None,
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            True,
+            ["biolink:GeneToDiseaseAssociation"]
+        ),
+        (   # Q5 - subject_categories, predicates and object_categories given non-None values; strict == False
+            #   druggable gene to disease association:
+            #     is_a: gene to disease association
+            #     slot_usage:
+            #       subject:
+            #         range: gene or gene product
+            #         description: >-
+            #           gene in which variation is correlated with the disease
+            #           in a protective manner, or if the product produced
+            #           by the gene can be targeted by a small molecule and
+            #           this leads to a protective or improving disease state.
+            #       predicate:
+            #         subproperty_of: target for
+            #       has evidence:
+            #         range: DruggableGeneCategoryEnum
+            #     defining_slots:
+            #       - subject
+            #       - object
+            #       - predicate
+            #     mixins:
+            #       - entity to disease association mixin
+            #       - gene to entity association mixin
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:target_for"],
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            False,
+            ["biolink:DruggableGeneToDiseaseAssociation"]
+        ),
+        (   # Q6 - subject_categories, predicates and object_categories given non-None values; strict == True
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:target_for"],
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            True,
+            ["biolink:DruggableGeneToDiseaseAssociation"]
+        )
+    ]
+)
+def test_get_associations_with_parameters(
+        toolkit,
+        subject_categories: Optional[List[str]],
+        predicates: Optional[List[str]],
+        object_categories: Optional[List[str]],
+        strict: bool,
+        result: List[str]
+):
+    associations = toolkit.get_associations(
+        subject_categories=subject_categories,
+        predicates=predicates,
+        object_categories=object_categories,
+        strict=strict,
+        # we don't bother testing this simply in confidence that
+        # the underlying code is well tested in other contexts
+        formatted=True
+    )
+    assert "biolink:Association" in associations
+    assert all([category in associations for category in result])
 
 
 def test_get_all_node_properties(toolkit):
