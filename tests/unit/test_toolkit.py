@@ -332,32 +332,31 @@ def test_is_enum(toolkit):
     assert not toolkit.is_enum(GENE_OR_GENE_PRODUCT)
 
 
-
 @pytest.mark.parametrize(
-    "query",
+    "qualifier_type_id,qualifier_value,result",
     [
         # method called with empty arguments fails gracefully
-        ("", "", False), # Q0
-        (SUBJECT_DIRECTION_QUALIFIER_NAME, "", False), # Q1
-        ("", "upregulated", False), # Q2
+        ("", "", False),  # Q0
+        (SUBJECT_DIRECTION_QUALIFIER_NAME, "", False),  # Q1
+        ("", "upregulated", False),  # Q2
 
         # 'aspect qualifier' is 'abstract', hence can't be instantiated (doesn't have a 'range')
-        (ASPECT_QUALIFIER_NAME, "upregulated", False), # Q3
+        (ASPECT_QUALIFIER_NAME, "upregulated", False),  # Q3
 
         # qualifier with value drawn from enum 'permissible values'
-        (SUBJECT_DIRECTION_QUALIFIER_NAME, "upregulated", True), # Q4
-        (SUBJECT_DIRECTION_QUALIFIER_CURIE, "upregulated", True), # Q5 - CURIE accepted here too
+        (SUBJECT_DIRECTION_QUALIFIER_NAME, "upregulated", True),  # Q4
+        (SUBJECT_DIRECTION_QUALIFIER_CURIE, "upregulated", True),  # Q5 - CURIE accepted here too
 
         # *** Use case currently not supported: RO term is exact_match to 'upregulated' enum
         # (SUBJECT_DIRECTION_QUALIFIER_NAME, "RO:0002213", True),  # Qx -
 
         # qualifier with value drawn from concrete Biolink category identifier spaces
-        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", True), # Q8
-        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", True), # Q9 - CURIE accepted here too
+        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", True),  # Q8
+        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", True),  # Q9 - CURIE accepted here too
 
         # qualifier with value drawn from concrete Biolink category identifier spaces
-        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", True), # Q10
-        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", True), # Q11 - CURIE accepted here too
+        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", True),  # Q10
+        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", True),  # Q11 - CURIE accepted here too
 
         # *** Another currently unsupported use case...
         # 'catalyst qualifier' has a mixin range 'macromolecular machine mixin'
@@ -367,8 +366,8 @@ def test_is_enum(toolkit):
         # (CATALYST_QUALIFIER_CURIE, "GO:0032991", True), # Qxx - CURIE accepted here too
 
         # mis-matched qualifier values or value types
-        (SUBJECT_DIRECTION_QUALIFIER_NAME, "UBERON:0001981", False), # Q12
-        (SPECIES_CONTEXT_QUALIFIER_NAME, "upregulated", False), # Q13
+        (SUBJECT_DIRECTION_QUALIFIER_NAME, "UBERON:0001981", False),  # Q12
+        (SPECIES_CONTEXT_QUALIFIER_NAME, "upregulated", False),  # Q13
 
         # *** Yetanuder currently unsupported use case...
         # 'qualified predicate' is a qualifier use case in a class of its own
@@ -379,8 +378,8 @@ def test_is_enum(toolkit):
         # (QUALIFIED_PREDICATE_CURIE, "causes", True),  # Qxx - CURIE accepted here too
     ]
 )
-def test_validate_qualifier(toolkit, query: Tuple[str, str, bool]):
-    assert toolkit.validate_qualifier(query[0], query[1]) is query[2]
+def test_validate_qualifier(toolkit, qualifier_type_id: str, qualifier_value: str, result: bool):
+    assert toolkit.validate_qualifier(qualifier_type_id, qualifier_value) is result
 
 
 def test_is_permissible_value_of_enum(toolkit):
