@@ -5,7 +5,7 @@ import deprecation
 import requests
 from functools import lru_cache, reduce
 
-from typing import List, Union, TextIO, Optional, Dict
+from typing import List, Union, TextIO, Optional, Dict, Set
 from linkml_runtime.utils.schemaview import SchemaView, Namespaces
 from linkml_runtime.linkml_model.meta import (
     SchemaDefinition,
@@ -23,7 +23,6 @@ Path = str
 
 REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.5.0/biolink-model.yaml"
 PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.5.0/predicate_mapping.yaml'
-
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
@@ -195,7 +194,7 @@ class Toolkit(object):
         """
         return self.get_descendants("association", formatted=formatted)
 
-    def match_slot_usage(self, element, slot: str, slot_values: List[str], strict: bool) -> bool:
+    def match_slot_usage(self, element, slot: str, slot_values: List[str]) -> bool:
         """
         Match slot_values against expected slot_usage for
         specified slot in specified (association) element.
@@ -208,8 +207,6 @@ class Toolkit(object):
             Name of target slot in given element, against which slot_usage is being assessed.
         slot_values: List[str]
             List of slot value (strings) e.g. categories, predicates, etc. - being assessed against slot_usage
-        strict: bool
-            Specified slot (name) must be present in the element slot_usage for the method; returns False otherwise
 
         Returns
         -------
@@ -219,34 +216,63 @@ class Toolkit(object):
         """
         # scope of method sanity check for now
         assert slot in ["subject", "object", "predicate"]
+
+        # TODO: may be worth while extracting this method and using
+        #       @lru_cache(CACHE_SIZE) for performance enhancement
+        def get_all_descendants(name: str) -> List[str]:
+            """
+            Gets all descendants of a given element by name, following also association mixins.
+
+            Parameters
+            ----------
+            name
+
+            Returns
+            -------
+
+            """
+            element: Element = self.get_element(name)
+            all_descendants: Set[str] = set()
+            for mixin in element.mixins:
+                all_descendants.update(self.get_descendants(mixin, formatted=True))
+            all_descendants.update(self.get_descendants(element.name, formatted=True))
+            return list(all_descendants)
+
+        def filter_value_on_target(definition: SlotDefinition, field: str) -> bool:
+            if field in definition:
+                value = definition[field]
+                if value:
+                    value_set = get_all_descendants(value)
+                    return any([entry in slot_values for entry in value_set])
+            return False
+
         try:
-            slot_usage = element.slot_usage
+            slot_usage = element["slot_usage"]
             if slot in slot_usage:
                 # assess slot_values against stipulated constraint
-                slot_definition = slot_usage[slot]
+                slot_definition: SlotDefinition = slot_usage[slot]
+                #
+                # TODO: some 'slot_usage' may be inherited from association mixins? Need to fix this!
+                #       for druggable gene to disease association
+                #           mixins:
+                #       - entity to disease association mixin
+                #       - gene to entity association mixin
+                #
                 if slot == "predicate":
-                    # "predicate" filter
-                    return False  # NotImplemented yet
-                else:
-                    # "subject" or "object" category filter
-                    return False  # NotImplemented yet
+                    return filter_value_on_target(slot_definition, "subproperty_of")
+                else:  # filter on "subject" or "object" category
+                    return filter_value_on_target(slot_definition, "range")
 
-        except AttributeError as ae:
-            # if the slot_usage is not defined...
-            # our final decision depends on the 'strict' flag
+        except KeyError as ke:
             pass
 
-        if strict:
-            return False
-        else:
-            return True
+        return False
 
     def get_associations(
             self,
             subject_categories: Optional[List[str]] = None,
             predicates: Optional[List[str]] = None,
             object_categories: Optional[List[str]] = None,
-            strict: bool = True,
             formatted: bool = False
     ) -> List[str]:
         """
@@ -264,9 +290,6 @@ class Toolkit(object):
             List of edge predicates (as CURIES) that the associations allowed for matching associations; default: None
         object_categories: Optional[List[str]]
             List of node categories (as CURIES) that the associations must match for the object node; default: None
-        strict: bool
-            Designates strict matching to return only the most specific subclass of biolink:Association
-            whose slot_usage matches provided subject, predicate and object constraints; default: True
         formatted: bool
             Whether to format element names as CURIEs; default: False
 
@@ -290,13 +313,13 @@ class Toolkit(object):
                 # assert isinstance(association, ClassDefinition), f"'{name}' not a ClassDefinition?"
 
                 if subject_categories:
-                    if not self.match_slot_usage(association, "subject", subject_categories, strict=strict):
+                    if not self.match_slot_usage(association, "subject", subject_categories):
                         continue
                 if predicates:
-                    if not self.match_slot_usage(association, "predicate", predicates, strict=strict):
+                    if not self.match_slot_usage(association, "predicate", predicates):
                         continue
                 if object_categories:
-                    if not self.match_slot_usage(association, "object", object_categories, strict=strict):
+                    if not self.match_slot_usage(association, "object", object_categories):
                         continue
 
                 # this association is assumed to pass stipulated constraints
@@ -1668,6 +1691,7 @@ class Toolkit(object):
                     return []
         else:
             return []
+
     @lru_cache(CACHE_SIZE)
     def get_element_by_narrow_mapping(
             self, identifier: str, formatted: bool = False

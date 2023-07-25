@@ -202,27 +202,24 @@ def test_get_associations_without_parameters(toolkit):
 
 
 @pytest.mark.parametrize(
-    "subject_categories,predicates,object_categories,strict,result",
+    "subject_categories,predicates,object_categories,result",
     [
-        (   # Q0 - all parameters None => same (formatted) result as get_all_associations(); strict == False (ignored)
+        (   # Q0 - all parameters None => same (formatted) result as get_all_associations()
             None,   # subject_categories: Optional[List[str]],
             None,   # predicates: Optional[List[str]],
             None,   # object_categories: Optional[List[str]],
-            False,  # strict: bool
-            ["biolink:GeneToGeneAssociation"]  # result: List[str]
+            ["biolink:Association", "biolink:GeneToGeneAssociation"]  # result: List[str]
         ),
         (   # Q1 - subject_categories set to a value and all other parameters == None; strict == False
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             None,
             None,
-            False,
             ["biolink:GeneToGeneAssociation"]
         ),
         (   # Q2 - subject_categories set to a value and all other parameters == None; strict == True
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             None,
             None,
-            True,
             ["biolink:GeneToGeneAssociation"]
         ),
         (   # Q3 - subject_categories, object_categories given non-None values and predicates == None; strict == False
@@ -251,14 +248,12 @@ def test_get_associations_without_parameters(toolkit):
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             None,
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
-            False,
             ["biolink:GeneToDiseaseAssociation"]
         ),
         (   # Q4 - subject_categories, object_categories given non-None values and predicates == None; strict == True
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             None,
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
-            True,
             ["biolink:GeneToDiseaseAssociation"]
         ),
         (   # Q5 - subject_categories, predicates and object_categories given non-None values; strict == False
@@ -286,14 +281,12 @@ def test_get_associations_without_parameters(toolkit):
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             ["biolink:target_for"],
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
-            False,
             ["biolink:DruggableGeneToDiseaseAssociation"]
         ),
         (   # Q6 - subject_categories, predicates and object_categories given non-None values; strict == True
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             ["biolink:target_for"],
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
-            True,
             ["biolink:DruggableGeneToDiseaseAssociation"]
         )
     ]
@@ -303,20 +296,17 @@ def test_get_associations_with_parameters(
         subject_categories: Optional[List[str]],
         predicates: Optional[List[str]],
         object_categories: Optional[List[str]],
-        strict: bool,
         result: List[str]
 ):
     associations = toolkit.get_associations(
         subject_categories=subject_categories,
         predicates=predicates,
         object_categories=object_categories,
-        strict=strict,
         # we don't bother testing this simply in confidence that
         # the underlying code is well tested in other contexts
         formatted=True
     )
-    assert "biolink:Association" in associations
-    assert all([category in associations for category in result])
+    assert all([entry in associations for entry in result])
 
 
 def test_get_all_node_properties(toolkit):
