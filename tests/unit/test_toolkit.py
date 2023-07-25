@@ -202,38 +202,40 @@ def test_get_associations_without_parameters(toolkit):
 
 
 @pytest.mark.parametrize(
-    "subject_categories,predicates,object_categories,result",
+    "subject_categories,predicates,object_categories,contains,does_not_contain",
     [
         (   # Q0 - all parameters None => same (formatted) result as get_all_associations()
             None,   # subject_categories: Optional[List[str]],
             None,   # predicates: Optional[List[str]],
             None,   # object_categories: Optional[List[str]],
-            ["biolink:Association", "biolink:GeneToGeneAssociation"]  # result: List[str]
+            [
+                "biolink:Association",
+                "biolink:ContributorAssociation",
+                "biolink:GenotypeToGeneAssociation",
+                "biolink:GeneToDiseaseAssociation",
+                "biolink:ExposureEventToOutcomeAssociation",
+                "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
+            ],      # contains: List[str]
+            []      # does_not_contain: List[str]
         ),
-        (   # Q1 - subject_categories set to a value and all other parameters == None; strict == False
+        (   # Q1 - subject_categories set to a value and all other parameters == None
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             None,
             None,
-            ["biolink:GeneToGeneAssociation"]
+            [
+                "biolink:GeneToGeneAssociation",
+                "biolink:GeneToDiseaseAssociation"
+            ],
+            [
+                "biolink:Association",
+                "biolink:ContributorAssociation",
+                "biolink:ExposureEventToOutcomeAssociation"
+            ]
         ),
-        (   # Q2 - subject_categories set to a value and all other parameters == None; strict == True
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
-            None,
-            None,
-            ["biolink:GeneToGeneAssociation"]
-        ),
-        (   # Q3 - subject_categories, object_categories given non-None values and predicates == None; strict == False
+        (   # Q2 - subject_categories, object_categories given non-None values and predicates == None
             #   gene to disease association:
             #     is_a: gene to disease or phenotypic feature association
-            #     comments:
-            #       - NCIT:R176 refers to the inverse relationship
-            #     exact_mappings:
-            #       - SIO:000983
-            #     close_mappings:
-            #       - dcid:DiseaseGeneAssociation
-            #     defining_slots:
-            #       - subject
-            #       - object
+            #     ...
             #     mixins:
             #       - entity to disease association mixin
             #       - gene to entity association mixin
@@ -248,15 +250,16 @@ def test_get_associations_without_parameters(toolkit):
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             None,
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
-            ["biolink:GeneToDiseaseAssociation"]
+            ["biolink:GeneToDiseaseAssociation"],
+            [
+                "biolink:Association",
+                "biolink:ContributorAssociation",
+                "biolink:GenotypeToGeneAssociation",
+                "biolink:ExposureEventToOutcomeAssociation",
+                "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
+            ]
         ),
-        (   # Q4 - subject_categories, object_categories given non-None values and predicates == None; strict == True
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
-            None,
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
-            ["biolink:GeneToDiseaseAssociation"]
-        ),
-        (   # Q5 - subject_categories, predicates and object_categories given non-None values; strict == False
+        (   # Q3 - subject_categories, predicates and object_categories given non-None values
             #   druggable gene to disease association:
             #     is_a: gene to disease association
             #     slot_usage:
@@ -276,18 +279,20 @@ def test_get_associations_without_parameters(toolkit):
             #       - object
             #       - predicate
             #     mixins:
-            #       - entity to disease association mixin
+            #       - entity to disease association mixin  # Note: the 'object' slot_usage is defined in this mixin
             #       - gene to entity association mixin
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             ["biolink:target_for"],
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
-            ["biolink:DruggableGeneToDiseaseAssociation"]
-        ),
-        (   # Q6 - subject_categories, predicates and object_categories given non-None values; strict == True
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
-            ["biolink:target_for"],
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
-            ["biolink:DruggableGeneToDiseaseAssociation"]
+            ["biolink:DruggableGeneToDiseaseAssociation"],
+            [
+                "biolink:Association",
+                "biolink:ContributorAssociation",
+                "biolink:GenotypeToGeneAssociation",
+                "biolink:GeneToDiseaseAssociation",
+                "biolink:ExposureEventToOutcomeAssociation",
+                "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
+            ]
         )
     ]
 )
@@ -296,17 +301,19 @@ def test_get_associations_with_parameters(
         subject_categories: Optional[List[str]],
         predicates: Optional[List[str]],
         object_categories: Optional[List[str]],
-        result: List[str]
+        contains: List[str],
+        does_not_contain: List[str]
 ):
     associations = toolkit.get_associations(
         subject_categories=subject_categories,
         predicates=predicates,
         object_categories=object_categories,
-        # we don't bother testing this simply in confidence that
-        # the underlying code is well tested in other contexts
+        # we don't bother testing the 'format' flag simply in confidence
+        # that the associated code is already well tested in other contexts
         formatted=True
     )
-    assert all([entry in associations for entry in result])
+    assert all([entry in associations for entry in contains])
+    assert not any([entry in associations for entry in does_not_contain])
 
 
 def test_get_all_node_properties(toolkit):

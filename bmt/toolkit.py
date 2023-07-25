@@ -194,6 +194,64 @@ class Toolkit(object):
         """
         return self.get_descendants("association", formatted=formatted)
 
+    @lru_cache(CACHE_SIZE)
+    def get_all_descendants(self, name: str, formatted: bool = False) -> List[str]:
+        """
+        Gets all descendants of a given element by name,
+        including those found by following associated element mixins.
+
+        Parameters
+        ----------
+        name: str
+            String name of root element whose descendants are to be retrieved.
+        formatted: bool
+            Whether to format element names as CURIEs.
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        element: Element = self.get_element(name)
+        all_descendants: Set[str] = set()
+        for mixin in element.mixins:
+            all_descendants.update(self.get_descendants(mixin, formatted=formatted))
+        all_descendants.update(self.get_descendants(element.name, formatted=formatted))
+        return list(all_descendants)
+
+    def filter_values_on_slot(
+            self,
+            slot_values: List[str],
+            definition: SlotDefinition,
+            field: str
+    ) -> bool:
+        """
+
+        Parameters
+        ----------
+        slot_values: List[str]
+            List of slot values to be matched against target slot field values.
+        definition: SlotDefinition
+            Slot definition containing the embedded target field.
+        field: str
+            Name of embedded (slot) field rooting the tree of elements
+            against which the slot_values are to be matched.
+
+        Returns
+        -------
+        bool
+           Returns 'True' if any match is found for at least
+           one entry in the slot_values, against the target field values.
+
+        """
+        if field in definition:
+            value = definition[field]
+            if value:
+                value_set = self.get_all_descendants(value, formatted=True)
+                return any([entry in slot_values for entry in value_set])
+        return False
+
     def match_slot_usage(self, element, slot: str, slot_values: List[str]) -> bool:
         """
         Match slot_values against expected slot_usage for
@@ -217,54 +275,39 @@ class Toolkit(object):
         # scope of method sanity check for now
         assert slot in ["subject", "object", "predicate"]
 
-        # TODO: may be worth while extracting this method and using
-        #       @lru_cache(CACHE_SIZE) for performance enhancement
-        def get_all_descendants(name: str) -> List[str]:
-            """
-            Gets all descendants of a given element by name, following also association mixins.
+        slot_definition: Optional[SlotDefinition] = None
 
-            Parameters
-            ----------
-            name
-
-            Returns
-            -------
-
-            """
-            element: Element = self.get_element(name)
-            all_descendants: Set[str] = set()
-            for mixin in element.mixins:
-                all_descendants.update(self.get_descendants(mixin, formatted=True))
-            all_descendants.update(self.get_descendants(element.name, formatted=True))
-            return list(all_descendants)
-
-        def filter_value_on_target(definition: SlotDefinition, field: str) -> bool:
-            if field in definition:
-                value = definition[field]
-                if value:
-                    value_set = get_all_descendants(value)
-                    return any([entry in slot_values for entry in value_set])
-            return False
-
-        try:
+        if "slot_usage" in element:
             slot_usage = element["slot_usage"]
-            if slot in slot_usage:
-                # assess slot_values against stipulated constraint
+            if slot_usage and slot in slot_usage:
                 slot_definition: SlotDefinition = slot_usage[slot]
+            elif "mixins" in element and element["mixins"]:
+                # 'slot_usage' for some fields may be inherited
+                # from the association mixins. For example:
                 #
-                # TODO: some 'slot_usage' may be inherited from association mixins? Need to fix this!
-                #       for druggable gene to disease association
-                #           mixins:
-                #       - entity to disease association mixin
-                #       - gene to entity association mixin
+                #     druggable gene to disease association
+                #         mixins:
+                #         - entity to disease association mixin
+                #         - gene to entity association mixin
                 #
-                if slot == "predicate":
-                    return filter_value_on_target(slot_definition, "subproperty_of")
-                else:  # filter on "subject" or "object" category
-                    return filter_value_on_target(slot_definition, "range")
+                # the mixins would have a 'subject' slot_usage
+                # for Gene and 'object' usage for Disease
+                #
+                for mixin in element["mixins"]:
+                    mixin_element: Element = self.get_element(mixin)
+                    if "slot_usage" in mixin_element:
+                        slot_usage = mixin_element["slot_usage"]
+                        if slot_usage and slot in slot_usage:
+                            slot_definition: SlotDefinition = slot_usage[slot]
+                            break  # only need first one seen?
 
-        except KeyError as ke:
-            pass
+        # assess "slot_values" for "subject", "object"
+        # or "predicate" against stipulated constraints
+        if slot_definition:
+            if slot == "predicate":
+                return self.filter_values_on_slot(slot_values, slot_definition, "subproperty_of")
+            else:  # filter on "subject" or "object" category
+                return self.filter_values_on_slot(slot_values, slot_definition, "range")
 
         return False
 
