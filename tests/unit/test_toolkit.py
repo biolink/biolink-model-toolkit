@@ -192,6 +192,135 @@ def test_get_all_associations(toolkit):
     assert BIOLINK_NAMED_THING not in associations
 
 
+def test_get_associations_without_parameters(toolkit):
+    # Empty argument versions of get_associations()
+    # are equivalent to get_all_associations()
+    associations = toolkit.get_associations()
+    assert ASSOCIATION in associations
+    assert "gene to gene association" in associations
+    assert NAMED_THING not in associations
+
+    associations = toolkit.get_associations(formatted=True)
+    assert "biolink:Association" in associations
+    assert "biolink:GeneToGeneAssociation" in associations
+    assert BIOLINK_NAMED_THING not in associations
+
+
+@pytest.mark.parametrize(
+    "subject_categories,predicates,object_categories,contains,does_not_contain",
+    [
+        (   # Q0 - all parameters None => same (formatted) result as get_all_associations()
+            None,   # subject_categories: Optional[List[str]],
+            None,   # predicates: Optional[List[str]],
+            None,   # object_categories: Optional[List[str]],
+            [
+                "biolink:Association",
+                "biolink:ContributorAssociation",
+                "biolink:GenotypeToGeneAssociation",
+                "biolink:GeneToDiseaseAssociation",
+                "biolink:ExposureEventToOutcomeAssociation",
+                "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
+            ],      # contains: List[str]
+            []      # does_not_contain: List[str]
+        ),
+        (   # Q1 - subject_categories set to a value and all other parameters == None
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            None,
+            None,
+            [
+                "biolink:GeneToGeneAssociation",
+                "biolink:GeneToDiseaseAssociation"
+            ],
+            [
+                "biolink:Association",
+                "biolink:ContributorAssociation",
+                "biolink:ExposureEventToOutcomeAssociation"
+            ]
+        ),
+        (   # Q2 - subject_categories, object_categories given non-None values and predicates == None
+            #   gene to disease association:
+            #     is_a: gene to disease or phenotypic feature association
+            #     ...
+            #     mixins:
+            #       - entity to disease association mixin
+            #       - gene to entity association mixin
+            #     slot_usage:
+            #       subject:
+            #         range: gene or gene product
+            #         description: >-
+            #           gene in which variation is correlated with the disease,
+            #           may be protective or causative or associative, or as a model
+            #       object:
+            #         range: disease
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            None,
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            ["biolink:GeneToDiseaseAssociation"],
+            [
+                "biolink:Association",
+                "biolink:ContributorAssociation",
+                "biolink:GenotypeToGeneAssociation",
+                "biolink:ExposureEventToOutcomeAssociation",
+                "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
+            ]
+        ),
+        (   # Q3 - subject_categories, predicates and object_categories given non-None values
+            #   druggable gene to disease association:
+            #     is_a: gene to disease association
+            #     slot_usage:
+            #       subject:
+            #         range: gene or gene product
+            #         description: >-
+            #           gene in which variation is correlated with the disease
+            #           in a protective manner, or if the product produced
+            #           by the gene can be targeted by a small molecule and
+            #           this leads to a protective or improving disease state.
+            #       predicate:
+            #         subproperty_of: target for
+            #       has evidence:
+            #         range: DruggableGeneCategoryEnum
+            #     defining_slots:
+            #       - subject
+            #       - object
+            #       - predicate
+            #     mixins:
+            #       - entity to disease association mixin  # Note: the 'object' slot_usage is defined in this mixin
+            #       - gene to entity association mixin
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:target_for"],
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            ["biolink:DruggableGeneToDiseaseAssociation"],
+            [
+                "biolink:Association",
+                "biolink:ContributorAssociation",
+                "biolink:GenotypeToGeneAssociation",
+                "biolink:GeneToDiseaseAssociation",
+                "biolink:ExposureEventToOutcomeAssociation",
+                "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
+            ]
+        )
+    ]
+)
+def test_get_associations_with_parameters(
+        toolkit,
+        subject_categories: Optional[List[str]],
+        predicates: Optional[List[str]],
+        object_categories: Optional[List[str]],
+        contains: List[str],
+        does_not_contain: List[str]
+):
+    associations = toolkit.get_associations(
+        subject_categories=subject_categories,
+        predicates=predicates,
+        object_categories=object_categories,
+        # we don't bother testing the 'format' flag simply in confidence
+        # that the associated code is already well tested in other contexts
+        formatted=True
+    )
+    assert all([entry in associations for entry in contains])
+    assert not any([entry in associations for entry in does_not_contain])
+
+
 def test_get_all_node_properties(toolkit):
     properties = toolkit.get_all_node_properties()
     assert "provided by" in properties
