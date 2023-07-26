@@ -50,16 +50,21 @@ SUBJECT_DIRECTION_QUALIFIER_CURIE = "biolink:subject_direction_qualifier"
 DIRECTION_QUALIFIER_ENUM_NAME = "DirectionQualifierEnum"
 DIRECTION_QUALIFIER_ENUM_CURIE = "biolink:DirectionQualifierEnum"
 
-SPECIES_CONTEXT_QUALIFIER_NAME= "species context qualifier"
-SPECIES_CONTEXT_QUALIFIER_CURIE="biolink:species_context_qualifier"
+SPECIES_CONTEXT_QUALIFIER_NAME = "species context qualifier"
+SPECIES_CONTEXT_QUALIFIER_CURIE = "biolink:species_context_qualifier"
 
 # 'catalyst qualifier' has a mixin range 'macromolecular machine mixin'
-CATALYST_QUALIFIER_NAME="catalyst qualifier"
-CATALYST_QUALIFIER_CURIE="biolink:catalyst_qualifier"
+CATALYST_QUALIFIER_NAME = "catalyst qualifier"
+CATALYST_QUALIFIER_CURIE = "biolink:catalyst_qualifier"
+
+SUBJECT_ASPECT_QUALIFIER_NAME = "subject aspect qualifier"
+SUBJECT_ASPECT_QUALIFIER_CURIE = "biolink:subject_aspect_qualifier"
+SUBJECT_ASPECT_QUALIFIER_SAMPLE_VALUE = "synthesis"
 
 # 'qualified predicate' is a qualifier use case in a class of its own
-QUALIFIED_PREDICATE_NAME="qualified predicate"
-QUALIFIED_PREDICATE_CURIE="biolink:qualified_predicate"
+QUALIFIED_PREDICATE_NAME = "qualified predicate"
+QUALIFIED_PREDICATE_CURIE = "biolink:qualified_predicate"
+QUALIFIED_PREDICATE_SAMPLE_VALUE = "causes"
 
 BIOLINK_ENTITY = 'biolink:Entity'
 
@@ -442,54 +447,95 @@ def test_is_enum(toolkit):
     assert not toolkit.is_enum(GENE_OR_GENE_PRODUCT)
 
 
+def test_is_subproperty_of(toolkit):
+    assert toolkit.is_subproperty_of("contributes to", "causes")
+    assert toolkit.is_subproperty_of("similar to", "orthologous to")
+
+
 @pytest.mark.parametrize(
-    "qualifier_type_id,qualifier_value,result",
+    "qualifier_type_id,qualifier_value,associations,result",
     [
         # method called with empty arguments fails gracefully
-        ("", "", False),  # Q0
-        (SUBJECT_DIRECTION_QUALIFIER_NAME, "", False),  # Q1
-        ("", "upregulated", False),  # Q2
+        ("", "", None, False),                                # Q0
+        (SUBJECT_DIRECTION_QUALIFIER_NAME, "", None, False),  # Q1
+        ("", "upregulated", None, False),                     # Q2
 
         # 'aspect qualifier' is 'abstract', hence can't be instantiated (doesn't have a 'range')
-        (ASPECT_QUALIFIER_NAME, "upregulated", False),  # Q3
+        (ASPECT_QUALIFIER_NAME, "upregulated", None, False),  # Q3
 
         # qualifier with value drawn from enum 'permissible values'
-        (SUBJECT_DIRECTION_QUALIFIER_NAME, "upregulated", True),  # Q4
-        (SUBJECT_DIRECTION_QUALIFIER_CURIE, "upregulated", True),  # Q5 - CURIE accepted here too
+        (SUBJECT_DIRECTION_QUALIFIER_NAME, "upregulated", None, True),    # Q4
+        (SUBJECT_DIRECTION_QUALIFIER_CURIE, "upregulated", None, True),   # Q5 - CURIE accepted here too
 
         # *** Use case currently not supported: RO term is exact_match to 'upregulated' enum
-        # (SUBJECT_DIRECTION_QUALIFIER_NAME, "RO:0002213", True),  # Qx -
+        # (SUBJECT_DIRECTION_QUALIFIER_NAME, "RO:0002213", None, True),   # Qx -
 
         # qualifier with value drawn from concrete Biolink category identifier spaces
-        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", True),  # Q8
-        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", True),  # Q9 - CURIE accepted here too
+        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", None, True),   # Q6
+        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", None, True),  # Q7 - CURIE accepted here too
 
         # qualifier with value drawn from concrete Biolink category identifier spaces
-        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", True),  # Q10
-        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", True),  # Q11 - CURIE accepted here too
+        (SPECIES_CONTEXT_QUALIFIER_NAME, "NCBITaxon:9606", None, True),   # Q8
+        (SPECIES_CONTEXT_QUALIFIER_CURIE, "NCBITaxon:9606", None, True),  # Q9 - CURIE accepted here too
 
         # *** Another currently unsupported use case...
         # 'catalyst qualifier' has a mixin range 'macromolecular machine mixin'
         # 'GO:0032991' is exact match to 'macromolecular complex' which has
         #   'macromolecular machine mixin' as a mixin and also has id_prefixes including GO, so...
-        # (CATALYST_QUALIFIER_NAME, "GO:0032991", True), # Qxx
-        # (CATALYST_QUALIFIER_CURIE, "GO:0032991", True), # Qxx - CURIE accepted here too
+        # (CATALYST_QUALIFIER_NAME, "GO:0032991", None, True), # Qxx
+        # (CATALYST_QUALIFIER_CURIE, "GO:0032991", None, True), # Qxx - CURIE accepted here too
 
         # mis-matched qualifier values or value types
-        (SUBJECT_DIRECTION_QUALIFIER_NAME, "UBERON:0001981", False),  # Q12
-        (SPECIES_CONTEXT_QUALIFIER_NAME, "upregulated", False),  # Q13
+        (SUBJECT_DIRECTION_QUALIFIER_NAME, "UBERON:0001981", None, False),      # Q10
+        (SPECIES_CONTEXT_QUALIFIER_NAME, "upregulated", None, False),           # Q11
 
-        # *** Yetanuder currently unsupported use case...
+        # 'object aspect qualifier' is a qualifier use case in a class of its own
+        # Validation required a priori knowledge of the biolink:Association
+        # subclass that constrains the semantics of the edge in question
+        # e.g. biolink:GeneToDiseaseOrPhenotypicFeatureAssociation in Biolink Model 3.5.2
+        (
+                SUBJECT_ASPECT_QUALIFIER_NAME,
+                SUBJECT_ASPECT_QUALIFIER_SAMPLE_VALUE,
+                ["biolink:GeneToDiseaseOrPhenotypicFeatureAssociation"],
+                True
+        ),  # Q12
+        (
+                SUBJECT_ASPECT_QUALIFIER_CURIE,
+                SUBJECT_ASPECT_QUALIFIER_SAMPLE_VALUE,
+                ["biolink:GeneToDiseaseOrPhenotypicFeatureAssociation"],
+                True
+        ),  # Q13 - CURIE accepted here too
+
         # 'qualified predicate' is a qualifier use case in a class of its own
-        # Validation will require a priori knowledge of
-        # the biolink:Association subclass e.g. biolink:ChemicalAffectsGeneAssociation,
-        # that constrains the semantics of the edge in question
-        # (QUALIFIED_PREDICATE_NAME, "causes", True),  # Qxx
-        # (QUALIFIED_PREDICATE_CURIE, "causes", True),  # Qxx - CURIE accepted here too
+        # Validation required a priori knowledge of the biolink:Association
+        # subclass that constrains the semantics of the edge in question
+        # e.g. biolink:ChemicalAffectsGeneAssociation in Biolink Model 3.5.2
+        (
+                QUALIFIED_PREDICATE_NAME,
+                QUALIFIED_PREDICATE_SAMPLE_VALUE,
+                ["biolink:ChemicalAffectsGeneAssociation"],
+                True
+        ),  # Q14
+        (
+                QUALIFIED_PREDICATE_CURIE,
+                QUALIFIED_PREDICATE_SAMPLE_VALUE,
+                ["biolink:ChemicalAffectsGeneAssociation"],
+                True
+        ),  # Q15 - CURIE accepted here too
     ]
 )
-def test_validate_qualifier(toolkit, qualifier_type_id: str, qualifier_value: str, result: bool):
-    assert toolkit.validate_qualifier(qualifier_type_id, qualifier_value) is result
+def test_validate_qualifier(
+        toolkit,
+        qualifier_type_id: str,
+        qualifier_value: str,
+        associations: Optional[List[str]],
+        result: bool
+):
+    assert toolkit.validate_qualifier(
+        qualifier_type_id=qualifier_type_id,
+        qualifier_value=qualifier_value,
+        associations=associations
+    ) is result
 
 
 def test_is_permissible_value_of_enum(toolkit):
