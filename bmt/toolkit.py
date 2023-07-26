@@ -1,12 +1,11 @@
 import logging
 import yaml
-import csv
 import deprecation
 import requests
 from functools import lru_cache, reduce
 
 from typing import List, Union, TextIO, Optional, Dict, Set
-from linkml_runtime.utils.schemaview import SchemaView, Namespaces
+from linkml_runtime.utils.schemaview import SchemaView
 from linkml_runtime.linkml_model.meta import (
     SchemaDefinition,
     Element,
@@ -15,7 +14,7 @@ from linkml_runtime.linkml_model.meta import (
     ClassDefinition,
     SlotDefinition,
 )
-from pprint import pprint
+
 from bmt.utils import format_element, parse_name
 
 Url = str
@@ -880,7 +879,34 @@ class Toolkit(object):
 
         return False
 
-    def validate_qualifier(self, qualifier_type_id: str, qualifier_value: str) -> bool:
+    def is_subproperty_of(self, predicate: str, name: str, formatted: bool = False) -> bool:
+        """
+        Checks if a given name is a 'subproperty_of' a given predicate.
+        Note: unsure if this method yet captures the full subtlety of 'subproperty_of'.
+
+        Parameters
+        ----------
+        predicate: str
+            Target predicate against which a given name is to be searched as a subproperty
+        name: str
+            Name to be searched
+        formatted: bool = False
+            Input name assumed to be a CURIE
+
+        Returns
+        -------
+            True if the name is observed to be equivalent to,
+            or a 'subproperty' descendant of, the given predicate.
+
+        """
+        return name in self.get_descendants(predicate, formatted=formatted)
+
+    def validate_qualifier(
+            self,
+            qualifier_type_id: str,
+            qualifier_value: str,
+            associations: Optional[List[str]] = None
+    ) -> bool:
         """
         Validates a qualifier.
 
@@ -890,6 +916,9 @@ class Toolkit(object):
             The name or alias of a qualifier in the Biolink Model
         qualifier_value: str
             The value of the qualifier
+        associations: Optional[List[str]] = None
+            Optional list of possible biolink:Association subclass (CURIEs)
+            which could resolve the context for qualifier_value validation.
 
         Returns
         -------
@@ -898,19 +927,44 @@ class Toolkit(object):
 
         """
         if qualifier_type_id and qualifier_value and self.is_qualifier(qualifier_type_id):
+            qualifier_type_name = parse_name(qualifier_type_id)
             qualifier_slot = self.view.get_slot(parse_name(qualifier_type_id))
-            # slot may just be missing from the model or
-            # the range will be None for abstract/mixin qualifiers,
-            # or the range may be just plain missing from the model
-            if qualifier_slot and qualifier_slot.range is not None:
-                if self.is_enum(qualifier_slot.range):
-                    enum = self.view.get_enum(qualifier_slot.range)
-                    if self.is_permissible_value_of_enum(enum.name, qualifier_value):
-                        return True
-                else:  # possible Biolink categorical qualifier
-                    categories = self.get_element_by_prefix(qualifier_value)
-                    if categories and qualifier_slot.range in categories:
-                        return True
+            # qualifier slot may be undefined in the current model
+            if qualifier_slot:
+                value_range: Optional[str] = None
+                if "range" in qualifier_slot and qualifier_slot.range:
+                    value_range = qualifier_slot.range
+
+                # Perhaps the qualifier value range is defined
+                # within a biolink:Association subclass?
+                elif associations:
+                    for association in associations:
+                        association_element = self.get_element(association)
+                        if "slot_usage" in association_element and \
+                                qualifier_type_name in association_element["slot_usage"]:
+                            qualifier_type = association_element["slot_usage"][qualifier_type_name]
+                            if qualifier_type_name == "qualified predicate" and \
+                                    "subproperty_of" in qualifier_type and qualifier_type.subproperty_of:
+                                value_range = qualifier_type.subproperty_of
+
+                            elif "range" in qualifier_type and qualifier_type.range:
+                                value_range = qualifier_type.range
+                                break
+
+                # Else: the range may be missing from a particular model
+                # or the range will be None for abstract/mixin qualifiers?
+
+                if value_range:
+                    if qualifier_type_name == "qualified predicate":
+                        return self.is_subproperty_of(predicate=value_range, name=qualifier_value)
+                    elif self.is_enum(value_range):
+                        enum = self.view.get_enum(value_range)
+                        return self.is_permissible_value_of_enum(enum.name, qualifier_value)
+                    else:
+                        # The value range possibly may be a Biolink categorical qualifier
+                        categories = self.get_element_by_prefix(qualifier_value)
+                        return bool(categories and value_range in categories)
+
         return False
 
     def get_all_slots_with_class_domain(
