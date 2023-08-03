@@ -21,8 +21,9 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.5.0/biolink-model.yaml"
-PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.5.0/predicate_mapping.yaml'
+REMOTE_PATH = "https://raw.githubusercontent.com/biolink/biolink-model/v3.5.3/biolink-model.yaml"
+PREDICATE_MAP = 'https://raw.githubusercontent.com/biolink/biolink-model/v3.5.3/predicate_mapping.yaml'
+
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
