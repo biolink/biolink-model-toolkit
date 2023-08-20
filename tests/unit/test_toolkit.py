@@ -73,6 +73,7 @@ def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
     assert version == "3.5.3"
 
+
 def test_get_denormalized_association_slots(toolkit):
     annotations = toolkit.get_denormalized_association_slots(formatted=True)
     print(annotations)
@@ -297,6 +298,20 @@ def test_get_associations_without_parameters(toolkit):
                 "biolink:ExposureEventToOutcomeAssociation",
                 "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
             ]
+        ),
+        (   # Q4 - Check if "biolink:Gene -- biolink:regulates -> biolink:Gene"
+            #      matches expected biolink:Association subclasses
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:regulates"],
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            [
+                'biolink:ChemicalGeneInteractionAssociation',
+                'biolink:ChemicalAffectsGeneAssociation',
+                'biolink:ChemicalEntityOrGeneOrGeneProductRegulatesGeneAssociation'
+            ],
+            [
+                "biolink:Association"
+            ]
         )
     ]
 )
@@ -368,6 +383,13 @@ def test_get_element(toolkit):
 
     o = toolkit.get_element("rna product")
     assert o and o.name == "RNA product"
+
+
+def test_get_enum_via_element(toolkit):
+    association_element = toolkit.get_element("biolink:ChemicalAffectsGeneAssociation")
+    qualifier_type = association_element["slot_usage"]["object aspect qualifier"]
+    value_range = qualifier_type.range
+    assert value_range == "GeneOrGeneProductOrChemicalEntityAspectEnum"
 
 
 def test_is_node_property(toolkit):
@@ -493,16 +515,16 @@ def test_is_subproperty_of(toolkit):
         # subclass that constrains the semantics of the edge in question
         # e.g. biolink:GeneToDiseaseOrPhenotypicFeatureAssociation in Biolink Model 3.5.2
         (
-                SUBJECT_ASPECT_QUALIFIER_NAME,
-                SUBJECT_ASPECT_QUALIFIER_SAMPLE_VALUE,
-                ["biolink:GeneToDiseaseOrPhenotypicFeatureAssociation"],
-                True
+            SUBJECT_ASPECT_QUALIFIER_NAME,
+            SUBJECT_ASPECT_QUALIFIER_SAMPLE_VALUE,
+            ["biolink:GeneToDiseaseOrPhenotypicFeatureAssociation"],
+            True
         ),  # Q12
         (
-                SUBJECT_ASPECT_QUALIFIER_CURIE,
-                SUBJECT_ASPECT_QUALIFIER_SAMPLE_VALUE,
-                ["biolink:GeneToDiseaseOrPhenotypicFeatureAssociation"],
-                True
+            SUBJECT_ASPECT_QUALIFIER_CURIE,
+            SUBJECT_ASPECT_QUALIFIER_SAMPLE_VALUE,
+            ["biolink:GeneToDiseaseOrPhenotypicFeatureAssociation"],
+            True
         ),  # Q13 - CURIE accepted here too
 
         # 'qualified predicate' is a qualifier use case in a class of its own
@@ -510,17 +532,31 @@ def test_is_subproperty_of(toolkit):
         # subclass that constrains the semantics of the edge in question
         # e.g. biolink:ChemicalAffectsGeneAssociation in Biolink Model 3.5.2
         (
-                QUALIFIED_PREDICATE_NAME,
-                QUALIFIED_PREDICATE_SAMPLE_VALUE,
-                ["biolink:ChemicalAffectsGeneAssociation"],
-                True
+            QUALIFIED_PREDICATE_NAME,
+            QUALIFIED_PREDICATE_SAMPLE_VALUE,
+            ["biolink:ChemicalAffectsGeneAssociation"],
+            True
         ),  # Q14
         (
-                QUALIFIED_PREDICATE_CURIE,
-                QUALIFIED_PREDICATE_SAMPLE_VALUE,
-                ["biolink:ChemicalAffectsGeneAssociation"],
-                True
+            QUALIFIED_PREDICATE_CURIE,
+            QUALIFIED_PREDICATE_SAMPLE_VALUE,
+            ["biolink:ChemicalAffectsGeneAssociation"],
+            True
         ),  # Q15 - CURIE accepted here too
+        (
+            "biolink:object_aspect_qualifier",
+            "activity_or_abundance",
+            [
+                'biolink:ChemicalGeneInteractionAssociation',
+                'biolink:ChemicalAffectsGeneAssociation',
+                'biolink:ChemicalEntityOrGeneOrGeneProductRegulatesGeneAssociation'
+            ],
+            # 'Gene--regulates->Gene' matches specified associations and from Biolink Model 3.5.3
+            # onwards, the 'biolink:ChemicalAffectsGeneAssociation' class defines 'slot_usage' for
+            # 'biolink:object_aspect_qualifier' as 'GeneOrGeneProductOrChemicalEntityAspectEnum'
+            # which contains the enum member value of 'activity_or_abundance', thus True test result
+            True
+        )
     ]
 )
 def test_validate_qualifier(
