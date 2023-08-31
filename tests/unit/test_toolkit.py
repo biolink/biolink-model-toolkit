@@ -207,12 +207,13 @@ def test_get_associations_without_parameters(toolkit):
 
 
 @pytest.mark.parametrize(
-    "subject_categories,predicates,object_categories,contains,does_not_contain",
+    "subject_categories,predicates,object_categories,match_inverses,contains,does_not_contain",
     [
         (   # Q0 - all parameters None => same (formatted) result as get_all_associations()
             None,   # subject_categories: Optional[List[str]],
             None,   # predicates: Optional[List[str]],
             None,   # object_categories: Optional[List[str]],
+            True,   # match_inverses
             [
                 "biolink:Association",
                 "biolink:ContributorAssociation",
@@ -227,6 +228,7 @@ def test_get_associations_without_parameters(toolkit):
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             None,
             None,
+            True,   # match_inverses
             [
                 "biolink:GeneToGeneAssociation",
                 "biolink:GeneToDiseaseAssociation"
@@ -255,13 +257,13 @@ def test_get_associations_without_parameters(toolkit):
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             None,
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            True,   # match_inverses
             ["biolink:GeneToDiseaseAssociation"],
             [
                 "biolink:Association",
                 "biolink:ContributorAssociation",
                 "biolink:GenotypeToGeneAssociation",
-                "biolink:ExposureEventToOutcomeAssociation",
-                "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
+                "biolink:ExposureEventToOutcomeAssociation"
             ]
         ),
         (   # Q3 - subject_categories, predicates and object_categories given non-None values
@@ -289,14 +291,14 @@ def test_get_associations_without_parameters(toolkit):
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             ["biolink:target_for"],
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            True,   # match_inverses
             ["biolink:DruggableGeneToDiseaseAssociation"],
             [
                 "biolink:Association",
                 "biolink:ContributorAssociation",
                 "biolink:GenotypeToGeneAssociation",
                 "biolink:GeneToDiseaseAssociation",
-                "biolink:ExposureEventToOutcomeAssociation",
-                "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
+                "biolink:ExposureEventToOutcomeAssociation"
             ]
         ),
         (   # Q4 - Check if "biolink:Gene -- biolink:regulates -> biolink:Gene"
@@ -304,11 +306,36 @@ def test_get_associations_without_parameters(toolkit):
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
             ["biolink:regulates"],
             ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            True,   # match_inverses
             [
                 'biolink:ChemicalGeneInteractionAssociation',
                 'biolink:ChemicalAffectsGeneAssociation',
                 'biolink:ChemicalEntityOrGeneOrGeneProductRegulatesGeneAssociation'
             ],
+            [
+                "biolink:Association"
+            ]
+        ),
+        (   # Q5 - Check if "biolink:Gene -- biolink:affects -> biolink:SmallMolecule" matches the expected
+            #       'inverse' biolink:Association subclass 'biolink:ChemicalAffectsGeneAssociation'
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:affects"],
+            ["biolink:NamedThing", "biolink:ChemicalEntity", "biolink:MolecularEntity", "biolink:SmallMolecule"],
+            True,   # match_inverses
+            [
+                'biolink:ChemicalAffectsGeneAssociation'
+            ],
+            [
+                "biolink:Association"
+            ]
+        ),
+        (   # Q6 - Check if "biolink:Gene -- biolink:affects -> biolink:SmallMolecule" should NOT
+            #      match the 'inverse' biolink:Association subclass 'biolink:ChemicalAffectsGeneAssociation'
+            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:affects"],
+            ["biolink:NamedThing", "biolink:ChemicalEntity", "biolink:MolecularEntity", "biolink:SmallMolecule"],
+            False,   # match_inverses
+            [],  # as of Biolink Model release 3.5.4, there is no match for this set of SPO parameters
             [
                 "biolink:Association"
             ]
@@ -320,6 +347,7 @@ def test_get_associations_with_parameters(
         subject_categories: Optional[List[str]],
         predicates: Optional[List[str]],
         object_categories: Optional[List[str]],
+        match_inverses: bool,
         contains: List[str],
         does_not_contain: List[str]
 ):
@@ -327,6 +355,7 @@ def test_get_associations_with_parameters(
         subject_categories=subject_categories,
         predicates=predicates,
         object_categories=object_categories,
+        match_inverses=match_inverses,
         # we don't bother testing the 'format' flag simply in confidence
         # that the associated code is already well tested in other contexts
         formatted=True

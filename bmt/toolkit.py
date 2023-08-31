@@ -317,6 +317,7 @@ class Toolkit(object):
             subject_categories: Optional[List[str]] = None,
             predicates: Optional[List[str]] = None,
             object_categories: Optional[List[str]] = None,
+            match_inverses: bool = True,
             formatted: bool = False
     ) -> List[str]:
         """
@@ -334,6 +335,9 @@ class Toolkit(object):
             List of edge predicates (as CURIES) that the associations allowed for matching associations; default: None
         object_categories: Optional[List[str]]
             List of node categories (as CURIES) that the associations must match for the object node; default: None
+        match_inverses: bool
+            Whether to also return associations with swapped subject and object with inverted qualifiers
+            (as applicable) plus inverse predicates; default: rue
         formatted: bool
             Whether to format element names as CURIEs; default: False
 
@@ -345,11 +349,23 @@ class Toolkit(object):
         """
         elements = self.get_descendants("association")
         filtered_elements: List[str] = list()
+        inverse_predicates: Optional[List[str]] = None
+        if predicates:
+            inverse_predicates = list()
+            for pred_curie in predicates:
+                predicate = self.get_element(pred_curie)
+                if predicate:
+                    inverse_p = self.get_inverse(predicate.name)
+                    if inverse_p:
+                        inverse_predicates.append(inverse_p)
+                inverse_predicates = self._format_all_elements(elements=inverse_predicates, formatted=True)
+
         if subject_categories or predicates or object_categories:
             # This feels like a bit of a brute force approach as an implementation,
             # but we just use the list of all association names to retrieve each
             # association record for filtering against the constraints?
             for name in elements:
+
                 association: Optional[Element] = self.get_element(name)
 
                 # sanity checks, probably not necessary
@@ -357,13 +373,26 @@ class Toolkit(object):
                 # assert isinstance(association, ClassDefinition), f"'{name}' not a ClassDefinition?"
 
                 if subject_categories:
-                    if not self.match_slot_usage(association, "subject", subject_categories):
+                    if self.match_slot_usage(association, "subject", subject_categories):
+                        pass
+                    elif match_inverses and self.match_slot_usage(association, "object", subject_categories):
+                        pass
+                    else:
                         continue
                 if predicates:
-                    if not self.match_slot_usage(association, "predicate", predicates):
+                    if self.match_slot_usage(association, "predicate", predicates):
+                        pass
+                    elif match_inverses and inverse_predicates and \
+                            self.match_slot_usage(association, "predicate", inverse_predicates):
+                        pass
+                    else:
                         continue
                 if object_categories:
-                    if not self.match_slot_usage(association, "object", object_categories):
+                    if self.match_slot_usage(association, "object", object_categories):
+                        pass
+                    elif match_inverses and self.match_slot_usage(association, "subject", object_categories):
+                        pass
+                    else:
                         continue
 
                 # this association is assumed to pass stipulated constraints
@@ -451,8 +480,11 @@ class Toolkit(object):
         return filtered_elements
 
     @lru_cache(CACHE_SIZE)
-    def get_permissible_value_ancestors(self, permissible_value: str, enum_name: str, formatted: bool = False) -> List[
-        str]:
+    def get_permissible_value_ancestors(
+            self, permissible_value: str,
+            enum_name: str,
+            formatted: bool = False
+    ) -> List[str]:
         """
         Get ancestors of a permissible value.
 
@@ -465,6 +497,8 @@ class Toolkit(object):
             The name of the enum
         permissible_value: str
             The name of the permissible value
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
