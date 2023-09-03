@@ -16,7 +16,7 @@ BIOLOGICAL_ENTITY = "biological entity"
 BIOLINK_BIOLOGICAL_ENTITY = "biolink:BiologicalEntity"
 BIOLINK_SUBJECT = "biolink:subject"
 BIOLINK_RELATED_TO = "biolink:related_to"
-BIOLINK_NAMED_THING = "biolink:NamedThing"
+BIOLINK_NAMED_THING = NAMED_THING_CURIE
 NODE_PROPERTY = 'node property'
 SYNONYM = "synonym"
 ASSOCIATION_SLOT = "association slot"
@@ -40,6 +40,7 @@ INTERACTS_WITH = "interacts with"
 MOLECULAR_ACTIVITY = "molecular activity"
 NUCLEIC_ACID_ENTITY = "nucleic acid entity"
 NAMED_THING = "named thing"
+NAMED_THING_CURIE = "biolink:NamedThing"
 ORGANISM_TAXON = "organism taxon"
 PHENOTYPIC_FEATURE = "phenotypic feature"
 RELATED_TO = "related to"
@@ -114,7 +115,7 @@ def test_mixin_validate_edge(toolkit):
 
 
 def test_not_valid_edge(toolkit):
-    subject = "biolink:NamedThing"
+    subject = NAMED_THING_CURIE
     predicate = "biolink:has_target"
     p_object = GENE_CURIE
     assert not toolkit.validate_edge(subject, predicate, p_object, ancestors=True)
@@ -696,7 +697,7 @@ def test_ancestors(toolkit):
     assert RELATED_TO in toolkit.get_ancestors(CAUSES)
     a = toolkit.get_ancestors(GENE)
     ancs = [toolkit.get_element(ai)['class_uri'] for ai in a]
-    assert "biolink:NamedThing" in ancs
+    assert NAMED_THING_CURIE in ancs
 
     assert "biolink:ChemicalEntityOrGeneOrGeneProduct" in toolkit.get_ancestors(
         GENE, formatted=True
@@ -833,7 +834,6 @@ def test_get_slot_domain(toolkit):
     assert "biolink:BiologicalProcessOrActivity" in toolkit.get_slot_domain(
         ENABLED_BY, include_ancestors=True, formatted=True
     )
-    # assert 'entity' in toolkit.get_slot_domain("name")
     assert ENTITY in toolkit.get_slot_domain("category")
     assert ASSOCIATION in toolkit.get_slot_domain("predicate")
 
