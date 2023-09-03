@@ -1,6 +1,8 @@
 from typing import Tuple, Optional, List
 
 import pytest
+from linkml_runtime.linkml_model import Element
+
 from bmt import Toolkit
 
 
@@ -192,6 +194,36 @@ def test_get_all_associations(toolkit):
     assert BIOLINK_NAMED_THING not in associations
 
 
+def test_filter_values_on_slot(toolkit):
+    # as our test data, we take an extant associations from Biolink release 3.5.4
+    as_element: Optional[Element] = toolkit.get_element("chemical affects gene association")
+    slot_usage = as_element["slot_usage"]
+
+    subject_definition = slot_usage["subject"]  # "gene or gene product"
+    assert toolkit.filter_values_on_slot(
+        slot_values=["gene or gene product", "molecular entity", "chemical mixture", "small molecule"],
+        definition=subject_definition,
+        field="range"
+    )
+    assert not toolkit.filter_values_on_slot(
+        slot_values=["clinical entity"],
+        definition=subject_definition,
+        field="range"
+    )
+
+    predicate_definition = slot_usage["predicate"]  # "affects"
+    assert toolkit.filter_values_on_slot(
+        slot_values=["affects", "regulates"],
+        definition=predicate_definition,
+        field="subproperty_of"
+    )
+    assert not toolkit.filter_values_on_slot(
+        slot_values=["diagnoses"],
+        definition=predicate_definition,
+        field="subproperty_of"
+    )
+
+
 def test_get_associations_without_parameters(toolkit):
     # Empty argument versions of get_associations()
     # are equivalent to get_all_associations()
@@ -215,6 +247,7 @@ def test_get_associations_without_parameters(toolkit):
             None,   # object_categories: Optional[List[str]],
             True,   # match_inverses
             [
+                # diverse set of all of the matching associations
                 "biolink:Association",
                 "biolink:ContributorAssociation",
                 "biolink:GenotypeToGeneAssociation",
@@ -222,10 +255,10 @@ def test_get_associations_without_parameters(toolkit):
                 "biolink:ExposureEventToOutcomeAssociation",
                 "biolink:DiseaseOrPhenotypicFeatureToLocationAssociation"
             ],      # contains: List[str]
-            []      # does_not_contain: List[str]
+            []      # does_not_contain: List[str] - should be empty set in the unit test case
         ),
         (   # Q1 - subject_categories set to a value and all other parameters == None
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:Gene"],
             None,
             None,
             True,   # match_inverses
@@ -254,9 +287,9 @@ def test_get_associations_without_parameters(toolkit):
             #           may be protective or causative or associative, or as a model
             #       object:
             #         range: disease
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:Gene"],
             None,
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            ["biolink:Disease"],
             True,   # match_inverses
             ["biolink:GeneToDiseaseAssociation"],
             [
@@ -288,9 +321,9 @@ def test_get_associations_without_parameters(toolkit):
             #     mixins:
             #       - entity to disease association mixin  # Note: the 'object' slot_usage is defined in this mixin
             #       - gene to entity association mixin
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:Gene"],
             ["biolink:target_for"],
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:DiseaseOrPhenotypicFeature", "biolink:Disease"],
+            ["biolink:Disease"],
             True,   # match_inverses
             ["biolink:DruggableGeneToDiseaseAssociation"],
             [
@@ -303,41 +336,69 @@ def test_get_associations_without_parameters(toolkit):
         ),
         (   # Q4 - Check if "biolink:Gene -- biolink:regulates -> biolink:Gene"
             #      matches expected biolink:Association subclasses
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:Gene"],
             ["biolink:regulates"],
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+            ["biolink:Gene"],
             True,   # match_inverses
             [
-                'biolink:ChemicalGeneInteractionAssociation',
-                'biolink:ChemicalAffectsGeneAssociation',
                 'biolink:ChemicalEntityOrGeneOrGeneProductRegulatesGeneAssociation'
             ],
             [
-                "biolink:Association"
+                "biolink:Association",
+                "biolink:GeneToDiseaseOrPhenotypicFeatureAssociation",
+                "biolink:ChemicalAffectsGeneAssociation",
+                "biolink:ChemicalGeneInteractionAssociation"
             ]
         ),
-        (   # Q5 - Check if "biolink:Gene -- biolink:affects -> biolink:SmallMolecule" matches the expected
-            #       'inverse' biolink:Association subclass 'biolink:ChemicalAffectsGeneAssociation'
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+        (   # Q5 - Check if "biolink:Gene -- biolink:affects -> biolink:SmallMolecule" - no match
+            ["biolink:Gene"],
             ["biolink:affects"],
-            ["biolink:NamedThing", "biolink:ChemicalEntity", "biolink:MolecularEntity", "biolink:SmallMolecule"],
+            ["biolink:SmallMolecule"],
+            True,   # match_inverses, but as of Biolink Model release 3.5.4, there is no inverse for this SPO
+            [],
+            [
+                "biolink:Association",
+
+                # inverse of 'affects' is 'affected_by' hence is
+                # not a match to the predicate subproperty_of
+                # this otherwise appropriate association
+                "biolink:ChemicalAffectsGeneAssociation"
+            ]
+        ),
+        (   # Q6 - Check if "biolink:Gene -- biolink:affected_by -> biolink:SmallMolecule" - inverse match
+            ["biolink:Gene"],
+            ["biolink:affected_by"],
+            ["biolink:SmallMolecule"],
             True,   # match_inverses
             [
-                'biolink:ChemicalAffectsGeneAssociation'
+                # inverse of 'affected_by' is 'affects', which DOES match the predicate
+                # 'subproperty_of' the inverse ChemicalAffectsGeneAssociation association
+                "biolink:ChemicalAffectsGeneAssociation"
             ],
             [
                 "biolink:Association"
             ]
         ),
-        (   # Q6 - Check if "biolink:Gene -- biolink:affects -> biolink:SmallMolecule" should NOT
-            #      match the 'inverse' biolink:Association subclass 'biolink:ChemicalAffectsGeneAssociation'
-            ["biolink:NamedThing", "biolink:BiologicalEntity", "biolink:Gene"],
+        (   # Q7 - Check if "biolink:Gene -- biolink:affects -> biolink:SmallMolecule" - no direct match
+            ["biolink:Gene"],
             ["biolink:affects"],
-            ["biolink:NamedThing", "biolink:ChemicalEntity", "biolink:MolecularEntity", "biolink:SmallMolecule"],
+            ["biolink:SmallMolecule"],
             False,   # match_inverses
-            [],  # as of Biolink Model release 3.5.4, there is no match for this set of SPO parameters
+            [],  # as of Biolink Model release 3.5.4, there is no direct match for this set of SPO parameters
             [
-                "biolink:Association"
+                "biolink:Association",
+                "biolink:ChemicalAffectsGeneAssociation"
+            ]
+        ),
+        (   # Q8 - Check if "biolink:Gene -- biolink:affected -> biolink:SmallMolecule" - still no direct match
+            ["biolink:Gene"],
+            ["biolink:affected_by"],
+            ["biolink:SmallMolecule"],
+            False,   # match_inverses
+            [],  # as of Biolink Model release 3.5.4, there is no direct match for this set of SPO parameters
+            [
+                "biolink:Association",
+                "biolink:ChemicalAffectsGeneAssociation"
             ]
         )
     ]

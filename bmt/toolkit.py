@@ -195,32 +195,6 @@ class Toolkit(object):
         """
         return self.get_descendants("association", formatted=formatted)
 
-    @lru_cache(CACHE_SIZE)
-    def get_all_descendants(self, name: str, formatted: bool = False) -> List[str]:
-        """
-        Gets all descendants of a given element by name,
-        including those found by following associated element mixins.
-
-        Parameters
-        ----------
-        name: str
-            String name of root element whose descendants are to be retrieved.
-        formatted: bool
-            Whether to format element names as CURIEs.
-
-        Returns
-        -------
-        List[str]
-            A list of elements
-
-        """
-        element: Element = self.get_element(name)
-        all_descendants: Set[str] = set()
-        for mixin in element.mixins:
-            all_descendants.update(self.get_descendants(mixin, formatted=formatted))
-        all_descendants.update(self.get_descendants(element.name, formatted=formatted))
-        return list(all_descendants)
-
     def filter_values_on_slot(
             self,
             slot_values: List[str],
@@ -249,7 +223,7 @@ class Toolkit(object):
         if field in definition:
             value = definition[field]
             if value:
-                value_set = self.get_all_descendants(value, formatted=True)
+                value_set = self.get_descendants(value, formatted=True)
                 return any([entry in slot_values for entry in value_set])
         return False
 
@@ -281,7 +255,7 @@ class Toolkit(object):
         if "slot_usage" in element:
             slot_usage = element["slot_usage"]
             if slot_usage and slot in slot_usage:
-                slot_definition: SlotDefinition = slot_usage[slot]
+                slot_definition = slot_usage[slot]
             elif "mixins" in element and element["mixins"]:
                 # 'slot_usage' for some fields may be inherited
                 # from the association mixins. For example:
@@ -299,15 +273,20 @@ class Toolkit(object):
                     if "slot_usage" in mixin_element:
                         slot_usage = mixin_element["slot_usage"]
                         if slot_usage and slot in slot_usage:
-                            slot_definition: SlotDefinition = slot_usage[slot]
-                            break  # only need first one seen?
+                            slot_definition = slot_usage[slot]
+                            if slot_definition:
+                                # TODO: think that only need first one with the
+                                #       target 'slot' defined, or can there be several?
+                                break
 
         # assess "slot_values" for "subject", "object"
         # or "predicate" against stipulated constraints
         if slot_definition:
             if slot == "predicate":
+                # check for a non-null "subproperty_of" constraint on a "predicate" slot_value
                 return self.filter_values_on_slot(slot_values, slot_definition, "subproperty_of")
-            else:  # filter on "subject" or "object" category
+            else:
+                # check for a non-null "range" constraint on a "subject" or "object" slot_value
                 return self.filter_values_on_slot(slot_values, slot_definition, "range")
 
         return False
@@ -321,11 +300,15 @@ class Toolkit(object):
             formatted: bool = False
     ) -> List[str]:
         """
-        Get associations from Biolink Model constrained by
-        subject categories, predicates and/or object categories.
+        Get associations from Biolink Model constrained by target
+        list of subject categories, predicates and/or object categories.
 
-        This method returns a list of names or (optionally) curies
-        designating classes that are descendants of the class ``association``.
+        Note: to get matches to most specific associations, it is
+        recommended that the subject_categories and object_categories
+        lists be limited to the most specific node categories of interest.
+
+        This method returns a list of names or (optionally formatted) curies
+        designating classes that are descendants of the class biolink:Association.
 
         Parameters
         ----------
@@ -347,7 +330,7 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants("association")
+        association_elements = self.get_descendants("association")
         filtered_elements: List[str] = list()
         inverse_predicates: Optional[List[str]] = None
         if predicates:
@@ -360,46 +343,53 @@ class Toolkit(object):
                         inverse_predicates.append(inverse_p)
                 inverse_predicates = self._format_all_elements(elements=inverse_predicates, formatted=True)
 
+        def match_association(
+                assoc: Element,
+                subj_cats: List[str],
+                preds: List[str],
+                obj_cats: List[str],
+
+        ) -> bool:
+            if subj_cats:
+                if not self.match_slot_usage(assoc, "subject", subj_cats):
+                    return False
+            if preds:
+                if not self.match_slot_usage(assoc, "predicate", preds):
+                    return False
+            if obj_cats:
+                if not self.match_slot_usage(assoc, "object", obj_cats):
+                    return False
+            return True
+
         if subject_categories or predicates or object_categories:
             # This feels like a bit of a brute force approach as an implementation,
             # but we just use the list of all association names to retrieve each
             # association record for filtering against the constraints?
-            for name in elements:
+            for name in association_elements:
 
                 association: Optional[Element] = self.get_element(name)
+                if not association:
+                    continue
 
                 # sanity checks, probably not necessary
                 # assert association, f"'{name}' not a Biolink Element?"
                 # assert isinstance(association, ClassDefinition), f"'{name}' not a ClassDefinition?"
 
-                if subject_categories:
-                    if self.match_slot_usage(association, "subject", subject_categories):
-                        pass
-                    elif match_inverses and self.match_slot_usage(association, "object", subject_categories):
-                        pass
-                    else:
-                        continue
-                if predicates:
-                    if self.match_slot_usage(association, "predicate", predicates):
-                        pass
-                    elif match_inverses and inverse_predicates and \
-                            self.match_slot_usage(association, "predicate", inverse_predicates):
-                        pass
-                    else:
-                        continue
-                if object_categories:
-                    if self.match_slot_usage(association, "object", object_categories):
-                        pass
-                    elif match_inverses and self.match_slot_usage(association, "subject", object_categories):
-                        pass
-                    else:
-                        continue
+                # Try to match associations in the forward direction
+                if not(
+                    match_association(association, subject_categories, predicates, object_categories) or
+                    (
+                        match_inverses and
+                        match_association(association, object_categories, inverse_predicates, subject_categories)
+                    )
+                ):
+                    continue
 
                 # this association is assumed to pass stipulated constraints
                 filtered_elements.append(association.name)
         else:
             # no filtering equivalent to get_all_associations()
-            filtered_elements = elements
+            filtered_elements = association_elements
 
         return self._format_all_elements(filtered_elements, formatted)
 
