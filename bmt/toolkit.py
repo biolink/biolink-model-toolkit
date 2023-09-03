@@ -278,8 +278,6 @@ class Toolkit(object):
                         if slot_usage and slot in slot_usage:
                             slot_definition = slot_usage[slot]
                             if slot_definition:
-                                # TODO: think that only need first one with the
-                                #       target 'slot' defined, or can there be several?
                                 break
 
         # assess "slot_values" for "subject", "object"
@@ -353,15 +351,12 @@ class Toolkit(object):
                 obj_cats: List[str],
 
         ) -> bool:
-            if subj_cats:
-                if not self.match_slot_usage(assoc, "subject", subj_cats):
-                    return False
-            if preds:
-                if not self.match_slot_usage(assoc, "predicate", preds):
-                    return False
-            if obj_cats:
-                if not self.match_slot_usage(assoc, "object", obj_cats):
-                    return False
+            if subj_cats and not self.match_slot_usage(assoc, "subject", subj_cats):
+                return False
+            if preds and not self.match_slot_usage(assoc, "predicate", preds):
+                return False
+            if obj_cats and not self.match_slot_usage(assoc, "object", obj_cats):
+                return False
             return True
 
         if subject_categories or predicates or object_categories:
