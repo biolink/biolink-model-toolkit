@@ -201,24 +201,40 @@ def test_filter_values_on_slot(toolkit):
 
     subject_definition = slot_usage["subject"]  # "gene or gene product"
     assert toolkit.filter_values_on_slot(
-        slot_values=["gene or gene product", "molecular entity", "chemical mixture", "small molecule"],
+        slot_values=[
+            "biolink:GeneOrGeneProduct",
+            "biolink:MolecularEntity",
+            "biolink:ChemicalMixture",
+            "biolink:SmallMolecule"
+        ],
         definition=subject_definition,
         field="range"
     )
     assert not toolkit.filter_values_on_slot(
-        slot_values=["clinical entity"],
+        slot_values=["biolink:ClinicalEntity"],
         definition=subject_definition,
         field="range"
+    )
+    assert toolkit.filter_values_on_slot(
+        slot_values=[
+            "gene or gene product",
+            "molecular entity",
+            "chemical mixture",
+            "small molecule"
+        ],
+        definition=subject_definition,
+        field="range",
+        formatted=False
     )
 
     predicate_definition = slot_usage["predicate"]  # "affects"
     assert toolkit.filter_values_on_slot(
-        slot_values=["affects", "regulates"],
+        slot_values=["biolink:affects", "biolink:regulates"],
         definition=predicate_definition,
         field="subproperty_of"
     )
     assert not toolkit.filter_values_on_slot(
-        slot_values=["diagnoses"],
+        slot_values=["biolink:diagnoses"],
         definition=predicate_definition,
         field="subproperty_of"
     )

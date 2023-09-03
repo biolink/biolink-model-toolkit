@@ -199,19 +199,22 @@ class Toolkit(object):
             self,
             slot_values: List[str],
             definition: SlotDefinition,
-            field: str
+            field: str,
+            formatted: bool  = True
     ) -> bool:
         """
 
         Parameters
         ----------
         slot_values: List[str]
-            List of slot values to be matched against target slot field values.
+            List of (Biolink CURIE) slot values to be matched against target slot field values.
         definition: SlotDefinition
             Slot definition containing the embedded target field.
         field: str
             Name of embedded (slot) field rooting the tree of elements
             against which the slot_values are to be matched.
+        formatted: bool = True
+            Use of Biolink CURIE identifiers assumed when true
 
         Returns
         -------
@@ -223,7 +226,7 @@ class Toolkit(object):
         if field in definition:
             value = definition[field]
             if value:
-                value_set = self.get_descendants(value, formatted=True)
+                value_set = self.get_descendants(value, formatted=formatted)
                 return any([entry in slot_values for entry in value_set])
         return False
 
