@@ -804,17 +804,17 @@ def test_mapping(toolkit):
 
     assert toolkit.get_element_by_mapping(
         'STY:T071', most_specific=True, formatted=True, mixin=True
-    ) == 'biolink:NamedThing'
+    ) == NAMED_THING_CURIE
     assert toolkit.get_element_by_mapping(
         'STY:T044', most_specific=True, formatted=True, mixin=True
     ) == 'biolink:MolecularActivity'
 
     assert toolkit.get_element_by_mapping(
         "BFO:0000001", most_specific=True, formatted=True, mixin=True
-    ) == 'biolink:NamedThing'
+    ) == NAMED_THING_CURIE
     assert toolkit.get_element_by_mapping(
         'STY:T071', most_specific=True, formatted=True, mixin=True
-    ) == 'biolink:NamedThing'
+    ) == NAMED_THING_CURIE
     assert toolkit.get_element_by_mapping(
         'STY:T044', most_specific=True, formatted=True, mixin=True
     ) == 'biolink:MolecularActivity'
