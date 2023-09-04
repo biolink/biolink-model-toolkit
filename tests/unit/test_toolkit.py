@@ -2,6 +2,7 @@ from typing import Tuple, Optional, List
 
 import pytest
 from bmt import Toolkit
+from bmt.toolkit import LATEST_BIOLINK_RELEASE
 
 
 @pytest.fixture(scope="module")
@@ -71,7 +72,7 @@ BIOLINK_ENTITY = 'biolink:Entity'
 
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
-    assert version == "3.5.3"
+    assert version == LATEST_BIOLINK_RELEASE
 
 
 def test_get_denormalized_association_slots(toolkit):
@@ -551,8 +552,8 @@ def test_is_subproperty_of(toolkit):
                 'biolink:ChemicalAffectsGeneAssociation',
                 'biolink:ChemicalEntityOrGeneOrGeneProductRegulatesGeneAssociation'
             ],
-            # 'Gene--regulates->Gene' matches specified associations and from Biolink Model 3.5.3
-            # onwards, the 'biolink:ChemicalAffectsGeneAssociation' class defines 'slot_usage' for
+            # 'Gene--regulates->Gene' matches specified associations and from Biolink Model 3.5.3 onwards,
+            # the 'biolink:ChemicalAffectsGeneAssociation' class defines 'slot_usage' for
             # 'biolink:object_aspect_qualifier' as 'GeneOrGeneProductOrChemicalEntityAspectEnum'
             # which contains the enum member value of 'activity_or_abundance', thus True test result
             True
