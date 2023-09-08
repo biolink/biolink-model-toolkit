@@ -250,6 +250,124 @@ def test_filter_values_on_slot(toolkit):
     )
 
 
+@pytest.mark.parametrize(
+    "assoc_name,subj_cats,predicates,obj_cats,formatted,outcome",
+    [
+        (  # query 0 - empty constraints - automatic pass
+            "association",  # assoc_name
+            [],    # subj_cats
+            [],    # predicates
+            [],    # obj_cats
+            True,  # formatted
+            True   # outcome == pass
+        ),
+        (  # query 1 - unformatted inputs, valid matches to given association
+            "chemical entity assesses named thing association",
+            ["chemical entity"],
+            ["assesses"],
+            ["named thing"],
+            False,  # don't use CURIEs
+            True   # outcome == pass
+        ),
+        (  # query 2 - CURIE formatted inputs, valid matches to given association
+            "chemical entity assesses named thing association",
+            ["biolink:ChemicalEntity"],
+            ["biolink:assesses"],
+            ["biolink:NamedThing"],
+            True,
+            True   # outcome == pass
+        ),
+        (  # query 3 - constraints matching another specific association
+            "chemical entity assesses named thing association",
+            ["biolink:ChemicalEntity"],
+            ["biolink:assesses"],
+            ["biolink:NamedThing"],
+            True,
+            True   # outcome == pass
+        ),
+        (   # query 4 - predicate constraint is empty, so it matches...
+            "gene to gene association",
+            ["biolink:GeneOrGeneProduct"],
+            [],
+            ["biolink:GeneOrGeneProduct"],
+            True,
+            True   # outcome == pass
+        ),
+        (   # query 5 - ...but if I do give it a predicate, since there is no
+            #           slot_usage for 'predicate', everything still matches
+            "gene to gene association",
+            ["biolink:GeneOrGeneProduct"],
+            ["biolink:related_to"],
+            ["biolink:GeneOrGeneProduct"],
+            True,
+            True   # outcome == pass
+        ),
+        (   # query 6 - the association has the specific predicate expectation but needs
+            #           to inherit its 'subject' and 'object' from an ancestral class
+            "gene to gene coexpression association",
+            ["biolink:GeneOrGeneProduct"],
+            ["biolink:coexpressed_with"],
+            ["biolink:GeneOrGeneProduct"],
+            True,
+            True   # outcome == fail
+        ),
+        (   # query 7 - another specific matching association
+            "pairwise molecular interaction",
+            ["molecular entity"],
+            ["interacts with"],
+            ["molecular entity"],
+            False,
+            True   # outcome == pass
+        ),
+        (   # query 8 - mixin doesn't have a suitable 'object' constraint, so it cannot be selected
+            "chemical to entity association mixin",
+            ["chemical entity or gene or gene product"],
+            ["affects"],
+            ["named thing"],
+            False,
+            False   # outcome == fail
+        ),
+        (   # query 9 - this ought to work with any predicate 'cuz the slot_usage has a 'predicate'
+            #           property, no 'subproperty_of' constraint, and the 'object' no 'range', but
+            #           at least, both slots have a 'description' field.
+            "organism taxon to environment association",
+            ["organism taxon"],
+            ["affects"],
+            ["environmental context"],
+            False,
+            True   # outcome == pass
+        ),
+        (  # query 10 - a missing 'predicate' property in the 'slot_usage' field simply lets all predicates match
+            "exon to transcript relationship",
+            ["exon"],
+            ["part of"],
+            ["transcript"],
+            False,
+            True   # outcome == pass
+        ),
+        (  # query 11 - subject (and object) categories don't match the specified range (or its descendants)
+            "exon to transcript relationship",
+            ["molecular activity"],
+            ["affects"],
+            ["molecular activity"],
+            False,
+            False   # outcome == fail
+        )
+    ]
+)
+def test_match_association(
+        toolkit,
+        assoc_name: Element,
+        subj_cats: List[str],
+        predicates: List[str],
+        obj_cats: List[str],
+        formatted: bool,
+        outcome: bool
+):
+    association: Element = toolkit.get_element(assoc_name)
+    assert toolkit.match_association(association, subj_cats, predicates, obj_cats, formatted) is outcome
+
+
 def test_get_associations_without_parameters(toolkit):
     # Empty argument versions of get_associations()
     # are equivalent to get_all_associations()
