@@ -236,6 +236,79 @@ class Toolkit(object):
             return True
         return False
 
+    @staticmethod
+    def get_local_slot_usage(element: Element, slot: str) -> Optional[SlotDefinition]:
+        """
+        Retrieve the definition of a specified slot from the 'slot_usage'
+        defined locally within the class model of the specified Element.
+
+        Parameters
+        ----------
+        element:
+            Element defining the specified 'slot' in its local 'slot_usage'.
+        slot: str
+            Name of the slot whose definition is to be retrieved.
+
+        Returns
+        -------
+        Optional[SlotDefinition]
+            None, if not available.
+
+        """
+        slot_definition: Optional[SlotDefinition] = None
+        if "slot_usage" in element:
+            slot_usage = element["slot_usage"]
+            if slot_usage and slot in slot_usage:
+                slot_definition = slot_usage[slot]
+        return slot_definition
+
+    def get_slot_usage(self, element: Element, slot: str) -> Optional[SlotDefinition]:
+        """
+        Get the definition of a specified slot from the 'slot_usage' of a specified Element.
+        A relatively deep search is made within the Element context - local class, parent class
+        and associated mixins - to discover an available 'slot_usage' definition for the slot.
+
+        Parameters
+        ----------
+        element:
+            Element defining the specified 'slot' in 'slot_usage'.
+        slot: str
+            Name of the slot whose definition is to be retrieved.
+
+        Returns
+        -------
+        Optional[SlotDefinition]
+            None, if not available.
+
+        """
+        # Check first for local referencing of the slot
+        slot_definition: Optional[SlotDefinition] = self.get_local_slot_usage(element, slot)
+
+        # shallow (immediate parent) check up the class hierarchy...
+        # Note: we don't attempt a recursive search through ancestors for now
+        if slot_definition is None and "is_a" in element and element["is_a"]:
+            parent_name: str = element["is_a"]
+            parent: Element = self.get_element(parent_name)
+            slot_definition = self.get_local_slot_usage(parent, slot)
+
+        # if still empty-handed at this point follow the mixins
+        if slot_definition is None and "mixins" in element and element["mixins"]:
+            # 'slot_usage' for some fields may be inherited from the association mixins. For example:
+            #
+            #     druggable gene to disease association
+            #         mixins:
+            #         - entity to disease association mixin
+            #         - gene to entity association mixin
+            #
+            # the mixins would have a 'subject' slot_usage for Gene and 'object' usage for Disease
+            for mixin_name in element["mixins"]:
+                mixin: Element = self.get_element(mixin_name)
+                slot_definition = self.get_local_slot_usage(mixin, slot)
+                if slot_definition:
+                    break
+
+        return slot_definition
+
     def match_slot_usage(
             self,
             element,
@@ -268,47 +341,7 @@ class Toolkit(object):
         # scope of method sanity check for now
         assert slot in ["subject", "object", "predicate"]
 
-        slot_definition: Optional[SlotDefinition] = None
-
-        if "slot_usage" in element:
-            slot_usage = element["slot_usage"]
-
-            # check for local referencing of the slot
-            if slot_usage and slot in slot_usage:
-
-                slot_definition = slot_usage[slot]
-
-            # shallow (immediate parent) check up the class hierarchy...
-            # Note: we don't attempt a recursive search through ancestors for now
-            elif "is_a" in element and element["is_a"]:
-                parent_name: str = element["is_a"]
-                parent_element: Element = self.get_element(parent_name)
-                if "slot_usage" in parent_element:
-                    slot_usage = parent_element["slot_usage"]
-                    if slot_usage and slot in slot_usage:
-                        slot_definition = slot_usage[slot]
-
-            # if still empty-handed at this point follow the mixins
-            if not slot_definition and "mixins" in element and element["mixins"]:
-                # 'slot_usage' for some fields may be inherited
-                # from the association mixins. For example:
-                #
-                #     druggable gene to disease association
-                #         mixins:
-                #         - entity to disease association mixin
-                #         - gene to entity association mixin
-                #
-                # the mixins would have a 'subject' slot_usage
-                # for Gene and 'object' usage for Disease
-                #
-                for mixin in element["mixins"]:
-                    mixin_element: Element = self.get_element(mixin)
-                    if "slot_usage" in mixin_element:
-                        slot_usage = mixin_element["slot_usage"]
-                        if slot_usage and slot in slot_usage:
-                            slot_definition = slot_usage[slot]
-                            if slot_definition:
-                                break
+        slot_definition: Optional[SlotDefinition] = self.get_slot_usage(element, slot)
 
         # assess "slot_values" for "subject", "object"
         # or "predicate" against stipulated constraints
@@ -319,13 +352,12 @@ class Toolkit(object):
             else:
                 # check for a non-null "range" constraint on a "subject" or "object" slot_value
                 return self.filter_values_on_slot(slot_values, slot_definition, "range", formatted=formatted)
-        else:
-            if slot == "predicate":
-                # the default here if no 'predicate' slot_usage constraint is defined in the model,
-                # is to assume that any and all predicates are allowed for this specified subclass
-                # of biolink:Association. This is functionally identical to the 'description' property
-                # only slot definition (which doesn't computationally restrict things either).
-                return True
+        elif slot == "predicate":
+            # the default here if no 'predicate' slot_usage constraint is defined in the model,
+            # is to assume that any and all predicates are allowed for this specified subclass
+            # of biolink:Association. This is functionally identical to the 'description' property
+            # only slot definition (which doesn't computationally restrict things either).
+            return True
 
         return False
 
