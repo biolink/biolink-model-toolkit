@@ -50,5 +50,6 @@ jobs:
           cd kgx
           poetry install  # this will install a different version of hdmf from the current one
           poetry remove bmt
-          poetry add ../
+          ls -al ../
+          poetry add /home/runner/work/biolink-model-toolkit/biolink-model-toolkit
           poetry run make test
