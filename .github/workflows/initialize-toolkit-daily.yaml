@@ -40,3 +40,13 @@ jobs:
       - name: Run tests
         run: |
           make test
+
+      - name: Clone KGX and install dev branch of bmt
+        run: |
+          cd ../
+          git clone https://github.com/biolink/kgx.git
+          cd kgx
+          poetry install  # this will install a different version of hdmf from the current one
+          poetry remove bmt
+          poetry add ../bmt
+          poetry run make test
