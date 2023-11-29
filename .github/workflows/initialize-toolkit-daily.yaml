@@ -62,5 +62,9 @@ jobs:
           time: '45s'
 
       - name: Run kgx tests
-        run: |
-          poetry run make test
+        run: |  
+          pwd
+          poetry run pytest tests/unit/test_source/*.py
+          poetry run pytest tests/unit/test_sink/*.py
+          poetry run pytest tests/unit/*.py
+          poetry run pytest tests/integration/*.py
