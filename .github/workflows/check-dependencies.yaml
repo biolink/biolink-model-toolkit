@@ -39,7 +39,7 @@ jobs:
           rm -rf poetry.lock
           poetry install 
 
-      - name: Run tests
+      - name: Run bmt tests
         run: |
           make test
 
@@ -64,7 +64,7 @@ jobs:
         with:
           time: '45s'
 
-      - name: Run tests
+      - name: Run kgx tests
         run: |
           cd kgx
           poetry run make test
