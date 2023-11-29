@@ -86,6 +86,12 @@ def test_get_model_version(toolkit):
     assert version == LATEST_BIOLINK_RELEASE
 
 
+def test_sv(toolkit):
+    v = toolkit.view
+    ancs = v.slot_ancestors('broad match')
+    print(ancs)
+    assert 'related to' in ancs
+
 def test_get_denormalized_association_slots(toolkit):
     annotations = toolkit.get_denormalized_association_slots(formatted=True)
     print(annotations)
@@ -896,11 +902,11 @@ def test_descendants(toolkit):
 def test_children(toolkit):
     assert CAUSES in toolkit.get_children("contributes to")
     assert "physically interacts with" in toolkit.get_children(INTERACTS_WITH)
-    assert "transcript" in toolkit.get_children(NUCLEIC_ACID_ENTITY)
+    assert "transcript" in toolkit.get_children(BIOLOGICAL_ENTITY)
     assert GENE in toolkit.get_children(GENE_OR_GENE_PRODUCT)
     assert GENE not in toolkit.get_children(GENE_OR_GENE_PRODUCT, mixin=False)
     assert "biolink:Transcript" in toolkit.get_children(
-        NUCLEIC_ACID_ENTITY, formatted=True
+        BIOLOGICAL_ENTITY, formatted=True
     )
 
 
