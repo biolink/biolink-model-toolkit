@@ -680,26 +680,17 @@ class Toolkit(object):
         return parent
 
     @lru_cache(CACHE_SIZE)
-    def get_permissible_value_children(self, permissible_value: str, enum_name: str) -> str | PermissibleValueText | None | ValueError:
+    def get_permissible_value_children(self, permissible_value: str, enum_name: str) -> Union[
+        str, PermissibleValueText, None]:
         """
-        Get children of a permissible value.
+        Gets the children of a permissible value in an enumeration.
 
-        This method returns a list containing all the children of a
-        permissible value of a given enum.
-
-        Parameters
-        ----------
-        enum_name: str
-            The name of the enum
-        permissible_value: str
-            The name of the permissible value
-
-        Returns
-        -------
-        List[str]
-            A list of elements
-
+        :param permissible_value: The permissible value to check.
+        :param enum_name: The name of the enumeration.
+        :return: The children of the permissible value.
+        :raises ValueError: If the permissible value or enum is not valid.
         """
+        
         children = self.view.permissible_value_children(permissible_value, enum_name)
         return children
 
