@@ -690,7 +690,7 @@ class Toolkit(object):
         :return: The children of the permissible value.
         :raises ValueError: If the permissible value or enum is not valid.
         """
-        
+
         children = self.view.permissible_value_children(permissible_value, enum_name)
         return children
 

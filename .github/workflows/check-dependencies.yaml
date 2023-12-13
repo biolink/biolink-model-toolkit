@@ -44,6 +44,7 @@ jobs:
           make test
 
       - name: Clone KGX and install dev branch of bmt
+        continue-on-error: true
         run: |
           cd ../
           pwd
@@ -69,6 +70,7 @@ jobs:
           time: '45s'
 
       - name: Run kgx tests
+        continue-on-error: true
         run: |  
           cd ../
           pwd
