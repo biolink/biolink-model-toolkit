@@ -863,6 +863,8 @@ def test_permissible_value_ancestors(toolkit):
         "snp_form", "ChemicalOrGeneOrGeneProductFormOrVariantEnum"
     )
     assert "increased" in toolkit.get_permissible_value_parent("upregulated", "DirectionQualifierEnum")
+    assert "upregulated" in toolkit.get_permissible_value_children("increased", "DirectionQualifierEnum")
+    assert "synthesis" in toolkit.get_permissible_value_descendants("activity_or_abundance", "GeneOrGeneProductOrChemicalEntityAspectEnum")
 
 
 def test_ancestors_for_kgx(toolkit):
