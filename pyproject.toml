@@ -36,7 +36,7 @@ style = "pep440"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-linkml-runtime = { git = "https://github.com/linkml/linkml-runtime.git", branch = "pv_descendants" }
+linkml-runtime = "^1.6.3"
 deprecation = "^2.1.0"
 stringcase = "^1.2.0"
 

@@ -521,13 +521,15 @@ referencing = ">=0.31.0"
 
 [[package]]
 name = "linkml-runtime"
-version = "0.0.0"
+version = "1.6.3"
 description = "Runtime environment for LinkML, the Linked open data modeling language"
 category = "main"
 optional = false
-python-versions = "^3.7.6"
-files = []
-develop = false
+python-versions = ">=3.7.6,<4.0.0"
+files = [
+    {file = "linkml_runtime-1.6.3-py3-none-any.whl", hash = "sha256:08f616302ce493be775104c87bd5a2ec0eb2c67624e611a3f7e28c978d08a4d1"},
+    {file = "linkml_runtime-1.6.3.tar.gz", hash = "sha256:88e3d0b776055723d187128c03527145dc1ffdc2d2a69e89f8aabce203d418a3"},
+]
 
 [package.dependencies]
 click = "*"
@@ -535,20 +537,14 @@ curies = ">=0.5.4"
 deprecated = "*"
 hbreader = "*"
 json-flattener = ">=0.1.9"
-jsonasobj2 = "==1.*,>=1.0.0,>=1.0.4"
+jsonasobj2 = ">=1.0.4,<2.dev0"
 jsonschema = ">=3.2.0"
 prefixcommons = ">=0.1.12"
 prefixmaps = ">=0.1.4"
-pydantic = ">=1.10.2, <3.0.0"
+pydantic = ">=1.10.2,<3.0.0"
 pyyaml = "*"
 rdflib = ">=6.0.0"
 requests = "*"
-
-[package.source]
-type = "git"
-url = "https://github.com/linkml/linkml-runtime.git"
-reference = "pv_descendants"
-resolved_reference = "641c7b55d7a6a62643ea5abe23257678cb1f354d"
 
 [[package]]
 name = "markupsafe"
@@ -1639,4 +1635,4 @@ docs = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "a4f48bad791d547d6991aa61e56fd140ba530626d1c56ab8c75adb0ad8c79444"
+content-hash = "f9f154163be25b62f4105b9209f1e632dd58b54caacc5bd7d88657d8361dd00c"
