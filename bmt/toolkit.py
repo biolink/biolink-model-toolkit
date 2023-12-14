@@ -5,6 +5,8 @@ import requests
 from functools import lru_cache, reduce
 
 from typing import List, Union, TextIO, Optional, Dict
+
+from linkml_runtime.linkml_model import PermissibleValueText
 from linkml_runtime.utils.schemaview import SchemaView
 from linkml_runtime.linkml_model.meta import (
     SchemaDefinition,
@@ -19,7 +21,7 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-LATEST_BIOLINK_RELEASE = "3.6.0"
+LATEST_BIOLINK_RELEASE = "4.0.0"
 
 REMOTE_PATH = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/biolink-model.yaml"
 PREDICATE_MAP = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/predicate_mapping.yaml"
@@ -594,6 +596,38 @@ class Toolkit(object):
         return ancestors
 
     @lru_cache(CACHE_SIZE)
+    def get_permissible_value_descendants(
+            self, permissible_value: str,
+            enum_name: str,
+            formatted: bool = False
+    ) -> List[str]:
+        """
+        Get descendants of a permissible value.
+
+        This method returns a list containing all the descendants of a
+        permissible value of a given enum.
+
+        Parameters
+        ----------
+        enum_name: str
+            The name of the enum
+        permissible_value: str
+            The name of the permissible value
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        List[str]
+            A list of elements
+
+        """
+        descendants = self.view.permissible_value_descendants(permissible_value, enum_name)
+        if formatted:
+            return self._format_all_elements(descendants)
+        return descendants
+
+    @lru_cache(CACHE_SIZE)
     def get_predicate_mapping(self, mapped_predicate: str) -> Dict[str, str]:
         """
         Get the predicates that map to a given predicate.
@@ -644,6 +678,21 @@ class Toolkit(object):
         """
         parent = self.view.permissible_value_parent(permissible_value, enum_name)
         return parent
+
+    @lru_cache(CACHE_SIZE)
+    def get_permissible_value_children(self, permissible_value: str, enum_name: str) -> Union[
+        str, PermissibleValueText, None]:
+        """
+        Gets the children of a permissible value in an enumeration.
+
+        :param permissible_value: The permissible value to check.
+        :param enum_name: The name of the enumeration.
+        :return: The children of the permissible value.
+        :raises ValueError: If the permissible value or enum is not valid.
+        """
+
+        children = self.view.permissible_value_children(permissible_value, enum_name)
+        return children
 
     @lru_cache(CACHE_SIZE)
     def get_ancestors(
