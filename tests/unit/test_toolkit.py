@@ -663,8 +663,7 @@ def test_is_mixin(toolkit):
 
 
 def test_is_translator_canonical_predicate(toolkit):
-    assert toolkit.is_translator_canonical_predicate("treats")
-    assert not toolkit.is_translator_canonical_predicate("treated by")
+    assert toolkit.is_translator_canonical_predicate("studied to treat")
     assert not toolkit.is_translator_canonical_predicate("this_does_not_exist")
     assert not toolkit.is_translator_canonical_predicate("completed by")
     assert toolkit.is_translator_canonical_predicate("regulates")
@@ -952,7 +951,6 @@ def test_mapping(toolkit):
 
 
 def test_get_slot_domain(toolkit):
-    assert NAMED_THING in toolkit.get_slot_domain("ameliorates")
     assert "biological process" in toolkit.get_slot_domain(ENABLED_BY)
     assert "biological process or activity" in toolkit.get_slot_domain(ENABLED_BY)
     assert "pathway" in toolkit.get_slot_domain(
