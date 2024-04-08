@@ -130,6 +130,11 @@ def test_not_valid_edge(toolkit):
 
 def test_get_element_via_alias(toolkit):
     el = toolkit.get_element('definition')
+    pred_alias = toolkit.get_element("biolink:realized_in_response_to")
+    print(pred_alias)
+    ameliorates_aliase = toolkit.get_element("biolink:ameliorates")
+    assert ameliorates_aliase.name == "ameliorates condition"
+    assert pred_alias.name == "caused by"
     assert el.name == 'description'
 
 
@@ -885,6 +890,9 @@ def test_descendants(toolkit):
     assert INTERACTS_WITH in toolkit.get_descendants(RELATED_TO)
     assert PHENOTYPIC_FEATURE in toolkit.get_descendants(NAMED_THING)
     assert RELATED_TO not in toolkit.get_descendants(NAMED_THING)
+    assert "ameliorates condition" in toolkit.get_descendants("biolink:ameliorates")
+    assert "biolink:ameliorates_condition" in toolkit.get_descendants("biolink:ameliorates", formatted=True)
+
     with pytest.raises(ValueError):
         toolkit.get_descendants('biolink:invalid')
     assert "biolink:PhenotypicFeature" in toolkit.get_descendants(
