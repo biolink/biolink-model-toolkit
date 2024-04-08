@@ -890,6 +890,9 @@ def test_descendants(toolkit):
     assert INTERACTS_WITH in toolkit.get_descendants(RELATED_TO)
     assert PHENOTYPIC_FEATURE in toolkit.get_descendants(NAMED_THING)
     assert RELATED_TO not in toolkit.get_descendants(NAMED_THING)
+    assert "ameliorates condition" in toolkit.get_descendants("biolink:ameliorates")
+    assert "biolink:ameliorates_condition" in toolkit.get_descendants("biolink:ameliorates", formatted=True)
+
     with pytest.raises(ValueError):
         toolkit.get_descendants('biolink:invalid')
     assert "biolink:PhenotypicFeature" in toolkit.get_descendants(
