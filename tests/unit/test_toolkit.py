@@ -130,6 +130,11 @@ def test_not_valid_edge(toolkit):
 
 def test_get_element_via_alias(toolkit):
     el = toolkit.get_element('definition')
+    pred_alias = toolkit.get_element("biolink:realized_in_response_to")
+    print(pred_alias)
+    ameliorates_aliase = toolkit.get_element("biolink:ameliorates")
+    assert ameliorates_aliase.name == "ameliorates condition"
+    assert pred_alias.name == "caused by"
     assert el.name == 'description'
 
 

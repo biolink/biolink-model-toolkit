@@ -21,7 +21,7 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-LATEST_BIOLINK_RELEASE = "4.1.5"
+LATEST_BIOLINK_RELEASE = "4.1.6"
 
 REMOTE_PATH = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/biolink-model.yaml"
 PREDICATE_MAP = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/predicate_mapping.yaml"
@@ -884,8 +884,11 @@ class Toolkit(object):
         logger.debug(parsed_name)
         element = self.view.get_element(parsed_name)
         if element is None and self.view.all_aliases() is not None:
+            if parsed_name.startswith("biolink:"):
+                parsed_name = parsed_name.replace("biolink:", "")
+                parsed_name = parsed_name.replace("_", " ")
             for e in self.view.all_aliases():
-                if name in self.view.all_aliases()[e]:
+                if name in self.view.all_aliases()[e] or parsed_name in self.view.all_aliases()[e]:
                     element = self.view.get_element(e)
         if element is None and "_" in name:
             element = self.get_element(name.replace("_", " "))
