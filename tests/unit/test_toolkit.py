@@ -1074,7 +1074,7 @@ def test_get_value_type_for_slot(toolkit):
     assert "uriorcurie" in toolkit.get_value_type_for_slot(SUBJECT)
     assert "uriorcurie" in toolkit.get_value_type_for_slot("object")
     assert "string" in toolkit.get_value_type_for_slot("symbol")
-    assert "biolink:CategoryType" in toolkit.get_value_type_for_slot(
+    assert "metatype:Uriorcurie" in toolkit.get_value_type_for_slot(
         "category", formatted=True
     )
 
