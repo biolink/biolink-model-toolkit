@@ -92,6 +92,7 @@ def test_sv(toolkit):
     print(ancs)
     assert 'related to' in ancs
 
+
 def test_get_denormalized_association_slots(toolkit):
     annotations = toolkit.get_denormalized_association_slots(formatted=True)
     print(annotations)
@@ -667,9 +668,17 @@ def test_is_mixin(toolkit):
     assert not toolkit.is_mixin("this_does_not_exist")
 
 
+def test_is_symmetric(toolkit):
+    assert not toolkit.is_symmetric("")
+    assert not toolkit.is_symmetric("this_predicate_does_not_exist")
+    assert toolkit.is_symmetric(RELATED_TO)
+    assert toolkit.is_symmetric(INTERACTS_WITH)
+    assert not toolkit.is_symmetric(AFFECTS)
+
+
 def test_is_translator_canonical_predicate(toolkit):
     assert toolkit.is_translator_canonical_predicate("studied to treat")
-    assert not toolkit.is_translator_canonical_predicate("this_does_not_exist")
+    assert not toolkit.is_translator_canonical_predicate("this_predicate_does_not_exist")
     assert not toolkit.is_translator_canonical_predicate("completed by")
     assert toolkit.is_translator_canonical_predicate("regulates")
 
@@ -684,6 +693,13 @@ def test_get_inverse(toolkit):
     assert toolkit.get_inverse(HAS_ACTIVE_COMPONENT) == ACTIVE_IN
     sd = toolkit.get_element(ACTIVE_IN)
     assert toolkit.get_inverse(sd.name) == HAS_ACTIVE_COMPONENT
+
+
+def test_get_get_inverse_predicate(toolkit):
+    assert toolkit.get_inverse_predicate(ACTIVE_IN) == HAS_ACTIVE_COMPONENT
+    assert toolkit.get_inverse_predicate(HAS_ACTIVE_COMPONENT) == ACTIVE_IN
+    assert toolkit.get_inverse_predicate(RELATED_TO) == RELATED_TO
+    assert toolkit.get_inverse_predicate(RELATED_TO, formatted=True) == BIOLINK_RELATED_TO
 
 
 def test_category(toolkit):
@@ -868,7 +884,11 @@ def test_permissible_value_ancestors(toolkit):
     )
     assert "increased" in toolkit.get_permissible_value_parent("upregulated", "DirectionQualifierEnum")
     assert "upregulated" in toolkit.get_permissible_value_children("increased", "DirectionQualifierEnum")
-    assert "synthesis" in toolkit.get_permissible_value_descendants("activity_or_abundance", "GeneOrGeneProductOrChemicalEntityAspectEnum")
+    assert "synthesis" in \
+           toolkit.get_permissible_value_descendants(
+               "activity_or_abundance",
+               "GeneOrGeneProductOrChemicalEntityAspectEnum"
+           )
 
 
 def test_ancestors_for_kgx(toolkit):

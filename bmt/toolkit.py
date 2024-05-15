@@ -1590,9 +1590,64 @@ class Toolkit(object):
         is_mixin = element.mixin if isinstance(element, Definition) else False
         return is_mixin
 
+    def is_symmetric(self, name: str) -> bool:
+        """
+        Checks if a given element identified by name, is a symmetric (predicate) slot.
+
+        Parameters
+        ----------
+        name: str
+            The name or alias of an element in the Biolink Model
+
+        Returns
+        -------
+        bool
+            That the named element is tagged as symmetric: true in Biolink Model
+        """
+        if not name:
+            return False
+        element: Optional[Element] = self.get_element(name)
+        if element is not None and element['symmetric']:
+            return True
+        else:
+            return False
+
     @lru_cache(CACHE_SIZE)
     def get_inverse(self, slot_name: str):
         return self.view.inverse(slot_name)
+
+    @lru_cache(CACHE_SIZE)
+    def get_inverse_predicate(
+            self, predicate: Optional[str],
+            formatted: bool = False
+    ) -> Optional[str]:
+        """
+        Utility wrapper of logic to robustly test if a predicate exists and has an inverse.
+
+        Parameters
+        ----------
+        predicate: Optional[str]
+            CURIE or string name of predicate in the Biolink Model, for which the inverse is sought
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        Optional[str]
+            CURIE string of inverse predicate, if it exists; None otherwise
+        """
+        if predicate and self.is_predicate(predicate):
+            predicate_name = parse_name(predicate)
+            inverse_predicate_name = self.get_inverse(predicate_name)
+            if not inverse_predicate_name:
+                if self.is_symmetric(predicate_name):
+                    inverse_predicate_name = predicate_name
+                else:
+                    inverse_predicate_name = None
+            if inverse_predicate_name:
+                ip = self.get_element(inverse_predicate_name)
+                return format_element(ip) if formatted else str(ip.name)
+        return None
 
     @lru_cache(CACHE_SIZE)
     def has_inverse(self, name: str) -> bool:
