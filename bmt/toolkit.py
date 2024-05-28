@@ -441,12 +441,26 @@ class Toolkit(object):
             A list of elements
 
         """
-        association_elements = self.get_descendants("association")
         filtered_elements: List[str] = list()
         inverse_predicates: Optional[List[str]] = None
+        subject_categories_formatted = []
+        object_categories_formatted = []
+        predicates_formatted = []
+        association_elements = self.get_descendants("association")
+        if subject_categories:
+            for sc in subject_categories:
+                sc_formatted = format_element(self.get_element(sc))
+                subject_categories_formatted.append(sc_formatted)
+        if object_categories:
+            for oc in object_categories:
+                oc_formatted = format_element(self.get_element(oc))
+                object_categories_formatted.append(oc_formatted)
         if predicates:
+            for pred in predicates:
+                pred_formatted = format_element(self.get_element(pred))
+                predicates_formatted.append(pred_formatted)
             inverse_predicates = list()
-            for pred_curie in predicates:
+            for pred_curie in predicates_formatted:
                 predicate = self.get_element(pred_curie)
                 if predicate:
                     inverse_p = self.get_inverse(predicate.name)
@@ -454,7 +468,9 @@ class Toolkit(object):
                         inverse_predicates.append(inverse_p)
                 inverse_predicates = self._format_all_elements(elements=inverse_predicates, formatted=True)
 
-        if subject_categories or predicates or object_categories:
+
+
+        if subject_categories_formatted or predicates_formatted or object_categories_formatted:
             # This feels like a bit of a brute force approach as an implementation,
             # but we just use the list of all association names to retrieve each
             # association record for filtering against the constraints?
@@ -471,10 +487,10 @@ class Toolkit(object):
 
                 # Try to match associations in the forward direction
                 if not(
-                    self.match_association(association, subject_categories, predicates, object_categories) or
+                    self.match_association(association, subject_categories_formatted, predicates_formatted, object_categories_formatted) or
                     (
                         match_inverses and
-                        self.match_association(association, object_categories, inverse_predicates, subject_categories)
+                        self.match_association(association, object_categories, inverse_predicates, subject_categories_formatted)
                     )
                 ):
                     continue
