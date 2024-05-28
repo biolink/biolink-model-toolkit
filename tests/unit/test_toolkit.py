@@ -33,6 +33,7 @@ CHEMICAL_ENTITY = "chemical entity"
 CHEMICAL_ENTITY_CURIE = "biolink:ChemicalEntity"
 GENE = "gene"
 GENE_CURIE = "biolink:Gene"
+GENE_OR_GENE_PRODUCT_CURIE: "biolink:GeneOrGeneProduct"
 GENE_OR_GENE_PRODUCT = "gene or gene product"
 GENE_OR_GENE_PRODUCT_CURIE = "biolink:GeneOrGeneProduct"
 GENOMIC_ENTITY = "genomic entity"
@@ -556,6 +557,17 @@ def test_get_associations_without_parameters(toolkit):
                 "biolink:Association",
                 "biolink:ChemicalAffectsGeneAssociation"
             ]
+        ),
+        (   # Q8 - Check if "biolink:Gene -- biolink:affected -> biolink:SmallMolecule" - still no direct match
+            [GENE_OR_GENE_PRODUCT],
+            ["biolink:affected_by"],
+            ["biolink:ChemicalEntity"],
+            False,   # match_inverses
+            [],  # as of Biolink Model release 3.5.4, there is no direct match for this set of SPO parameters
+            [
+                "biolink:Association",
+                "biolink:ChemicalAffectsGeneAssociation"
+            ]
         )
     ]
 )
@@ -579,6 +591,27 @@ def test_get_associations_with_parameters(
     )
     assert all([entry in associations for entry in contains])
     assert not any([entry in associations for entry in does_not_contain])
+
+
+def test_get_associations_gene_to_chemical(toolkit):
+    associations = toolkit.get_associations(
+        subject_categories=["biolink:ChemicalEntity"],
+        predicates=["biolink:affects"],
+        object_categories=["biolink:GeneOrGeneProduct"],
+        # we don't bother testing the 'format' flag simply in confidence
+        # that the associated code is already well tested in other contexts
+        formatted=True
+    )
+    assert associations
+
+    unformatted_associations = toolkit.get_associations(
+        subject_categories=["chemical entity"],
+        predicates=["affects"],
+        object_categories=["gene or gene product"],
+        formatted=True
+    )
+
+    assert unformatted_associations
 
 
 def test_get_all_node_properties(toolkit):
