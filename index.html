@@ -561,6 +561,10 @@ recommended that the subject_categories and object_categories
 lists be limited to the most specific node categories of interest.</p>
 <p>This method returns a list of names or (optionally formatted) curies
 designating classes that are descendants of the class biolink:Association.</p>
+<p>Note that the method does not attempt to continue matching input constraints
+if any category or predicate is deemed unknown to the current Biolink Model:
+The caller should know well enough to check these, <em>before</em> calling this method!
+But log warnings are issued as a courtesys to inform them!</p>
 <section id="id35">
 <h3>Parameters<a class="headerlink" href="#id35" title="Permalink to this heading"></a></h3>
 <dl class="simple">
