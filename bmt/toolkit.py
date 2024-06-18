@@ -421,6 +421,11 @@ class Toolkit(object):
         This method returns a list of names or (optionally formatted) curies
         designating classes that are descendants of the class biolink:Association.
 
+        Note that the method does not attempt to continue matching input constraints
+        if any category or predicate is deemed unknown to the current Biolink Model:
+        The caller should know well enough to check these, *before* calling this method!
+        But log warnings are issued as a courtesys to inform them!
+
         Parameters
         ----------
         subject_categories: Optional[List[str]]
@@ -441,34 +446,68 @@ class Toolkit(object):
             A list of elements
 
         """
-        filtered_elements: List[str] = list()
+
+        filtered_elements: List[str] = []
         inverse_predicates: Optional[List[str]] = None
         subject_categories_formatted = []
         object_categories_formatted = []
         predicates_formatted = []
         association_elements = self.get_descendants("association")
+
         if subject_categories:
             for sc in subject_categories:
-                sc_formatted = format_element(self.get_element(sc))
+                sc_elem = self.get_element(sc)
+                if not sc_elem:
+                    logger.warning(
+                        f"get_associations(): could not find subject category " +
+                        f"element '{str(sc)}' in current Biolink Model release?"
+                    )
+                    return []
+                sc_formatted = format_element(sc_elem)
                 subject_categories_formatted.append(sc_formatted)
+
         if object_categories:
             for oc in object_categories:
-                oc_formatted = format_element(self.get_element(oc))
+                oc_elem = self.get_element(oc)
+                if not oc_elem:
+                    logger.warning(
+                        f"get_associations(): could not find object category " +
+                        f"element '{str(oc)}' in current Biolink Model release?"
+                    )
+                    return []
+                oc_formatted = format_element(oc_elem)
                 object_categories_formatted.append(oc_formatted)
+
         if predicates:
             for pred in predicates:
-                pred_formatted = format_element(self.get_element(pred))
+                p_elem = self.get_element(pred)
+                if not p_elem:
+                    logger.warning(
+                        f"get_associations(): could not find predicate " +
+                        f"element '{str(pred)}' in current Biolink Model release?"
+                    )
+                    return []
+                pred_formatted = format_element(p_elem)
                 predicates_formatted.append(pred_formatted)
+
             inverse_predicates = list()
             for pred_curie in predicates_formatted:
-                predicate = self.get_element(pred_curie)
-                if predicate:
-                    inverse_p = self.get_inverse(predicate.name)
-                    if inverse_p:
-                        inverse_predicates.append(inverse_p)
-                inverse_predicates = self._format_all_elements(elements=inverse_predicates, formatted=True)
-
-
+                p_elem = self.get_element(pred_curie)
+                if not p_elem:
+                    # Not too worried here about predictes missing
+                    # their inverse, so we just skip them
+                    continue
+                inverse_p = self.get_inverse(p_elem.name)
+                if inverse_p:
+                    # TODO: unsure that this test is needed, if the
+                    #       existence of 'p_elem' is vetted above, since
+                    #       all predicates in the model ought to have names?
+                    logger.warning(
+                        f"get_associations(): inverse predicate name '{str(p_elem.name)}' " +
+                        f"does not match any element in the current Biolink Model release?"
+                    )
+                    inverse_predicates.append(inverse_p)
+            inverse_predicates = self._format_all_elements(elements=inverse_predicates, formatted=True)
 
         if subject_categories_formatted or predicates_formatted or object_categories_formatted:
             # This feels like a bit of a brute force approach as an implementation,
@@ -480,17 +519,35 @@ class Toolkit(object):
                 # the association_elements all come from
                 # get_descendants(), hence are assumed to be extant
                 association: Element = self.get_element(name)
+                if not association:
+                    # TODO: unsure that this test is needed, since all
+                    #       known association classes ought to have names?
+                    logger.warning(
+                        f"get_associations(): association name '{str(name)}' " +
+                        f"does not match any element in the current Biolink Model release?"
+                    )
+                    continue
 
                 # sanity checks, probably not necessary
                 # assert association, f"'{name}' not a Biolink Element?"
                 # assert isinstance(association, ClassDefinition), f"'{name}' not a ClassDefinition?"
 
                 # Try to match associations in the forward direction
-                if not(
-                    self.match_association(association, subject_categories_formatted, predicates_formatted, object_categories_formatted) or
+                if not (
+                    self.match_association(
+                        association,
+                        subject_categories_formatted,
+                        predicates_formatted,
+                        object_categories_formatted
+                    ) or
                     (
                         match_inverses and
-                        self.match_association(association, object_categories, inverse_predicates, subject_categories_formatted)
+                        self.match_association(
+                            association,
+                            object_categories,
+                            inverse_predicates,
+                            subject_categories_formatted
+                        )
                     )
                 ):
                     continue

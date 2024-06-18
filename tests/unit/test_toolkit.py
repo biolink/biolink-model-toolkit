@@ -558,7 +558,7 @@ def test_get_associations_without_parameters(toolkit):
                 "biolink:ChemicalAffectsGeneAssociation"
             ]
         ),
-        (   # Q8 - Check if "biolink:Gene -- biolink:affected -> biolink:SmallMolecule" - still no direct match
+        (   # Q9 - Check if "biolink:Gene -- biolink:affected -> biolink:SmallMolecule" - still no direct match
             [GENE_OR_GENE_PRODUCT],
             ["biolink:affected_by"],
             ["biolink:ChemicalEntity"],
@@ -568,6 +568,33 @@ def test_get_associations_without_parameters(toolkit):
                 "biolink:Association",
                 "biolink:ChemicalAffectsGeneAssociation"
             ]
+        ),
+        (   # Q10 - Check if "biolink:not-a-category -- biolink:affects -> biolink:SmallMolecule" -
+            #      has no direct match (and issues a log warning?)
+            ["biolink:not-a-category"],
+            ["biolink:affects"],
+            ["biolink:ChemicalEntity"],
+            False,   # match_inverses
+            [],  # there is no direct match for a nonsense subject category
+            ["biolink:Association"]
+        ),
+        (   # Q11 - Check if "biolink:Gene -- biolink:not-a-predicate -> biolink:SmallMolecule" -
+            #      has no direct match (and issues a log warning?)
+            [GENE_CURIE],
+            ["biolink:not-a-predicate"],
+            ["biolink:ChemicalEntity"],
+            False,   # match_inverses
+            [],  # there is no direct match for a nonsense predicate
+            ["biolink:Association"]
+        ),
+        (   # Q12 - Check if "biolink:Gene -- biolink:affects -> biolink:not-a-category" -
+            #       has no direct match (and issues a log warning?)
+            [GENE_CURIE],
+            ["biolink:affects"],
+            ["biolink:not-a-category"],
+            False,   # match_inverses
+            [],  # there is no direct match for a nonsense object category
+            ["biolink:Association"]
         )
     ]
 )
