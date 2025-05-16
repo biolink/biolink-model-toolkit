@@ -747,6 +747,13 @@ def test_has_inverse(toolkit):
     assert toolkit.has_inverse("completed by")
     assert not toolkit.has_inverse("this_does_not_exist")
 
+    # this next assertion reflects the fact that 'has_inverse' doesn't
+    # detect the inverse of a canonical element (e.g. 'treats'),
+    # even if the canonical is listed as the inverse of another
+    # element ought to be considered its inverse (i.e. 'treated by')
+    assert toolkit.has_inverse("treated by")
+    assert not toolkit.has_inverse("treats")
+
 
 def test_get_inverse(toolkit):
     assert toolkit.get_inverse(ACTIVE_IN) == HAS_ACTIVE_COMPONENT
