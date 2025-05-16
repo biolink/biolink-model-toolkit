@@ -448,7 +448,7 @@ class Toolkit(object):
         """
 
         filtered_elements: List[str] = []
-        inverse_predicates: Optional[List[str]] = None
+        inverse_predicates_formatted: List[str] = []
         subject_categories_formatted = []
         object_categories_formatted = []
         predicates_formatted = []
@@ -490,11 +490,10 @@ class Toolkit(object):
                 pred_formatted = format_element(p_elem)
                 predicates_formatted.append(pred_formatted)
 
-            inverse_predicates = list()
             for pred_curie in predicates_formatted:
                 p_elem = self.get_element(pred_curie)
                 if not p_elem:
-                    # Not too worried here about predictes missing
+                    # Not too worried here about predicates missing
                     # their inverse, so we just skip them
                     continue
                 inverse_p = self.get_inverse(p_elem.name)
@@ -506,8 +505,8 @@ class Toolkit(object):
                         f"get_associations(): inverse predicate name '{str(p_elem.name)}' " +
                         f"does not match any element in the current Biolink Model release?"
                     )
-                    inverse_predicates.append(inverse_p)
-            inverse_predicates = self._format_all_elements(elements=inverse_predicates, formatted=True)
+                    inverse_pred_formatted = format_element(inverse_p)
+                    inverse_predicates_formatted.append(inverse_pred_formatted)
 
         if subject_categories_formatted or predicates_formatted or object_categories_formatted:
             # This feels like a bit of a brute force approach as an implementation,
@@ -544,8 +543,8 @@ class Toolkit(object):
                         match_inverses and
                         self.match_association(
                             association,
-                            object_categories,
-                            inverse_predicates,
+                            object_categories_formatted,
+                            inverse_predicates_formatted,
                             subject_categories_formatted
                         )
                     )
