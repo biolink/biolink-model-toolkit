@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 import pytest
 from linkml_runtime.linkml_model import Element
@@ -14,10 +14,9 @@ def toolkit():
 
 ASSOCIATION = "association"
 BIOLOGICAL_ENTITY = "biological entity"
-BIOLINK_BIOLOGICAL_ENTITY = "biolink:BiologicalEntity"
-BIOLINK_SUBJECT = "biolink:subject"
-BIOLINK_RELATED_TO = "biolink:related_to"
-BIOLINK_NAMED_THING = "biolink:NamedThing"
+BIOLOGICAL_ENTITY_CURIE = "biolink:BiologicalEntity"
+SUBJECT_CURIE = "biolink:subject"
+RELATED_TO_CURIE = "biolink:related_to"
 NODE_PROPERTY = 'node property'
 SYNONYM = "synonym"
 ASSOCIATION_SLOT = "association slot"
@@ -26,6 +25,14 @@ CAUSES = "causes"
 AFFECTS = "affects"
 AFFECTS_CURIE = "biolink:affects"
 ENABLED_BY = "enabled by"
+REGULATES = "regulates"
+REGULATES_CURIE = "biolink:regulates"
+REGULATED_BY = "regulated by"
+REGULATED_BY_CURIE = "biolink:regulated_by"
+TREATS = "treats"
+TREATS_CURIE = "biolink:treats"
+TREATED_BY = "treated by"
+TREATED_BY_CURIE = "biolink:treated_by"
 
 ENTITY = "entity"
 ENTITY_CURIE = "biolink:Entity"
@@ -33,7 +40,6 @@ CHEMICAL_ENTITY = "chemical entity"
 CHEMICAL_ENTITY_CURIE = "biolink:ChemicalEntity"
 GENE = "gene"
 GENE_CURIE = "biolink:Gene"
-GENE_OR_GENE_PRODUCT_CURIE: "biolink:GeneOrGeneProduct"
 GENE_OR_GENE_PRODUCT = "gene or gene product"
 GENE_OR_GENE_PRODUCT_CURIE = "biolink:GeneOrGeneProduct"
 GENOMIC_ENTITY = "genomic entity"
@@ -141,7 +147,7 @@ def test_get_element_via_alias(toolkit):
 
 
 def test_predicate_map(toolkit):
-    mp = toolkit.get_predicate_mapping("augments")
+    mp: Dict[str, str] = toolkit.get_predicate_mapping("augments")
     assert mp.get("biolink:object_aspect_qualifier") == 'activity or abundance'
 
 
@@ -183,9 +189,9 @@ def test_get_all_elements(toolkit):
 
     elements = toolkit.get_all_elements(formatted=True)
     assert "biolink:ThingDoesNotExist" not in elements
-    assert BIOLINK_NAMED_THING in elements
+    assert NAMED_THING_CURIE in elements
     assert "biolink:GeneToGeneAssociation" in elements
-    assert BIOLINK_RELATED_TO in elements
+    assert RELATED_TO_CURIE in elements
     assert "metatype:Uriorcurie" in elements
     assert "biolink:FrequencyValue" in elements
 
@@ -199,7 +205,7 @@ def test_get_all_entities(toolkit):
     assert RELATED_TO not in entities
 
     entities = toolkit.get_all_entities(formatted=True)
-    assert BIOLINK_NAMED_THING in entities
+    assert NAMED_THING_CURIE in entities
     assert GENE_CURIE in entities
     assert "biolink:Disease" in entities
     assert "biolink:Association" not in entities
@@ -214,7 +220,7 @@ def test_get_all_associations(toolkit):
     associations = toolkit.get_all_associations(formatted=True)
     assert "biolink:Association" in associations
     assert "biolink:GeneToGeneAssociation" in associations
-    assert BIOLINK_NAMED_THING not in associations
+    assert NAMED_THING_CURIE not in associations
 
 
 def test_filter_values_on_slot(toolkit):
@@ -252,7 +258,7 @@ def test_filter_values_on_slot(toolkit):
 
     predicate_definition = slot_usage["predicate"]  # "affects"
     assert toolkit.filter_values_on_slot(
-        slot_values=[AFFECTS_CURIE, "biolink:regulates"],
+        slot_values=[AFFECTS_CURIE, REGULATES_CURIE],
         definition=predicate_definition,
         field="subproperty_of"
     )
@@ -370,7 +376,7 @@ def test_filter_values_on_slot(toolkit):
 )
 def test_match_association(
         toolkit,
-        assoc_name: Element,
+        assoc_name: str,
         subj_cats: List[str],
         predicates: List[str],
         obj_cats: List[str],
@@ -392,7 +398,7 @@ def test_get_associations_without_parameters(toolkit):
     associations = toolkit.get_associations(formatted=True)
     assert "biolink:Association" in associations
     assert "biolink:GeneToGeneAssociation" in associations
-    assert BIOLINK_NAMED_THING not in associations
+    assert NAMED_THING_CURIE not in associations
 
 
 @pytest.mark.parametrize(
@@ -494,7 +500,7 @@ def test_get_associations_without_parameters(toolkit):
         (   # Q4 - Check if "biolink:Gene -- biolink:regulates -> biolink:Gene"
             #      matches expected biolink:Association subclasses
             [GENE_CURIE],
-            ["biolink:regulates"],
+            [REGULATES_CURIE],
             [GENE_CURIE],
             True,   # match_inverses
             [
@@ -572,7 +578,7 @@ def test_get_associations_without_parameters(toolkit):
         (   # Q10 - Check if "biolink:not-a-category -- biolink:affects -> biolink:SmallMolecule" -
             #      has no direct match (and issues a log warning?)
             ["biolink:not-a-category"],
-            ["biolink:affects"],
+            [AFFECTS_CURIE],
             ["biolink:ChemicalEntity"],
             False,   # match_inverses
             [],  # there is no direct match for a nonsense subject category
@@ -590,11 +596,21 @@ def test_get_associations_without_parameters(toolkit):
         (   # Q12 - Check if "biolink:Gene -- biolink:affects -> biolink:not-a-category" -
             #       has no direct match (and issues a log warning?)
             [GENE_CURIE],
-            ["biolink:affects"],
+            [AFFECTS_CURIE],
             ["biolink:not-a-category"],
             False,   # match_inverses
             [],  # there is no direct match for a nonsense object category
             ["biolink:Association"]
+        ),
+        (   # Q13 - Check if "biolink:Gene -- biolink:regulated_by -> biolink:ChemicalEntity"
+            #       should match the inverse (# )sneaking in unformatted class/slot names (should still work!))
+            [GENE_CURIE],
+            [REGULATED_BY],
+            [CHEMICAL_ENTITY],
+            True,   # match_inverses
+            # this should be detected without any messaging
+            ["biolink:ChemicalEntityOrGeneOrGeneProductRegulatesGeneAssociation"],
+            []
         )
     ]
 )
@@ -623,7 +639,7 @@ def test_get_associations_with_parameters(
 def test_get_associations_gene_to_chemical(toolkit):
     associations = toolkit.get_associations(
         subject_categories=["biolink:ChemicalEntity"],
-        predicates=["biolink:affects"],
+        predicates=[AFFECTS_CURIE],
         object_categories=["biolink:GeneOrGeneProduct"],
         # we don't bother testing the 'format' flag simply in confidence
         # that the associated code is already well tested in other contexts
@@ -653,8 +669,8 @@ def test_get_all_node_properties(toolkit):
     assert "biolink:provided_by" in properties
     assert "biolink:category" in properties
     assert "biolink:has_gene" in properties
-    assert BIOLINK_SUBJECT not in properties
-    assert BIOLINK_RELATED_TO not in properties
+    assert SUBJECT_CURIE not in properties
+    assert RELATED_TO_CURIE not in properties
 
 
 def test_get_all_edge_properties(toolkit):
@@ -665,7 +681,7 @@ def test_get_all_edge_properties(toolkit):
     assert "not in the model" not in properties
 
     properties = toolkit.get_all_edge_properties(formatted=True)
-    assert BIOLINK_SUBJECT in properties
+    assert SUBJECT_CURIE in properties
     assert "biolink:object" in properties
     assert "biolink:frequency_qualifier" in properties
 
@@ -740,12 +756,24 @@ def test_is_translator_canonical_predicate(toolkit):
     assert toolkit.is_translator_canonical_predicate("studied to treat")
     assert not toolkit.is_translator_canonical_predicate("this_predicate_does_not_exist")
     assert not toolkit.is_translator_canonical_predicate("completed by")
-    assert toolkit.is_translator_canonical_predicate("regulates")
+    assert toolkit.is_translator_canonical_predicate(REGULATES)
 
 
 def test_has_inverse(toolkit):
     assert toolkit.has_inverse("completed by")
     assert not toolkit.has_inverse("this_does_not_exist")
+
+    # this next assertion reflects the fact that 'has_inverse' doesn't
+    # detect the inverse of a canonical element (e.g. 'treats'),
+    # even if the canonical is listed as the inverse of another
+    # element ought to be considered its inverse (i.e. 'treated by')
+    assert toolkit.has_inverse(TREATED_BY)
+    assert not toolkit.has_inverse(TREATS)
+    # ...works with Biolink CURIE
+    assert toolkit.has_inverse(TREATED_BY_CURIE)
+    # symmetric predicates are not also tagged with 'inverse'
+    # so the following call also comes back empty-handed
+    assert not toolkit.has_inverse(RELATED_TO)
 
 
 def test_get_inverse(toolkit):
@@ -753,13 +781,27 @@ def test_get_inverse(toolkit):
     assert toolkit.get_inverse(HAS_ACTIVE_COMPONENT) == ACTIVE_IN
     sd = toolkit.get_element(ACTIVE_IN)
     assert toolkit.get_inverse(sd.name) == HAS_ACTIVE_COMPONENT
+    # Unlike 'has_inverse' above, 'get_inverse' does discover the
+    # conceptual inverse every time. Works fine with 'mixin' predicates.
+    assert toolkit.get_inverse(TREATS) == TREATED_BY
+    assert toolkit.get_inverse(TREATED_BY) == TREATS
+    # But doesn't see symmetrical predicates?
+    assert toolkit.get_inverse(RELATED_TO) != RELATED_TO
 
 
 def test_get_get_inverse_predicate(toolkit):
     assert toolkit.get_inverse_predicate(ACTIVE_IN) == HAS_ACTIVE_COMPONENT
     assert toolkit.get_inverse_predicate(HAS_ACTIVE_COMPONENT) == ACTIVE_IN
+
+    # ... however, this method DOES work with symmetric predicates
     assert toolkit.get_inverse_predicate(RELATED_TO) == RELATED_TO
-    assert toolkit.get_inverse_predicate(RELATED_TO, formatted=True) == BIOLINK_RELATED_TO
+    assert toolkit.get_inverse_predicate(RELATED_TO, formatted=True) == RELATED_TO_CURIE
+
+    # ... and with mixin predicates too
+    assert toolkit.get_inverse_predicate(TREATS) == TREATED_BY
+    assert toolkit.get_inverse_predicate(TREATED_BY) == TREATS
+    assert toolkit.get_inverse_predicate(TREATS, formatted=True) == TREATED_BY_CURIE
+    assert toolkit.get_inverse_predicate(TREATED_BY, formatted=True) == TREATS_CURIE
 
 
 def test_category(toolkit):
@@ -908,7 +950,7 @@ def test_ancestors(toolkit):
         GENE, formatted=True
     )
     assert GENOMIC_ENTITY_CURIE in toolkit.get_ancestors(GENE, formatted=True)
-    assert BIOLINK_RELATED_TO in toolkit.get_ancestors(CAUSES, formatted=True)
+    assert RELATED_TO_CURIE in toolkit.get_ancestors(CAUSES, formatted=True)
     assert GENE_OR_GENE_PRODUCT_CURIE in toolkit.get_ancestors(GENE, formatted=True)
     assert GENE_OR_GENE_PRODUCT_CURIE not in toolkit.get_ancestors(
         GENE, formatted=True, mixin=False
@@ -916,7 +958,7 @@ def test_ancestors(toolkit):
     assert NAMED_THING in toolkit.get_ancestors(GENE)
     assert GENE_OR_GENE_PRODUCT in toolkit.get_ancestors(GENE)
     assert GENE_OR_GENE_PRODUCT not in toolkit.get_ancestors(GENE, mixin=False)
-    assert BIOLINK_NAMED_THING in toolkit.get_ancestors(GENE, formatted=True)
+    assert NAMED_THING_CURIE in toolkit.get_ancestors(GENE, formatted=True)
     assert "biological entity" in toolkit.get_ancestors(GENE)
     assert "transcript" not in toolkit.get_ancestors(GENE)
     assert CAUSES in toolkit.get_ancestors(CAUSES)
@@ -1003,7 +1045,7 @@ def test_parent(toolkit):
     assert "contributes to" in toolkit.get_parent(CAUSES)
     assert INTERACTS_WITH in toolkit.get_parent("physically interacts with")
     assert BIOLOGICAL_ENTITY in toolkit.get_parent(GENE)
-    assert BIOLINK_BIOLOGICAL_ENTITY in toolkit.get_parent(GENE, formatted=True)
+    assert BIOLOGICAL_ENTITY_CURIE in toolkit.get_parent(GENE, formatted=True)
 
 
 def test_mapping(toolkit):
