@@ -496,15 +496,16 @@ class Toolkit(object):
                     # Not too worried here about predicates missing
                     # their inverse, so we just skip them
                     continue
+
+                # note that get_inverse() doesn't consider 'symmetric' predicates as inverses
                 inverse_p = self.get_inverse(p_elem.name)
-                if inverse_p:
-                    # TODO: unsure that this test is needed, if the
-                    #       existence of 'p_elem' is vetted above, since
-                    #       all predicates in the model ought to have names?
+                if not inverse_p:
+                    # might be a symmetrical predicate or a predicate lacking an inverse
                     logger.warning(
-                        f"get_associations(): inverse predicate name '{str(p_elem.name)}' " +
-                        f"does not match any element in the current Biolink Model release?"
+                        f"get_associations(): predicate '{str(p_elem.name)}' is symmetric or " +
+                        f"does not have an inverse, within the current Biolink Model release?"
                     )
+                else:
                     inverse_pred_formatted = format_element(inverse_p)
                     inverse_predicates_formatted.append(inverse_pred_formatted)
 
@@ -714,11 +715,11 @@ class Toolkit(object):
 
         Returns
         -------
-        List[str]
-            A list of elements
+        Dict[str, str]
+            A Dictionary of elements, indexed by formatted name
 
         """
-        association = {}
+        association: Dict = {}
 
         for mp in self.pmap.values():
             for item in mp:
