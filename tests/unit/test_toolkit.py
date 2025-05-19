@@ -786,7 +786,7 @@ def test_get_inverse(toolkit):
     assert toolkit.get_inverse(TREATS) == TREATED_BY
     assert toolkit.get_inverse(TREATED_BY) == TREATS
     # But doesn't see symmetrical predicates?
-    assert not toolkit.get_inverse(RELATED_TO) == RELATED_TO
+    assert toolkit.get_inverse(RELATED_TO) != RELATED_TO
 
 
 def test_get_get_inverse_predicate(toolkit):

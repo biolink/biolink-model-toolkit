@@ -503,7 +503,7 @@ class Toolkit(object):
                     # might be a symmetrical predicate or a predicate lacking an inverse
                     logger.warning(
                         f"get_associations(): predicate '{str(p_elem.name)}' is symmetric or " +
-                        f"does not have an inverse, within the current Biolink Model release?"
+                        "does not have an inverse, within the current Biolink Model release?"
                     )
                 else:
                     inverse_pred_formatted = format_element(inverse_p)
