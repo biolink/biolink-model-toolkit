@@ -404,8 +404,20 @@ class Toolkit(object):
 
     @staticmethod
     def warning(identifier: str, context: str, template: str) -> None:
+        # First iteration: simple wrapper of original Python logging call,
+        # replicates original logging behaviour except the line number
+        # (is the Toolkit.warning() method line number)
         msg = f"{context}(): {template.format(id=identifier)}"
         logger.warning(msg)
+
+    def clear_warnings(self):
+        pass
+
+    def get_warnings(self, context: str) -> Dict[str, List[str]]:
+        pass
+
+    def get_all_warnings(self) -> Dict[str, Dict[str, List[str]]]:
+        pass
 
     def get_associations(
             self,
