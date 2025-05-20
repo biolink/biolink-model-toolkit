@@ -23,9 +23,9 @@ Path = str
 
 LATEST_BIOLINK_RELEASE = "4.2.2"
 
-REMOTE_PATH = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/biolink-model.yaml"
-PREDICATE_MAP = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/predicate_mapping.yaml"
-
+BIOLINK_MODEL_RAW_BASEURL = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/"
+REMOTE_PATH = f"{BIOLINK_MODEL_RAW_BASEURL}biolink-model.yaml"
+PREDICATE_MAP = f"{BIOLINK_MODEL_RAW_BASEURL}predicate_mapping.yaml"
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
@@ -753,8 +753,9 @@ class Toolkit(object):
         return parent
 
     @lru_cache(CACHE_SIZE)
-    def get_permissible_value_children(self, permissible_value: str, enum_name: str) -> Union[
-        str, PermissibleValueText, None]:
+    def get_permissible_value_children(
+            self, permissible_value: str, enum_name: str
+    ) -> Union[str, PermissibleValueText, None]:
         """
         Gets the children of a permissible value in an enumeration.
 
@@ -970,9 +971,9 @@ class Toolkit(object):
                 if el.name.lower() == name.lower():
                     element = el
 
-        if type(element) == ClassDefinition and element.class_uri is None:
+        if isinstance(element, ClassDefinition) and element.class_uri is None:
             element.class_uri = format_element(element)
-        if type(element) == SlotDefinition and element.slot_uri is None:
+        if isinstance(element, SlotDefinition) and element.slot_uri is None:
             element.slot_uri = format_element(element)
         return element
 
