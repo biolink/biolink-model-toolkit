@@ -93,6 +93,16 @@ def test_get_model_version(toolkit):
     assert version == LATEST_BIOLINK_RELEASE
 
 
+def test_warning(toolkit, caplog):
+    # First iteration: the Toolkit.warning() method simply
+    # replicates the behaviour of the old Python logger behaviour
+    identifier = "SomeID"
+    context = "test_warning"
+    template = "this is a template to echo the '{id}'!"
+    toolkit.warning(identifier=identifier, context=context, template=template)
+    assert caplog.text.endswith("test_warning(): this is a template to echo the 'SomeID'!\n")
+
+
 def test_sv(toolkit):
     v = toolkit.view
     ancs = v.slot_ancestors('broad match')

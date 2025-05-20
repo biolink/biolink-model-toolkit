@@ -402,6 +402,11 @@ class Toolkit(object):
             return False
         return True
 
+    @staticmethod
+    def warning(identifier: str, context: str, template: str) -> None:
+        msg = f"{context}(): {template.format(id=identifier)}"
+        logger.warning(msg)
+
     def get_associations(
             self,
             subject_categories: Optional[List[str]] = None,
@@ -458,9 +463,10 @@ class Toolkit(object):
             for sc in subject_categories:
                 sc_elem = self.get_element(sc)
                 if not sc_elem:
-                    logger.warning(
-                        f"get_associations(): could not find subject category " +
-                        f"element '{str(sc)}' in current Biolink Model release?"
+                    self.warning(
+                        identifier=str(sc),
+                        context="get_associations",
+                        template="could not find subject category element '{id}' in current Biolink Model release?"
                     )
                     return []
                 sc_formatted = format_element(sc_elem)
@@ -470,9 +476,10 @@ class Toolkit(object):
             for oc in object_categories:
                 oc_elem = self.get_element(oc)
                 if not oc_elem:
-                    logger.warning(
-                        f"get_associations(): could not find object category " +
-                        f"element '{str(oc)}' in current Biolink Model release?"
+                    self.warning(
+                        identifier=str(oc),
+                        context="get_associations",
+                        template="could not find object category element '{id}' in current Biolink Model release?"
                     )
                     return []
                 oc_formatted = format_element(oc_elem)
@@ -482,9 +489,10 @@ class Toolkit(object):
             for pred in predicates:
                 p_elem = self.get_element(pred)
                 if not p_elem:
-                    logger.warning(
-                        f"get_associations(): could not find predicate " +
-                        f"element '{str(pred)}' in current Biolink Model release?"
+                    self.warning(
+                        identifier=str(pred),
+                        context="get_associations",
+                        template="could not find predicate element '{id}' in current Biolink Model release?"
                     )
                     return []
                 pred_formatted = format_element(p_elem)
@@ -501,9 +509,11 @@ class Toolkit(object):
                 inverse_p = self.get_inverse(p_elem.name)
                 if not inverse_p:
                     # might be a symmetrical predicate or a predicate lacking an inverse
-                    logger.warning(
-                        f"get_associations(): predicate '{str(p_elem.name)}' is symmetric or " +
-                        "does not have an inverse, within the current Biolink Model release?"
+                    self.warning(
+                        identifier=str(p_elem.name),
+                        context="get_associations",
+                        template="predicate '{id}' is symmetric or does not have "
+                                 "an inverse, within the current Biolink Model release?"
                     )
                 else:
                     inverse_pred_formatted = format_element(inverse_p)
@@ -522,9 +532,11 @@ class Toolkit(object):
                 if not association:
                     # TODO: unsure that this test is needed, since all
                     #       known association classes ought to have names?
-                    logger.warning(
-                        f"get_associations(): association name '{str(name)}' " +
-                        f"does not match any element in the current Biolink Model release?"
+                    self.warning(
+                        identifier=str(name),
+                        context="get_associations",
+                        template="association name '{id}' does not match "
+                                "any element in the current Biolink Model release?"
                     )
                     continue
 
@@ -1890,7 +1902,11 @@ class Toolkit(object):
                 if hasattr(element, 'id_prefixes') and prefix in element.id_prefixes:
                     categories.append(element.name)
         if len(categories) == 0:
-            logger.warning("no biolink class found for the given curie: %s, try get_element_by_mapping?", identifier)
+            self.warning(
+                identifier=identifier,
+                context="get_element_by_prefix",
+                template="no biolink class found for the given curie: {id}, try get_element_by_mapping?"
+            )
 
         return categories
 
