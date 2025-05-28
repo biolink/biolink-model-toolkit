@@ -105,7 +105,7 @@ def test_warnings(toolkit):
     toolkit.warning(context=context, identifier=identifier)
     warnings: str = toolkit.dump_warnings()
     assert warnings.endswith(
-        "get_associations_subject_category: "
+        "get_associations_subject_category | "
         "Could not find subject category elements:\n\t'HGNC:1234'\n"
         "within the current Biolink Model release?\n\n"
     )

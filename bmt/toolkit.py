@@ -446,7 +446,7 @@ class Toolkit(object):
 
         template: str = cls._warning_msg_templates[context]
         identifiers_str = ", ".join(identifiers)
-        return f"{context}: {template.format(ids=identifiers_str)}"
+        return f"{context} | {template.format(ids=identifiers_str)}"
 
     # indexed list of identifiers captured in a given warning context
     _warning_id_catalog: Dict[str, Set[str]] = {}
