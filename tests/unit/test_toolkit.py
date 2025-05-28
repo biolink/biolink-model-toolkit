@@ -1,3 +1,4 @@
+import sys
 from typing import Optional, List, Dict
 
 import pytest
@@ -91,6 +92,40 @@ QUALIFIED_PREDICATE_SAMPLE_VALUE = "causes"
 def test_get_model_version(toolkit):
     version = toolkit.get_model_version()
     assert version == LATEST_BIOLINK_RELEASE
+
+
+def test_warnings(toolkit):
+
+    # only certain contexts are legitimate
+    with pytest.raises(AssertionError):
+        toolkit._format_warning_msg(context="invalid-context", identifiers={"1", "2", "3"})
+
+    identifier = "HGNC:1234"
+    context = "get_associations_subject_category"
+    toolkit.warning(context=context, identifier=identifier)
+    warnings: str = toolkit.dump_warnings()
+    assert warnings.endswith(
+        "get_associations_subject_category | "
+        "Could not find subject category elements:\n\t'HGNC:1234'\n"
+        "within the current Biolink Model release?\n\n"
+    )
+
+    toolkit.clear_warnings()
+    warnings = toolkit.dump_warnings()
+    assert warnings == ""
+
+    # check the unit test console for a display of the following messages
+    context = "get_associations_object_category"
+    toolkit.warning(context=context, identifier="biolink:NotACategory")
+    toolkit.warning(context=context, identifier="NCBIGene:1010")
+
+    context = "get_element_by_prefix_missing_element"
+    toolkit.warning(context=context, identifier="foo:bar")
+
+    context = "get_associations_missing_association"
+    toolkit.warning(context=context, identifier="biolink:NotAnAssociation")
+
+    print("\n\n"+toolkit.dump_warnings(), file=sys.stderr)
 
 
 def test_sv(toolkit):

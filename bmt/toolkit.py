@@ -4,7 +4,7 @@ import deprecation
 import requests
 from functools import lru_cache, reduce
 
-from typing import List, Union, TextIO, Optional, Dict
+from typing import List, Union, TextIO, Optional, Dict, Set
 
 from linkml_runtime.linkml_model import PermissibleValueText
 from linkml_runtime.utils.schemaview import SchemaView
@@ -23,9 +23,9 @@ Path = str
 
 LATEST_BIOLINK_RELEASE = "4.2.2"
 
-REMOTE_PATH = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/biolink-model.yaml"
-PREDICATE_MAP = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/predicate_mapping.yaml"
-
+BIOLINK_MODEL_RAW_BASEURL = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/"
+REMOTE_PATH = f"{BIOLINK_MODEL_RAW_BASEURL}biolink-model.yaml"
+PREDICATE_MAP = f"{BIOLINK_MODEL_RAW_BASEURL}predicate_mapping.yaml"
 
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
@@ -402,6 +402,99 @@ class Toolkit(object):
             return False
         return True
 
+    _warning_msg_templates: Dict[str, str] = {
+
+        "get_associations_subject_category":
+            "Could not find subject category elements:\n\t'{ids}'\nwithin the current Biolink Model release?",
+
+        "get_associations_object_category":
+            "Could not find object category elements:\n\t'{ids}'\nwithin the current Biolink Model release?",
+
+        "get_associations_predicate":
+            "Could not find predicate elements:\n\t'{ids}'\nwithin the current Biolink Model release?",
+
+        "get_associations_no_predicate_inverse":
+            "Predicates:\n\t'{ids}'\nare symmetric or lack an inverse, within the current Biolink Model release?",
+
+        "get_associations_missing_association":
+            "Associations:\n\t'{ids}'\ndoes not match any association class within the current Biolink Model release?",
+
+        "get_element_by_prefix_missing_element":
+            "No Biolink class found for the given curies:\n\t'{ids}'\n...try 'get_element_by_mapping'?"
+    }
+
+    @classmethod
+    def _format_warning_msg(cls, context: str, identifiers: Set[str]) -> str:
+        """
+        Method to format warning messages associated with a
+        specified element denoted by 'identifier',
+        triggering the warning within a given functional context.
+
+        Parameters
+        ----------
+        context: str
+            Specific functional context for which the warning is being reported.
+        identifiers: List[str]
+            Specific element identifier targets about which the warning message is ussed.
+
+        Returns
+        -------
+            Formatted message string
+        """
+        # sanity check
+        assert context in cls._warning_msg_templates, f"Missing message template for context '{context}'?"
+
+        template: str = cls._warning_msg_templates[context]
+        identifiers_str = ", ".join(identifiers)
+        return f"{context} | {template.format(ids=identifiers_str)}"
+
+    # indexed list of identifiers captured in a given warning context
+    _warning_id_catalog: Dict[str, Set[str]] = {}
+
+    @classmethod
+    def warning(cls, context: str, identifier: str) -> None:
+        """
+        Method to log warnings in a specified context and
+        associated with a specific element, denoted by 'identifier'.
+
+        Parameters
+        ----------
+        context: str
+            Specific functional context for which the warning is being reported.
+        identifier: str
+            Specific element identifier target of the warning.
+
+        Returns
+        -------
+            None
+        """
+        if context not in cls._warning_id_catalog:
+            cls._warning_id_catalog[context] = set()
+        identifiers: Set[str] = cls._warning_id_catalog.get(context, [])
+        identifiers.add(identifier)
+
+    @classmethod
+    def clear_warnings(cls) -> None:
+        """
+        Clears out all warnings captured since initial
+        Toolkit usage or since last invocation of this method.
+        Returns
+        -------
+            None
+        """
+        cls._warning_id_catalog.clear()
+
+    @classmethod
+    def dump_warnings(cls) -> str:
+        """
+        Dumps a flat list report by context of all warnings reported since
+        Toolkit creation or since the last invocation of "clear_warnings'.
+        """
+        report: str = ""
+        for context, identifiers in cls._warning_id_catalog.items():
+            report += cls._format_warning_msg(context=context, identifiers=identifiers)+"\n\n"
+        return report
+
     def get_associations(
             self,
             subject_categories: Optional[List[str]] = None,
@@ -458,9 +551,9 @@ class Toolkit(object):
             for sc in subject_categories:
                 sc_elem = self.get_element(sc)
                 if not sc_elem:
-                    logger.warning(
-                        f"get_associations(): could not find subject category " +
-                        f"element '{str(sc)}' in current Biolink Model release?"
+                    self.warning(
+                        context="get_associations_subject_category",
+                        identifier=str(sc)
                     )
                     return []
                 sc_formatted = format_element(sc_elem)
@@ -470,9 +563,9 @@ class Toolkit(object):
             for oc in object_categories:
                 oc_elem = self.get_element(oc)
                 if not oc_elem:
-                    logger.warning(
-                        f"get_associations(): could not find object category " +
-                        f"element '{str(oc)}' in current Biolink Model release?"
+                    self.warning(
+                        context="get_associations_object_category",
+                        identifier=str(oc)
                     )
                     return []
                 oc_formatted = format_element(oc_elem)
@@ -482,9 +575,9 @@ class Toolkit(object):
             for pred in predicates:
                 p_elem = self.get_element(pred)
                 if not p_elem:
-                    logger.warning(
-                        f"get_associations(): could not find predicate " +
-                        f"element '{str(pred)}' in current Biolink Model release?"
+                    self.warning(
+                        context="get_associations_predicate",
+                        identifier=str(pred)
                     )
                     return []
                 pred_formatted = format_element(p_elem)
@@ -501,9 +594,9 @@ class Toolkit(object):
                 inverse_p = self.get_inverse(p_elem.name)
                 if not inverse_p:
                     # might be a symmetrical predicate or a predicate lacking an inverse
-                    logger.warning(
-                        f"get_associations(): predicate '{str(p_elem.name)}' is symmetric or " +
-                        "does not have an inverse, within the current Biolink Model release?"
+                    self.warning(
+                        context="get_associations_no_predicate_inverse",
+                        identifier=str(p_elem.name)
                     )
                 else:
                     inverse_pred_formatted = format_element(inverse_p)
@@ -522,9 +615,9 @@ class Toolkit(object):
                 if not association:
                     # TODO: unsure that this test is needed, since all
                     #       known association classes ought to have names?
-                    logger.warning(
-                        f"get_associations(): association name '{str(name)}' " +
-                        f"does not match any element in the current Biolink Model release?"
+                    self.warning(
+                        context="get_associations_missing_association",
+                        identifier=str(name)
                     )
                     continue
 
@@ -753,8 +846,9 @@ class Toolkit(object):
         return parent
 
     @lru_cache(CACHE_SIZE)
-    def get_permissible_value_children(self, permissible_value: str, enum_name: str) -> Union[
-        str, PermissibleValueText, None]:
+    def get_permissible_value_children(
+            self, permissible_value: str, enum_name: str
+    ) -> Union[str, PermissibleValueText, None]:
         """
         Gets the children of a permissible value in an enumeration.
 
@@ -970,9 +1064,9 @@ class Toolkit(object):
                 if el.name.lower() == name.lower():
                     element = el
 
-        if type(element) == ClassDefinition and element.class_uri is None:
+        if isinstance(element, ClassDefinition) and element.class_uri is None:
             element.class_uri = format_element(element)
-        if type(element) == SlotDefinition and element.slot_uri is None:
+        if isinstance(element, SlotDefinition) and element.slot_uri is None:
             element.slot_uri = format_element(element)
         return element
 
@@ -1889,7 +1983,10 @@ class Toolkit(object):
                 if hasattr(element, 'id_prefixes') and prefix in element.id_prefixes:
                     categories.append(element.name)
         if len(categories) == 0:
-            logger.warning("no biolink class found for the given curie: %s, try get_element_by_mapping?", identifier)
+            self.warning(
+                context="get_element_by_prefix_missing_element",
+                identifier=identifier
+            )
 
         return categories
 
