@@ -4,7 +4,9 @@ import deprecation
 import requests
 from functools import lru_cache, reduce
 
-from typing import List, Union, TextIO, Optional, Dict
+from typing import List, Union, TextIO, Optional, Dict, Set
+
+from copy import deepcopy
 
 from linkml_runtime.linkml_model import PermissibleValueText
 from linkml_runtime.utils.schemaview import SchemaView
@@ -402,22 +404,98 @@ class Toolkit(object):
             return False
         return True
 
-    @staticmethod
-    def warning(identifier: str, context: str, template: str) -> None:
-        # First iteration: simple wrapper of original Python logging call,
-        # replicates original logging behaviour except the line number
-        # (is the Toolkit.warning() method line number)
-        msg = f"{context}(): {template.format(id=identifier)}"
-        logger.warning(msg)
+    _warning_msg_templates: Dict[str, str] = {
 
-    def clear_warnings(self):
-        pass
+        "get_associations_subject_category":
+            "Could not find subject category elements:\n\t'{ids}'\nwithin the current Biolink Model release?",
 
-    def get_warnings(self, context: str) -> Dict[str, List[str]]:
-        pass
+        "get_associations_object_category":
+            "Could not find object category elements:\n\t'{ids}'\nwithin the current Biolink Model release?",
 
-    def get_all_warnings(self) -> Dict[str, Dict[str, List[str]]]:
-        pass
+        "get_associations_predicate":
+            "Could not find predicate elements:\n\t'{ids}'\nwithin the current Biolink Model release?",
+
+        "get_associations_no_predicate_inverse":
+            "Predicates:\n\t'{ids}'\nare symmetric or lack an inverse, within the current Biolink Model release?",
+
+        "get_associations_missing_association":
+            "Associations:\n\t'{ids}'\ndoes not match any association class within the current Biolink Model release?",
+
+        "get_element_by_prefix_missing_element":
+            "No Biolink class found for the given curies:\n\t'{ids}'\n...try 'get_element_by_mapping'?"
+    }
+
+    @classmethod
+    def _format_warning_msg(cls, context: str, identifiers: Set[str]) -> str:
+        """
+        Method to format warning messages associated with a
+        specified element denoted by 'identifier',
+        triggering the warning within a given functional context.
+
+        Parameters
+        ----------
+        context: str
+            Specific functional context for which the warning is being reported.
+        identifiers: List[str]
+            Specific element identifier targets about which the warning message is ussed.
+
+        Returns
+        -------
+            Formatted message string
+        """
+        # sanity check
+        assert context in cls._warning_msg_templates, f"Missing message template for context '{context}'?"
+
+        template: str = cls._warning_msg_templates[context]
+        identifiers_str = ", ".join(identifiers)
+        return f"{context}: {template.format(ids=identifiers_str)}"
+
+    # indexed list of identifiers captured in a given warning context
+    _warning_id_catalog: Dict[str, Set[str]] = {}
+
+    @classmethod
+    def warning(cls, context: str, identifier: str) -> None:
+        """
+        Method to log warnings in a specified context and
+        associated with a specific element, denoted by 'identifier'.
+
+        Parameters
+        ----------
+        context: str
+            Specific functional context for which the warning is being reported.
+        identifier: str
+            Specific element identifier target of the warning.
+
+        Returns
+        -------
+            None
+        """
+        if context not in cls._warning_id_catalog:
+            cls._warning_id_catalog[context] = set()
+        identifiers: Set[str] = cls._warning_id_catalog.get(context, [])
+        identifiers.add(identifier)
+
+    @classmethod
+    def clear_warnings(cls) -> None:
+        """
+        Clears out all warnings captured since initial
+        Toolkit usage or since last invocation of this method.
+        Returns
+        -------
+            None
+        """
+        cls._warning_id_catalog.clear()
+
+    @classmethod
+    def dump_warnings(cls) -> str:
+        """
+        Dumps a flat list report by context of all warnings reported since
+        Toolkit creation or since the last invocation of "clear_warnings'.
+        """
+        report: str = ""
+        for context, identifiers in cls._warning_id_catalog.items():
+            report += cls._format_warning_msg(context=context, identifiers=identifiers)+"\n\n"
+        return report
 
     def get_associations(
             self,
@@ -476,9 +554,8 @@ class Toolkit(object):
                 sc_elem = self.get_element(sc)
                 if not sc_elem:
                     self.warning(
-                        identifier=str(sc),
-                        context="get_associations",
-                        template="could not find subject category element '{id}' in current Biolink Model release?"
+                        context="get_associations_subject_category",
+                        identifier=str(sc)
                     )
                     return []
                 sc_formatted = format_element(sc_elem)
@@ -489,9 +566,8 @@ class Toolkit(object):
                 oc_elem = self.get_element(oc)
                 if not oc_elem:
                     self.warning(
-                        identifier=str(oc),
-                        context="get_associations",
-                        template="could not find object category element '{id}' in current Biolink Model release?"
+                        context="get_associations_object_category",
+                        identifier=str(oc)
                     )
                     return []
                 oc_formatted = format_element(oc_elem)
@@ -502,9 +578,8 @@ class Toolkit(object):
                 p_elem = self.get_element(pred)
                 if not p_elem:
                     self.warning(
-                        identifier=str(pred),
-                        context="get_associations",
-                        template="could not find predicate element '{id}' in current Biolink Model release?"
+                        context="get_associations_predicate",
+                        identifier=str(pred)
                     )
                     return []
                 pred_formatted = format_element(p_elem)
@@ -522,10 +597,8 @@ class Toolkit(object):
                 if not inverse_p:
                     # might be a symmetrical predicate or a predicate lacking an inverse
                     self.warning(
-                        identifier=str(p_elem.name),
-                        context="get_associations",
-                        template="predicate '{id}' is symmetric or does not have "
-                                 "an inverse, within the current Biolink Model release?"
+                        context="get_associations_no_predicate_inverse",
+                        identifier=str(p_elem.name)
                     )
                 else:
                     inverse_pred_formatted = format_element(inverse_p)
@@ -545,10 +618,8 @@ class Toolkit(object):
                     # TODO: unsure that this test is needed, since all
                     #       known association classes ought to have names?
                     self.warning(
-                        identifier=str(name),
-                        context="get_associations",
-                        template="association name '{id}' does not match "
-                                "any element in the current Biolink Model release?"
+                        context="get_associations_missing_association",
+                        identifier=str(name)
                     )
                     continue
 
@@ -1915,9 +1986,8 @@ class Toolkit(object):
                     categories.append(element.name)
         if len(categories) == 0:
             self.warning(
-                identifier=identifier,
-                context="get_element_by_prefix",
-                template="no biolink class found for the given curie: {id}, try get_element_by_mapping?"
+                context="get_element_by_prefix_missing_element",
+                identifier=identifier
             )
 
         return categories

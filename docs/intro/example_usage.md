@@ -118,3 +118,43 @@ t = Toolkit('/path/to/biolink-model.yaml')
 ```
 
 The path can be a file path or a URL.
+
+## Extraordinary Toolkit Warnings
+
+The Toolkit tracks additional warnings generated about specific data elements by some methods like `get_associations` and `get_element_by_prefix`, but leaves it to the user to print them out.
+
+These warnings are automatically tracked within the Toolkit and accessed by calling the dump function as follows:
+
+```py
+from bmt import Toolkit
+from sys import stderr
+t = Toolkit()
+# calls made to `get_associations` and `get_element_by_prefix` with possible invalid elements...
+warnings: str = t.dump_warnings() 
+print(warnings)
+```
+
+should print something similar to this (obviously rather with the specific error contexts and identifiers which were seen)
+
+```
+get_associations_object_category: Could not find object category elements:
+	'biolink:NotACategory, NCBIGene:1010'
+within the current Biolink Model release?
+
+get_element_by_prefix_missing_element: No Biolink class found for the given curies:
+	'foo:bar'
+...try 'get_element_by_mapping'?
+
+get_associations_missing_association: Associations:
+	'biolink:NotAnAssociation'
+does not match any association class within the current Biolink Model release?
+```
+
+You can reset the warning tracking log anytime as follows (the following assertion should work...)
+
+```py
+
+t.clear_warnings()
+warnings = t.dump_warnings() 
+assert warnings == ""
+```
