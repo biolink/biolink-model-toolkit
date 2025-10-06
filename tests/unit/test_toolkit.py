@@ -1258,3 +1258,52 @@ def test_get_all_types(toolkit):
 def test_get_all_multivalued_slots(toolkit):
     assert "synonym" in toolkit.get_all_multivalued_slots()
     assert "id" not in toolkit.get_all_multivalued_slots()
+
+
+def test_get_descendants_with_biolink_prefix(toolkit):
+    assert 'noncoding RNA product' in toolkit.get_descendants("noncoding RNA product")
+    assert 'microRNA' in toolkit.get_descendants("noncoding RNA product")
+    assert 'siRNA' in toolkit.get_descendants("noncoding RNA product")
+    
+    assert 'noncoding RNA product' in toolkit.get_descendants("biolink:NoncodingRNAProduct")
+    assert 'microRNA' in toolkit.get_descendants("biolink:NoncodingRNAProduct")
+    assert 'siRNA' in toolkit.get_descendants("biolink:NoncodingRNAProduct")
+    
+    assert 'microRNA' in toolkit.get_descendants("biolink:MicroRNA")
+    assert 'siRNA' in toolkit.get_descendants("biolink:SiRNA")
+
+
+def test_get_element_with_biolink_prefix_edge_cases(toolkit):
+    elem = toolkit.get_element("biolink:NoncodingRNAProduct")
+    assert elem is not None
+    assert elem.name == "noncoding RNA product"
+    
+    elem = toolkit.get_element("biolink:MicroRNA")
+    assert elem is not None
+    assert elem.name == "microRNA"
+    
+    elem = toolkit.get_element("biolink:SiRNA")
+    assert elem is not None
+    assert elem.name == "siRNA"
+    
+    elem = toolkit.get_element("biolink:gene_fusion_with")
+    assert elem is not None
+    assert elem.name == "gene_fusion_with"
+    
+    elem = toolkit.get_element("biolink:genetic_neighborhood_of")
+    assert elem is not None
+    assert elem.name == "genetic_neighborhood_of"
+
+
+def test_get_parent_with_biolink_prefix(toolkit):
+    parent = toolkit.get_parent('microRNA')
+    assert parent == 'noncoding RNA product'
+    
+    parent_curie = toolkit.get_parent('microRNA', formatted=True)
+    assert parent_curie == 'biolink:NoncodingRNAProduct'
+    
+    parent_from_curie = toolkit.get_parent('biolink:microRNA')
+    assert parent_from_curie == 'noncoding RNA product'
+    
+    parent_from_curie_formatted = toolkit.get_parent('biolink:microRNA', formatted=True)
+    assert parent_from_curie_formatted == 'biolink:NoncodingRNAProduct'
