@@ -967,7 +967,7 @@ class Toolkit(object):
             element = self.get_element(name.replace("_", " "))
         if element is None:
             for e, el in self.view.all_elements().items():
-                if el.name.lower() == name.lower():
+                if el.name.lower() == name.lower() or el.name.lower() == parsed_name.lower():
                     element = el
 
         if type(element) == ClassDefinition and element.class_uri is None:
