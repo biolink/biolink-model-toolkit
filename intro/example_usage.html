@@ -184,6 +184,40 @@ version of Biolink Model YAML:</p>
 </div>
 <p>The path can be a file path or a URL.</p>
 </section>
+<section id="extraordinary-toolkit-warnings">
+<h2>Extraordinary Toolkit Warnings<a class="headerlink" href="#extraordinary-toolkit-warnings" title="Permalink to this heading"></a></h2>
+<p>The Toolkit tracks additional warnings generated about specific data elements by some methods like <code class="docutils literal notranslate"><span class="pre">get_associations</span></code> and <code class="docutils literal notranslate"><span class="pre">get_element_by_prefix</span></code>, but leaves it to the user to print them out.</p>
+<p>These warnings are automatically tracked within the Toolkit and accessed by calling the dump function as follows:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">stderr</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
+<span class="c1"># calls made to `get_associations` and `get_element_by_prefix` with possible invalid elements...</span>
+<span class="n">warnings</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">dump_warnings</span><span class="p">()</span> 
+<span class="nb">print</span><span class="p">(</span><span class="n">warnings</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>should print something similar to this (obviously rather with the specific error contexts and identifiers which were seen)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>get_associations_object_category: Could not find object category elements:
+	&#39;biolink:NotACategory, NCBIGene:1010&#39;
+within the current Biolink Model release?
+
+get_element_by_prefix_missing_element: No Biolink class found for the given curies:
+	&#39;foo:bar&#39;
+...try &#39;get_element_by_mapping&#39;?
+
+get_associations_missing_association: Associations:
+	&#39;biolink:NotAnAssociation&#39;
+does not match any association class within the current Biolink Model release?
+</pre></div>
+</div>
+<p>You can reset the warning tracking log anytime as follows (the following assertion should work…)</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span>
+<span class="n">t</span><span class="o">.</span><span class="n">clear_warnings</span><span class="p">()</span>
+<span class="n">warnings</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">dump_warnings</span><span class="p">()</span> 
+<span class="k">assert</span> <span class="n">warnings</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
