@@ -517,7 +517,7 @@ class Toolkit(object):
         Note that the method does not attempt to continue matching input constraints
         if any category or predicate is deemed unknown to the current Biolink Model:
         The caller should know well enough to check these, *before* calling this method!
-        But log warnings are issued as a courtesys to inform them!
+        But log warnings are issued as a courtesy to inform them!
 
         Parameters
         ----------
@@ -1033,7 +1033,7 @@ class Toolkit(object):
     @lru_cache(CACHE_SIZE)
     def get_element(self, name: str) -> Optional[Element]:
         """
-        Gets an element that is identified by the given name, either as its name
+        Gets an element which is identified by the given name, either as its name
         or as one of its aliases.
 
         Parameters
@@ -1136,7 +1136,7 @@ class Toolkit(object):
         slot_name: str
             The name or alias of a slot in the Biolink Model
         include_ancestors: bool
-            Whether or not to include ancestors of the range class
+            Whether to include ancestors of the range class
         formatted: bool
             Whether to format element names as CURIEs
         mixin: bool
@@ -2006,7 +2006,7 @@ class Toolkit(object):
     ) -> Optional[str]:
         """
         Get a Biolink Model element by mapping.
-        This method return the common ancestor of the set of elements referenced by uriorcurie.
+        This method returns the common ancestor of the set of elements referenced by uriorcurie.
 
         Parameters
         ----------
