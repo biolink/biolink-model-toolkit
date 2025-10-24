@@ -1083,6 +1083,45 @@ def test_parent(toolkit):
     assert BIOLOGICAL_ENTITY_CURIE in toolkit.get_parent(GENE, formatted=True)
 
 
+def test_get_element_depth(toolkit):
+    assert toolkit.get_element_depth(ENTITY) == 0
+    assert toolkit.get_element_depth(NAMED_THING) == 1
+    assert toolkit.get_element_depth(BIOLOGICAL_ENTITY) == 2
+
+
+def test_rank_element_by_specificity(toolkit):
+    assert toolkit.rank_element_by_specificity(element_list=[]) == []
+    # we mix and match curies and names 'cuz it doesn't matter
+    # for the ranking since names are matched to element classes
+    test_elements = ["named thing","biolink:Disease","biological entity", "disease or phenotypic feature"]
+    specific_to_general_order = toolkit.rank_element_by_specificity(element_list=test_elements)
+    assert all(
+        [
+            a == b
+            for a, b in zip(
+                specific_to_general_order,
+                ["biolink:Disease", "disease or phenotypic feature", "biological entity", "named thing"]
+            )
+        ]
+    )
+    general_to_specific_order = toolkit.rank_element_by_specificity(element_list=test_elements,most_specific=False)
+    assert all(
+        [
+            a == b
+            for a, b in zip(
+                general_to_specific_order,
+                ["named thing", "biological entity", "disease or phenotypic feature", "biolink:Disease"]
+            )
+        ]
+    )
+
+
+def test_get_most_specific_category(toolkit):
+    test_categories = ["named thing", "disease", "biolink:BiologicalEntity", "disease or phenotypic feature"]
+    assert toolkit.get_most_specific_category(category_list=test_categories) == "biolink:Disease"
+    assert toolkit.get_most_specific_category(category_list=test_categories, formatted=False) == "disease"
+
+
 def test_mapping(toolkit):
     assert len(toolkit.get_all_elements_by_mapping("SO:0000704")) == 1
     assert GENE in toolkit.get_all_elements_by_mapping("SO:0000704")

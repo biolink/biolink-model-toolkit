@@ -1031,6 +1031,91 @@ class Toolkit(object):
         return parent
 
     @lru_cache(CACHE_SIZE)
+    def get_element_depth(self, name) -> int:
+        """
+        Gets the inheritance tree depth of a given element.
+
+        Parameters
+        ----------
+        name: str
+            The name of an element
+
+        Returns
+        -------
+        int
+            The depth of the given element in the model class inheritance tree
+
+        """
+        depth: int = 0
+        while True:
+            parent_element = self.get_parent(name)
+            if not parent_element:
+                break
+            name = parent_element
+            depth += 1
+        return depth
+
+    def rank_element_by_specificity(
+            self,
+            element_list: list[str],
+            most_specific: bool = True
+    ) -> list[str]:
+        """
+        Rank elements by depth in the class hierarchy tree
+        within which the elements belong.
+
+        Parameters
+        ----------
+        element_list: list[str]
+            Target list of model element names (e.g., category names).
+            This method does not attempt to validate the names as
+            belonging to the same hierarchy but simply returns the
+            ranking of the elements within their respective hierarchies.
+
+        most_specific: bool = True
+             If True, order elements by giving the most specific element first;
+             Otherwise, ordered first by most generic.
+
+        Returns
+        -------
+        list[str]
+            Ordered list of element names.
+
+        """
+        ranked = sorted(element_list, key=self.get_element_depth, reverse=most_specific)
+        return ranked
+
+    def get_most_specific_category(self, category_list, formatted: bool = True) -> str:
+        """
+        Get the most specific category within a candidate list of categories.
+        Invalid category names are ignored.
+
+        Parameters
+        ----------
+        category_list: list[str]
+            Target list of model category names.
+            Note that the code should work upon either Biolink CURIE or unprefixed names.
+            But a check is made whether the names are valid Biolink categories.
+        formatted: bool = True
+            Enforce formatting of the category names as a CURIE.  If False, the name is
+            returned as found in the original category list (or as an unprefixed 'named thing').
+
+        Returns
+        -------
+        str
+            Most specific category name in the given list.  Returns 'biolink:NamedThing'
+            (or just 'named thing' if formatted == False) if no valid category in the list.
+
+        """
+        category_list = [name for name in category_list if self.is_category(name)]
+        if category_list:
+            ranked = self.rank_element_by_specificity(category_list)
+            category = ranked[0]
+        else:
+            category = "named thing"
+        return format_element(self.get_element(category)) if formatted else category
+
+    @lru_cache(CACHE_SIZE)
     def get_element(self, name: str) -> Optional[Element]:
         """
         Gets an element which is identified by the given name, either as its name
