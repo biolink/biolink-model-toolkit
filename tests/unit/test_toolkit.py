@@ -1116,10 +1116,37 @@ def test_rank_element_by_specificity(toolkit):
     )
 
 
+def test_get_most_specific_element(toolkit):
+    # Try predicate elements, which doesn't yet have its own specific element function
+    test_elements = [
+        "causes", "biolink:RelatedTo", "contributes to"
+    ]
+    assert toolkit.get_most_specific_element(
+        element_list=test_elements,
+        member_of=toolkit.is_predicate,
+        root_element="related to"
+    ) == "biolink:causes"
+    assert toolkit.get_most_specific_element(
+        element_list=test_elements,
+        formatted=False,
+        member_of=toolkit.is_predicate,
+        root_element="related to"
+    ) == "causes"
+
 def test_get_most_specific_category(toolkit):
     test_categories = ["named thing", "disease", "biolink:BiologicalEntity", "disease or phenotypic feature"]
     assert toolkit.get_most_specific_category(category_list=test_categories) == "biolink:Disease"
     assert toolkit.get_most_specific_category(category_list=test_categories, formatted=False) == "disease"
+
+
+def test_get_most_specific_association(toolkit):
+    test_associations = ["gene to gene homology association", "association", "gene to gene association"]
+    assert toolkit.get_most_specific_association(
+        association_list=test_associations
+    ) == "biolink:GeneToGeneHomologyAssociation"
+    assert toolkit.get_most_specific_association(
+        association_list=test_associations, formatted=False
+    ) == "gene to gene homology association"
 
 
 def test_mapping(toolkit):
