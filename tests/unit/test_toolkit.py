@@ -1117,7 +1117,7 @@ def test_rank_element_by_specificity(toolkit):
 
 
 def test_get_most_specific_element(toolkit):
-    # Try predicate elements, which doesn't yet have its own specific element function
+    # Try predicate elements, which doesn't yet have their own specific element function
     test_elements = [
         "causes", "biolink:RelatedTo", "contributes to"
     ]
