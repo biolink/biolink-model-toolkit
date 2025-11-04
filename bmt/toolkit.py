@@ -1031,7 +1031,7 @@ class Toolkit(object):
         return parent
 
     @lru_cache(CACHE_SIZE)
-    def get_element_depth(self, name) -> int:
+    def get_element_depth(self, name: str, formatted: bool = False) -> int:
         """
         Gets the inheritance tree depth of a given element.
 
@@ -1039,6 +1039,8 @@ class Toolkit(object):
         ----------
         name: str
             The name of an element
+        formatted: bool
+            Whether to format element names as CURIEs
 
         Returns
         -------
@@ -1048,7 +1050,7 @@ class Toolkit(object):
         """
         depth: int = 0
         while True:
-            parent_element = self.get_parent(name)
+            parent_element = self.get_parent(name, formatted)
             if not parent_element:
                 break
             name = parent_element
