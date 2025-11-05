@@ -30,6 +30,7 @@ PREDICATE_MAP = f"{BIOLINK_MODEL_RAW_BASEURL}predicate_mapping.yaml"
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
 RELATED_TO = "related to"
+NAMED_THING = "named thing"
 
 CACHE_SIZE = 1024
 
@@ -173,7 +174,7 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants("named thing")
+        elements = self.get_descendants(NAMED_THING)
         return self._format_all_elements(elements, formatted)
 
     @lru_cache(CACHE_SIZE)
@@ -1155,7 +1156,7 @@ class Toolkit(object):
             element_list=category_list,
             formatted=formatted,
             member_of=self.is_category,
-            root_element="named thing"
+            root_element=NAMED_THING
         )
 
     def get_most_specific_association(self, association_list, formatted: bool = True) -> str:
@@ -2042,7 +2043,7 @@ class Toolkit(object):
         bool
             That the named element is a valid node category in Biolink Model
         """
-        return "named thing" in self.get_ancestors(name, mixin)
+        return NAMED_THING in self.get_ancestors(name, mixin)
 
     @lru_cache(CACHE_SIZE)
     def is_association(self, name: str, mixin: bool = True) -> bool:

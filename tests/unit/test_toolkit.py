@@ -1096,13 +1096,16 @@ def test_rank_element_by_specificity(toolkit):
     test_elements = ["named thing","biolink:Disease","biological entity", "disease or phenotypic feature"]
     specific_to_general_order = toolkit.rank_element_by_specificity(element_list=test_elements)
     assert all(
-        [
-            a == b
-            for a, b in zip(
-                specific_to_general_order,
-                ["biolink:Disease", "disease or phenotypic feature", "biological entity", "named thing"]
+                a == b
+                for a, b in zip(
+                    specific_to_general_order,
+                    [
+                        "biolink:Disease",
+                        "disease or phenotypic feature",
+                        "biological entity",
+                        "named thing"
+                    ]
             )
-        ]
     )
     general_to_specific_order = toolkit.rank_element_by_specificity(element_list=test_elements,most_specific=False)
     assert all(

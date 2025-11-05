@@ -5,7 +5,6 @@ to facilitate Pydantic coding use cases.
 from typing import Optional
 import logging
 from uuid import uuid4
-from functools import lru_cache
 import biolink_model.datamodel.pydanticmodel_v2 as pyd
 
 from bmt import Toolkit
@@ -39,15 +38,15 @@ def infores(identifier: str) -> str:
     """
     # Limitation: no attempt is made to validate
     # them against the public infores inventory at
-    # https://github.com/biolink/information-resource-registry)
-    assert identifier, "Empty idnetifier not allowed"
+    # https://github.com/biolink/information-resource-registry
+    assert identifier, "Empty identifier not allowed"
     return identifier if identifier.startswith("infores:") else f"infores:{identifier}"
 
 
 def get_node_class(
         node_id: str,
         categories: list[str],
-        toolkit: Toolkit = Toolkit()
+        bmt: Toolkit = Toolkit()
 ) -> type[pyd.NamedThing]:
     """
     Return the most specific Biolink Model Pydantic class for a given node category.
@@ -57,8 +56,8 @@ def get_node_class(
     node_id: str
         Node identifier
     categories: list[str]
-        List of Biolink CURIEs of categories
-    toolkit: Toolkit = Toolkit()
+        List of category Biolink CURIEs
+    bmt: Toolkit = Toolkit()
         Biolink Model Toolkit instance (tied to a particular version of the Biolink Model)
     Returns
     -------
@@ -68,7 +67,7 @@ def get_node_class(
     if not categories:
         logger.warning(f"Node with id {node_id} has empty categories; defaulting to 'biolink:NamedThing'")
         return pyd.NamedThing
-    category = toolkit.get_most_specific_category(category_list=categories)
+    category = bmt.get_most_specific_category(category_list=categories)
     try:
         category = category.replace("biolink:", "")
         return getattr(pyd, category)
@@ -83,7 +82,7 @@ def get_node_class(
 def get_edge_class(
         edge_id: str,
         associations: list[str],
-        toolkit: Toolkit = Toolkit()
+        bmt: Toolkit = Toolkit()
 ) -> Optional[type[pyd.Association]]:
     """
     Return the most specific Biolink Model Pydantic class for a given association category.
@@ -93,8 +92,8 @@ def get_edge_class(
     edge_id: str
         Edge identifier
     associations: list[str]
-        List of Biolink CURIEs of association types
-    toolkit: Toolkit = Toolkit()
+        List of association Biolink CURIEs
+    bmt: Toolkit = Toolkit()
         Biolink Model Toolkit instance (tied to a particular version of the Biolink Model)
     Returns
     -------
@@ -104,7 +103,7 @@ def get_edge_class(
     if not associations:
         logger.warning(f"Edge with id {edge_id} has empty associations; defaulting to 'biolink:Association'")
         return pyd.Association
-    association = toolkit.get_most_specific_association(association_list=associations)
+    association = bmt.get_most_specific_association(association_list=associations)
     try:
         association = association.replace("biolink:", "")
         return getattr(pyd, association)
@@ -117,7 +116,9 @@ def get_edge_class(
 
 
 def build_association_knowledge_sources(
-    primary: str, supporting: Optional[list[str]] = None, aggregating: Optional[dict[str, list[str]]] = None
+        primary: str,
+        supporting: Optional[list[str]] = None,
+        aggregating: Optional[dict[str, list[str]]] = None
 ) -> list[pyd.RetrievalSource]:
     """
     This function attempts to build a list of well-formed Biolink Model RetrievalSource
@@ -134,7 +135,7 @@ def build_association_knowledge_sources(
         Infores identifiers of the supporting data sources (default: None)
     aggregating: Optional[dict[str, list[str]]]
         With infores identifiers of the aggregating knowledge sources as keys, and
-        list[str] of upstream knowledge source infores identifiers (default: None)
+        list[str] of the upstream knowledge source infores identifiers (default: None)
     Returns
     -------
     list[RetrievalSource]
@@ -150,7 +151,7 @@ def build_association_knowledge_sources(
     #     Limitation: the current use case doesn't use source_record_urls, but...
     #     source_record_urls: Optional[Union[Union[str, URIorCURIE], list[Union[str, URIorCURIE]]]] = empty_list()
     #
-    sources: list[pyd.RetrievalSource] = list()
+    sources: list[pyd.RetrievalSource] = []
     primary_knowledge_source: Optional[pyd.RetrievalSource] = None
     if primary:
         primary_knowledge_source = pyd.RetrievalSource(
@@ -160,17 +161,18 @@ def build_association_knowledge_sources(
 
     if supporting:
         for source_id in supporting:
+            resource_id = str(source_id)
             supporting_knowledge_source = pyd.RetrievalSource(
                 id=entity_id(),
-                resource_id=infores(source_id),
+                resource_id=infores(resource_id),
                 resource_role=pyd.ResourceRoleEnum.supporting_data_source,
                 **{},
             )
             sources.append(supporting_knowledge_source)
             if primary_knowledge_source:
                 if primary_knowledge_source.upstream_resource_ids is None:
-                    primary_knowledge_source.upstream_resource_ids = list()
-                primary_knowledge_source.upstream_resource_ids.append(infores(source_id))
+                    primary_knowledge_source.upstream_resource_ids = []
+                primary_knowledge_source.upstream_resource_ids.append(infores(resource_id))
     if aggregating:
         for source_id, upstream_ids in aggregating.items():
             aggregating_knowledge_source = pyd.RetrievalSource(

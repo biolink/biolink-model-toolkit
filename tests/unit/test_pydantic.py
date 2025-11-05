@@ -64,7 +64,7 @@ def test_get_node_class_from_most_specific_category():
         node_id=disease_node_id,
         categories=[
             "biolink:Disease",
-            "biolink:DiseaseOrPhenotypicFeature"
+            "biolink:DiseaseOrPhenotypicFeature",
             "biolink:ThingWithTaxon",
             "biolink:BiologicalEntity",
             "biolink:NamedThing",
@@ -116,7 +116,6 @@ def test_get_edge_class_simple_name():
 
 def test_get_edge_class_unknown_category():
     # Unknown category
-    nonsense_node_id: str = "foo:bar"
     edge_class = get_edge_class(
         edge_id="test:association",
         associations=["biolink:Nonsense"]
@@ -137,7 +136,7 @@ def test_get_edge_class_from_most_specific_association():
     edge_class = get_edge_class(
         edge_id="test:association",
         associations=[
-            "biolink:GeneToGeneAssociation"
+            "biolink:GeneToGeneAssociation",
             "biolink:PairwiseGeneToGeneInteraction",
             "biolink:PairwiseMolecularInteraction",
             "biolink:Association",
@@ -157,11 +156,7 @@ def test_get_edge_class_from_most_specific_association():
 
 def test_simple_build_association_knowledge_sources():
     sources: list[pyd.RetrievalSource] = \
-        build_association_knowledge_sources(
-            primary="infores:foobar"
-            # supporting: Optional[list[str]] = None,
-            # aggregating: Optional[dict[str, list[str]]] = None
-    )
+        build_association_knowledge_sources(primary="infores:foobar")
     assert sources is not None
     assert len(sources) == 1
     primary_source: pyd.RetrievalSource = sources[0]
@@ -186,11 +181,9 @@ def test_supported_build_association_knowledge_sources():
             assert source.resource_id == "infores:foobar"
             assert source.upstream_resource_ids is not None
             assert all(
-                [
-                    upstream in ["infores:foobar2", "infores:foobar3"]
-                    for upstream in source.upstream_resource_ids
-                ]
-            )
+                        upstream in ["infores:foobar2", "infores:foobar3"]
+                        for upstream in source.upstream_resource_ids
+                    )
         elif source.resource_role == pyd.ResourceRoleEnum.supporting_data_source:
             assert source.resource_id in ["infores:foobar2", "infores:foobar3"]
             assert source.upstream_resource_ids is None
@@ -217,10 +210,8 @@ def test_aggregated_build_association_knowledge_sources():
             assert source.resource_id == "infores:tweedle-dee"
             assert source.upstream_resource_ids is not None
             assert all(
-                [
-                    upstream in ["infores:tweedle-dum"]
-                    for upstream in source.upstream_resource_ids
-                ]
-            )
+                        upstream in ["infores:tweedle-dum"]
+                        for upstream in source.upstream_resource_ids
+                    )
         else:
             assert False, f"Unexpected resource role: {source.resource_role}"
