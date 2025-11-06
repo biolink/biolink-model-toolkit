@@ -30,6 +30,7 @@ PREDICATE_MAP = f"{BIOLINK_MODEL_RAW_BASEURL}predicate_mapping.yaml"
 NODE_PROPERTY = "node property"
 ASSOCIATION_SLOT = "association slot"
 RELATED_TO = "related to"
+NAMED_THING = "named thing"
 
 CACHE_SIZE = 1024
 
@@ -173,7 +174,7 @@ class Toolkit(object):
             A list of elements
 
         """
-        elements = self.get_descendants("named thing")
+        elements = self.get_descendants(NAMED_THING)
         return self._format_all_elements(elements, formatted)
 
     @lru_cache(CACHE_SIZE)
@@ -517,7 +518,7 @@ class Toolkit(object):
         Note that the method does not attempt to continue matching input constraints
         if any category or predicate is deemed unknown to the current Biolink Model:
         The caller should know well enough to check these, *before* calling this method!
-        But log warnings are issued as a courtesys to inform them!
+        But log warnings are issued as a courtesy to inform them!
 
         Parameters
         ----------
@@ -1031,9 +1032,166 @@ class Toolkit(object):
         return parent
 
     @lru_cache(CACHE_SIZE)
+    def get_element_depth(self, name: str, formatted: bool = False) -> int:
+        """
+        Gets the inheritance tree depth of a given element.
+
+        Parameters
+        ----------
+        name: str
+            The name of an element
+        formatted: bool
+            Whether to format element names as CURIEs
+
+        Returns
+        -------
+        int
+            The depth of the given element in the model class inheritance tree
+
+        """
+        depth: int = 0
+        while True:
+            parent_element = self.get_parent(name, formatted)
+            if not parent_element:
+                break
+            name = parent_element
+            depth += 1
+        return depth
+
+    def rank_element_by_specificity(
+            self,
+            element_list: list[str],
+            most_specific: bool = True
+    ) -> list[str]:
+        """
+        Rank elements by depth in the class hierarchy tree
+        within which the elements belong.
+
+        Parameters
+        ----------
+        element_list: list[str]
+            Target list of model element names (e.g., category names).
+            This method does not attempt to validate the names as
+            belonging to the same hierarchy but simply returns the
+            ranking of the elements within their respective hierarchies.
+
+        most_specific: bool = True
+             If True, order elements by giving the most specific element first;
+             Otherwise, ordered first by most generic.
+
+        Returns
+        -------
+        list[str]
+            Ordered list of element names.
+
+        """
+        ranked = sorted(element_list, key=self.get_element_depth, reverse=most_specific)
+        return ranked
+
+    def get_most_specific_element(
+            self,
+            element_list: list[str],
+            formatted: bool = True,
+            member_of: Optional = None,
+            root_element: Optional[str] = None
+    ) -> Optional[str]:
+        """
+        Get the most specific element within a candidate list of elements.
+        Elements need to be in the same hierarchy.
+
+        Parameters
+        ----------
+        element_list: list[str]
+            Target list of node category names, descendants of biolink:NamedThing.
+            Note that the code should work upon either Biolink CURIE or unprefixed names.
+            But a check is made whether the names are valid Biolink categories.
+        formatted: bool = True
+            Enforce formatting of the category names as a CURIE.  If False, the name is
+            returned as found in the original category list (or as an unprefixed 'named thing').
+        member_of: FunctionType, predicate membership function to filter name entries in an
+                   'element_list', for membership in a given hierarchy
+        root_element: str, class name of the root element in a given
+                      element hierarchy (e.g. 'named thing', 'association')
+
+        Returns
+        -------
+        str
+            Most specific category name in the given list.  Returns 'biolink:NamedThing'
+            (or just 'named thing' if formatted == False) if no valid category in the list.
+
+        """
+        if member_of is not None:
+            element_list = [name for name in element_list if member_of(name)]
+        if element_list:
+            ranked = self.rank_element_by_specificity(element_list)
+            element = ranked[0]
+        else:
+            element = root_element
+        return format_element(self.get_element(element)) if formatted else element
+
+
+    def get_most_specific_category(self, category_list, formatted: bool = True) -> str:
+        """
+        Get the most specific category within a candidate list of categories.
+        Invalid category names are ignored.
+
+        Parameters
+        ----------
+        category_list: list[str]
+            Target list of node category names, descendants of biolink:NamedThing.
+            Note that the code should work upon either Biolink CURIE or unprefixed names.
+            But a check is made whether the names are valid Biolink categories.
+        formatted: bool = True
+            Enforce formatting of the category names as a CURIE.  If False, the name is
+            returned as found in the original category list (or as an unprefixed 'named thing').
+
+        Returns
+        -------
+        str
+            Most specific category name in the given list.  Returns 'biolink:NamedThing'
+            (or just 'named thing' if formatted == False) if no valid category in the list.
+
+        """
+        return self.get_most_specific_element(
+            element_list=category_list,
+            formatted=formatted,
+            member_of=self.is_category,
+            root_element=NAMED_THING
+        )
+
+    def get_most_specific_association(self, association_list, formatted: bool = True) -> str:
+        """
+        Get the most specific category within a candidate list of association categories.
+        Invalid association category names are ignored.
+
+        Parameters
+        ----------
+        association_list: list[str]
+            Target list of edge category names, descendants of biolink:Association.
+            Note that the code should work upon either Biolink CURIE or unprefixed names.
+            But a check is made whether the names are valid Biolink categories.
+        formatted: bool = True
+            Enforce formatting of the category names as a CURIE.  If False, the name is
+            returned as found in the original category list (or as an unprefixed 'association').
+
+        Returns
+        -------
+        str
+            Most specific association category name in the given list.  Returns 'biolink:Association'
+            (or just 'association' if formatted == False) if no valid category in the list.
+
+        """
+        return self.get_most_specific_element(
+            element_list=association_list,
+            formatted=formatted,
+            member_of=self.is_association,
+            root_element="association"
+        )
+
+    @lru_cache(CACHE_SIZE)
     def get_element(self, name: str) -> Optional[Element]:
         """
-        Gets an element that is identified by the given name, either as its name
+        Gets an element which is identified by the given name, either as its name
         or as one of its aliases.
 
         Parameters
@@ -1136,7 +1294,7 @@ class Toolkit(object):
         slot_name: str
             The name or alias of a slot in the Biolink Model
         include_ancestors: bool
-            Whether or not to include ancestors of the range class
+            Whether to include ancestors of the range class
         formatted: bool
             Whether to format element names as CURIEs
         mixin: bool
@@ -1869,7 +2027,7 @@ class Toolkit(object):
     @lru_cache(CACHE_SIZE)
     def is_category(self, name: str, mixin: bool = True) -> bool:
         """
-        Determines whether the given name is the name of a category in the
+        Determines whether the given name is the name of a node category in the
         Biolink Model. An element is a category if it descends from
         `named thing`
 
@@ -1883,9 +2041,30 @@ class Toolkit(object):
         Returns
         -------
         bool
-            That the named element is a valid category in Biolink Model
+            That the named element is a valid node category in Biolink Model
         """
-        return "named thing" in self.get_ancestors(name, mixin)
+        return NAMED_THING in self.get_ancestors(name, mixin)
+
+    @lru_cache(CACHE_SIZE)
+    def is_association(self, name: str, mixin: bool = True) -> bool:
+        """
+        Determines whether the given name is the name of an edge category in the
+        Biolink Model. An element is a category if it descends from
+        `association`
+
+        Parameters
+        ----------
+        name : str
+            The name or alias of an element in the Biolink Model
+        mixin: bool
+            If True, then that means we want to find mixin ancestors as well as is_a ancestors
+
+        Returns
+        -------
+        bool
+            That the named element is a valid edge category in Biolink Model
+        """
+        return "association" in self.get_ancestors(name, mixin)
 
     @lru_cache(CACHE_SIZE)
     def is_qualifier(self, name: str) -> bool:
@@ -2006,7 +2185,7 @@ class Toolkit(object):
     ) -> Optional[str]:
         """
         Get a Biolink Model element by mapping.
-        This method return the common ancestor of the set of elements referenced by uriorcurie.
+        This method returns the common ancestor of the set of elements referenced by uriorcurie.
 
         Parameters
         ----------
