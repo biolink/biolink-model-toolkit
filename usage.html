@@ -90,7 +90,7 @@
 <p>The main entrypoint is the Toolkit class that provides various methods for accessing and working with the Biolink Model.</p>
 <section id="getting-a-biolink-model-element-based-on-its-name">
 <h3>Getting a Biolink Model element based on its name<a class="headerlink" href="#getting-a-biolink-model-element-based-on-its-name" title="Permalink to this heading"></a></h3>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
 <span class="n">element</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="s1">&#39;gene&#39;</span><span class="p">)</span> <span class="c1"># This returns the element for &#39;biolink:Gene&#39;</span>
 </pre></div>
@@ -98,7 +98,7 @@
 </section>
 <section id="get-a-biolink-model-element-based-on-its-mappings">
 <h3>Get a Biolink Model element based on its mappings<a class="headerlink" href="#get-a-biolink-model-element-based-on-its-mappings" title="Permalink to this heading"></a></h3>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
 <span class="n">element_name</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_element_by_mapping</span><span class="p">(</span><span class="s1">&#39;SEMMEDDB:CAUSES&#39;</span><span class="p">)</span> <span class="c1"># This returns &#39;causes&#39;</span>
 <span class="n">element</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_element</span><span class="p">(</span><span class="n">element_name</span><span class="p">)</span>
@@ -110,7 +110,7 @@
 </section>
 <section id="get-ancestors-for-a-given-biolink-model-element">
 <h3>Get ancestors for a given Biolink Model element<a class="headerlink" href="#get-ancestors-for-a-given-biolink-model-element" title="Permalink to this heading"></a></h3>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
 <span class="n">ancestors</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_ancestors</span><span class="p">(</span><span class="s1">&#39;gene&#39;</span><span class="p">)</span>
 </pre></div>
@@ -119,7 +119,7 @@
 </section>
 <section id="get-descendants-for-a-given-biolink-model-element">
 <h3>Get descendants for a given Biolink Model element<a class="headerlink" href="#get-descendants-for-a-given-biolink-model-element" title="Permalink to this heading"></a></h3>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
 <span class="n">descendants</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get_descendants</span><span class="p">(</span><span class="s1">&#39;gene or gene product&#39;</span><span class="p">)</span>
 </pre></div>
@@ -128,7 +128,7 @@
 </section>
 <section id="check-whether-a-given-string-is-a-valid-biolink-model-category">
 <h3>Check whether a given string is a valid Biolink Model category<a class="headerlink" href="#check-whether-a-given-string-is-a-valid-biolink-model-category" title="Permalink to this heading"></a></h3>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
 <span class="n">t</span><span class="o">.</span><span class="n">is_category</span><span class="p">(</span><span class="s1">&#39;gene&#39;</span><span class="p">)</span> <span class="c1"># True</span>
 <span class="n">t</span><span class="o">.</span><span class="n">is_category</span><span class="p">(</span><span class="s1">&#39;treats&#39;</span><span class="p">)</span> <span class="c1"># False</span>
@@ -137,7 +137,7 @@
 </section>
 <section id="check-whether-a-given-string-is-a-valid-biolink-model-predicate">
 <h3>Check whether a given string is a valid Biolink Model predicate<a class="headerlink" href="#check-whether-a-given-string-is-a-valid-biolink-model-predicate" title="Permalink to this heading"></a></h3>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
 <span class="n">t</span><span class="o">.</span><span class="n">is_predicate</span><span class="p">(</span><span class="s1">&#39;related to&#39;</span><span class="p">)</span> <span class="c1"># True</span>
 <span class="n">t</span><span class="o">.</span><span class="n">is_predicate</span><span class="p">(</span><span class="s1">&#39;interacts with&#39;</span><span class="p">)</span> <span class="c1"># True</span>
@@ -149,7 +149,7 @@
 </section>
 <section id="check-whether-a-given-string-is-a-valid-biolink-model-node-property">
 <h3>Check whether a given string is a valid Biolink Model node property<a class="headerlink" href="#check-whether-a-given-string-is-a-valid-biolink-model-node-property" title="Permalink to this heading"></a></h3>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
 <span class="n">t</span><span class="o">.</span><span class="n">is_node_property</span><span class="p">(</span><span class="s1">&#39;node property&#39;</span><span class="p">)</span> <span class="c1"># True</span>
 <span class="n">t</span><span class="o">.</span><span class="n">is_node_property</span><span class="p">(</span><span class="s1">&#39;synonym&#39;</span><span class="p">)</span> <span class="c1"># True</span>
@@ -161,7 +161,7 @@
 </section>
 <section id="check-whether-a-given-string-is-a-valid-biolink-model-association-slot">
 <h3>Check whether a given string is a valid Biolink Model association slot<a class="headerlink" href="#check-whether-a-given-string-is-a-valid-biolink-model-association-slot" title="Permalink to this heading"></a></h3>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">()</span>
 <span class="n">t</span><span class="o">.</span><span class="n">is_association_slot</span><span class="p">(</span><span class="s1">&#39;association slot&#39;</span><span class="p">)</span> <span class="c1"># True</span>
 <span class="n">t</span><span class="o">.</span><span class="n">is_association_slot</span><span class="p">(</span><span class="s1">&#39;has population context&#39;</span><span class="p">)</span> <span class="c1"># True</span>
@@ -176,7 +176,7 @@
 <h2>Using the Toolkit class with different versions of Biolink Model<a class="headerlink" href="#using-the-toolkit-class-with-different-versions-of-biolink-model" title="Permalink to this heading"></a></h2>
 <p>BMT is pinned to a specific version of Biolink Model at each release. This can be configured to use your custom
 version of Biolink Model YAML:</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bmt</span> <span class="kn">import</span> <span class="n">Toolkit</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">(</span><span class="s1">&#39;/path/to/biolink-model.yaml&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
