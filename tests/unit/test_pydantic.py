@@ -1,7 +1,6 @@
 """
 Tests Pydantic related utility code
 """
-from typing import Optional, Union
 import biolink_model.datamodel.pydanticmodel_v2 as pyd
 import pytest
 from bmt import Toolkit
