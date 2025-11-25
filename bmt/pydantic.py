@@ -2,15 +2,16 @@
 This module contains some utility code
 to facilitate Pydantic coding use cases.
 """
-from typing import Optional
+from typing import Optional, Union
 import logging
 from uuid import uuid4
+
 import biolink_model.datamodel.pydanticmodel_v2 as pyd
-
 from bmt import Toolkit
-toolkit = Toolkit()
 
+toolkit = Toolkit()
 logger = logging.getLogger(__name__)
+
 
 def entity_id() -> str:
     """
@@ -115,73 +116,110 @@ def get_edge_class(
         return pyd.Association
 
 
+def _build_retrieval_source(
+        source_spec: Union[str,tuple[str, list[str]]],
+        resource_role: Optional[pyd.ResourceRoleEnum]
+) -> pyd.RetrievalSource:
+    if isinstance(source_spec, tuple):
+        assert len(source_spec) == 2, f"Invalid supporting data source tuple: {source_spec}"
+        resource_id = str(source_spec[0])
+        source_record_urls = source_spec[1]
+    else:
+        resource_id = source_spec
+        source_record_urls = None
+    return pyd.RetrievalSource(
+        id=entity_id(),
+        resource_id=infores(resource_id),
+        resource_role=resource_role,
+        source_record_urls=source_record_urls,
+        **{},
+    )
+
 def build_association_knowledge_sources(
-        primary: str,
-        supporting: Optional[list[str]] = None,
-        aggregating: Optional[dict[str, list[str]]] = None
+        primary: Union[str,tuple[str, list[str]]],
+        supporting: Optional[list[Union[str,tuple[str, list[str]]]]] = None,
+        aggregating: Optional[Union[str,tuple[str, list[str]]]] = None
 ) -> list[pyd.RetrievalSource]:
     """
-    This function attempts to build a list of well-formed Biolink Model RetrievalSource
-    of Association 'sources' annotation from the specified knowledge source parameters.
-    This method is lenient in that it allows for strings that are not explicitly infores identifiers:
-    it converts these to infores identifiers by prefixing with the 'infores:' namespace (but doesn't validate
-    them against the public infores inventory at https://github.com/biolink/information-resource-registry).
+    This function attempts to build a list of a well-formed RetrievalSource list
+    for an Association **sources** slot, using given knowledge source parameters
+    for primary, supporting and aggregating knowledge sources.
+
+    The use case for 'aggregating knowledge source' represents the limited use case where
+    only one primary knowledge source is specified, as a single upstream knowledge source.
+    This is, of course, not the general case for all aggregating knowledge sources;
+    however, the use case of aggregating knowledge sources with multiple upstream ('primary')
+    knowledge sources is not yet supported.
+
+    This method is lenient in that it allows for strings that are not explicitly encoded
+    as infores identifiers, converting these to infores identifiers by prefixing with
+    the 'infores:' namespace (but the method doesn't validate these coerced infores identifiers
+    against the public infores inventory at https://github.com/biolink/information-resource-registry).
+
+    There are optional 'extended form' provisions for the addition of associated **source_record_urls**
+    to the instances of **resource_id** provided for primary, aggregating and supporting knowledge sources.
 
     Parameters
     ----------
-    primary: str
-        Infores identifier for the primary knowledge source of an Association
-    supporting: Optional[list[str]]
-        Infores identifiers of the supporting data sources (default: None)
-    aggregating: Optional[dict[str, list[str]]]
-        With infores identifiers of the aggregating knowledge sources as keys, and
-        list[str] of the upstream knowledge source infores identifiers (default: None)
+    primary:
+        **Simple form:** Infores 'resource_id' for the primary knowledge source of an Association.
+        **Extended form:** 2-tuple of (resource_id, list[source_record_urls])
+        for the primary knowledge source of an Association.
+
+    supporting:
+        **Simple form:** List of supporting datasource infores 'resource_id' instances. Supporting
+        data sources are automatically assumed to be upstream of the primary knowledge source and
+        mapped accordingly.
+        **Extended form:** List of 2-tuples with form (resource_id, list[source_record_urls]).
+
+    aggregating:
+        **Simple form:** With the infores 'resource_id' of the aggregating knowledge source.
+        The primary knowledge source given to the method is automatically assumed to be upstream
+        of the aggregating knowledge source and mapped accordingly.
+        **Extended form:** 2-tuple of (resource_id, list[source_record_urls])
+        for the aggregating knowledge source of an Association.
+
     Returns
     -------
-    list[RetrievalSource]
-        not guaranteed in any given order, except that
-        the first entry may be the primary knowledge source
+    list[pyd.RetrievalSource]:
+        List of RetrievalSource entries that are not guaranteed in any given order,
+        except that the first entry will usually be the primary knowledge source.
 
     """
-    #
-    # RetrievalSource fields of interest
-    #     resource_id: Union[str, URIorCURIE] = None
-    #     resource_role: Union[str, "ResourceRoleEnum"] = None
-    #     upstream_resource_ids: Optional[Union[Union[str, URIorCURIE], list[Union[str, URIorCURIE]]]] = empty_list()
-    #     Limitation: the current use case doesn't use source_record_urls, but...
-    #     source_record_urls: Optional[Union[Union[str, URIorCURIE], list[Union[str, URIorCURIE]]]] = empty_list()
-    #
-    sources: list[pyd.RetrievalSource] = []
-    primary_knowledge_source: Optional[pyd.RetrievalSource] = None
-    if primary:
-        primary_knowledge_source = pyd.RetrievalSource(
-            id=entity_id(), resource_id=infores(primary), resource_role=pyd.ResourceRoleEnum.primary_knowledge_source, **{}
+    primary_knowledge_source: Optional[pyd.RetrievalSource] = \
+        _build_retrieval_source(
+            primary,
+            pyd.ResourceRoleEnum.primary_knowledge_source
         )
-        sources.append(primary_knowledge_source)
+    sources: list[pyd.RetrievalSource] =[primary_knowledge_source]
 
     if supporting:
-        for source_id in supporting:
-            resource_id = str(source_id)
-            supporting_knowledge_source = pyd.RetrievalSource(
-                id=entity_id(),
-                resource_id=infores(resource_id),
-                resource_role=pyd.ResourceRoleEnum.supporting_data_source,
-                **{},
+        for supporting_source_id in supporting:
+            supporting_knowledge_source = \
+                _build_retrieval_source(
+                    supporting_source_id,
+                    pyd.ResourceRoleEnum.supporting_data_source
             )
             sources.append(supporting_knowledge_source)
-            if primary_knowledge_source:
-                if primary_knowledge_source.upstream_resource_ids is None:
-                    primary_knowledge_source.upstream_resource_ids = []
-                primary_knowledge_source.upstream_resource_ids.append(infores(resource_id))
-    if aggregating:
-        for source_id, upstream_ids in aggregating.items():
-            aggregating_knowledge_source = pyd.RetrievalSource(
-                id=entity_id(),
-                resource_id=infores(source_id),
-                resource_role=pyd.ResourceRoleEnum.aggregator_knowledge_source,
-                **{},
+            if primary_knowledge_source.upstream_resource_ids is None:
+                primary_knowledge_source.upstream_resource_ids = []
+            primary_knowledge_source.upstream_resource_ids.append(
+                infores(supporting_knowledge_source.resource_id)
             )
-            aggregating_knowledge_source.upstream_resource_ids = [infores(upstream) for upstream in upstream_ids]
-            sources.append(aggregating_knowledge_source)
+
+    if aggregating:
+        aggregating_knowledge_source = \
+            _build_retrieval_source(
+                aggregating,
+                pyd.ResourceRoleEnum.aggregator_knowledge_source
+            )
+
+        # The use case for 'aggregating knowledge source' represents the
+        # limited use case where only one primary knowledge source is specified
+        aggregating_knowledge_source.upstream_resource_ids = [
+            primary_knowledge_source.resource_id
+        ]
+
+        sources.append(aggregating_knowledge_source)
 
     return sources
