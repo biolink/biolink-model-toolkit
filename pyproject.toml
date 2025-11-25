@@ -35,7 +35,7 @@ vcs = "git"
 style = "pep440"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 deprecation = "^2.1.0"
 stringcase = "^1.2.0"
 biolink-model = "^4.3.3"

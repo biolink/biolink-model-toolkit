@@ -1,7 +1,7 @@
 """
 Tests Pydantic related utility code
 """
-
+from typing import Optional, Union
 import biolink_model.datamodel.pydanticmodel_v2 as pyd
 import pytest
 from bmt import Toolkit
@@ -154,9 +154,16 @@ def test_get_edge_class_from_most_specific_association():
     )
     assert isinstance(association, pyd.PairwiseMolecularInteraction)
 
+##################################################
+## tests for build_association_knowledge_sources #
+##################################################
+
 def test_simple_build_association_knowledge_sources():
+    # Use case *withOUT* source_record_urls
     sources: list[pyd.RetrievalSource] = \
-        build_association_knowledge_sources(primary="infores:foobar")
+        build_association_knowledge_sources(
+            primary="infores:foobar"
+        )
     assert sources is not None
     assert len(sources) == 1
     primary_source: pyd.RetrievalSource = sources[0]
@@ -164,11 +171,24 @@ def test_simple_build_association_knowledge_sources():
     assert primary_source.resource_role == pyd.ResourceRoleEnum.primary_knowledge_source
     assert primary_source.upstream_resource_ids is None
 
-##################################################
-## tests for build_association_knowledge_sources #
-##################################################
+    # Use case *with* source_record_urls
+    sources: list[pyd.RetrievalSource] = \
+        build_association_knowledge_sources(
+            primary=("infores:foobar",["https://example.com/foobar.jsonld"])
+        )
+    assert sources is not None
+    assert len(sources) == 1
+    primary_source: pyd.RetrievalSource = sources[0]
+    assert primary_source.resource_id == "infores:foobar"
+    assert primary_source.resource_role == pyd.ResourceRoleEnum.primary_knowledge_source
+    assert primary_source.source_record_urls is not None
+    assert len(primary_source.source_record_urls) == 1
+    assert "https://example.com/foobar.jsonld" in primary_source.source_record_urls, \
+        "Missing expected 'upstream_resource_ids' value 'https://example.com/foobar.jsonld'"
+
 
 def test_supported_build_association_knowledge_sources():
+    # Use case *withOUT* source_record_urls
     sources: list[pyd.RetrievalSource] = \
         build_association_knowledge_sources(
             primary="infores:foobar",
@@ -190,15 +210,44 @@ def test_supported_build_association_knowledge_sources():
         else:
             assert False, f"Unexpected resource role: {source.resource_role}"
 
+    # Use case *with* source_record_urls
+    sources: list[pyd.RetrievalSource] = \
+        build_association_knowledge_sources(
+            primary="infores:foobar",
+            supporting = [
+                "infores:foobar2",
+                (
+                    "infores:foobar3",
+                    ["https://example.com/foobar3.jsonld"]
+                )
+            ]
+    )
+    assert sources is not None
+    assert len(sources) == 3
+    for source in sources:
+        if source.resource_role == pyd.ResourceRoleEnum.primary_knowledge_source:
+            assert source.resource_id == "infores:foobar"
+            assert source.upstream_resource_ids is not None
+            assert all(
+                        upstream in ["infores:foobar2", "infores:foobar3"]
+                        for upstream in source.upstream_resource_ids
+                    )
+        elif source.resource_role == pyd.ResourceRoleEnum.supporting_data_source:
+            assert source.resource_id in ["infores:foobar2", "infores:foobar3"]
+            if source.resource_id == "infores:foobar3":
+                assert source.source_record_urls is not None
+                assert len(source.source_record_urls) == 1
+                assert "https://example.com/foobar3.jsonld" in source.source_record_urls, \
+                       "Missing expected 'source_record_urls' value 'https://example.com/foobar3.jsonld'"
+        else:
+            assert False, f"Unexpected resource role: {source.resource_role}"
 
-def test_aggregated_build_association_knowledge_sources():
-    aggregating: dict[str, list[str]] = {
-        "infores:tweedle-dee": ["infores:tweedle-dum"]
-    }
+def test_simple_aggregated_build_association_knowledge_sources():
+    # Use case *withOUT* source_record_urls
     sources: list[pyd.RetrievalSource] = \
         build_association_knowledge_sources(
             primary="infores:tweedle-dum",
-            aggregating = aggregating
+            aggregating = "infores:tweedle-dee"
     )
     assert sources is not None
     assert len(sources) == 2
@@ -209,9 +258,35 @@ def test_aggregated_build_association_knowledge_sources():
         elif source.resource_role == pyd.ResourceRoleEnum.aggregator_knowledge_source:
             assert source.resource_id == "infores:tweedle-dee"
             assert source.upstream_resource_ids is not None
-            assert all(
-                        upstream in ["infores:tweedle-dum"]
-                        for upstream in source.upstream_resource_ids
-                    )
+            assert len(source.upstream_resource_ids) == 1
+            assert source.upstream_resource_ids[0] == "infores:tweedle-dum"
         else:
             assert False, f"Unexpected resource role: {source.resource_role}"
+
+def test_aggregated_build_association_knowledge_sources_with_source_urls():    # Use case *with* source_record_urls
+    sources: list[pyd.RetrievalSource] = \
+        build_association_knowledge_sources(
+            primary="infores:tweedle-dum",
+            aggregating = (
+                "infores:tweedle-dee",
+                ["https://example.com/tweedle-dee.jsonld"]
+            )
+    )
+    assert sources is not None
+    assert len(sources) == 2
+    for source in sources:
+        if source.resource_role == pyd.ResourceRoleEnum.primary_knowledge_source:
+            assert source.resource_id == "infores:tweedle-dum"
+            assert source.upstream_resource_ids is None
+        elif source.resource_role == pyd.ResourceRoleEnum.aggregator_knowledge_source:
+            assert source.resource_id == "infores:tweedle-dee"
+            assert source.upstream_resource_ids is not None
+            assert len(source.upstream_resource_ids) == 1
+            assert source.upstream_resource_ids[0] == "infores:tweedle-dum"
+            assert source.source_record_urls is not None
+            assert len(source.source_record_urls) == 1
+            assert source.source_record_urls[0] == "https://example.com/tweedle-dee.jsonld", \
+                "Missing expected 'source_record_urls' value 'https://example.com/tweedle-dee.jsonld'"
+        else:
+            assert False, f"Unexpected resource role: {source.resource_role}"
+
