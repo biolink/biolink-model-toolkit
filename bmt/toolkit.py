@@ -1275,7 +1275,7 @@ class Toolkit(object):
                             slot_domain.append(tk_element.domain)
             if slot_domain:
                 for domain in slot_domain:
-                    slot_domain_desc = self.get_descendants(domain, reflexive=True, mixin=mixin)
+                    slot_domain_desc = self.get_descendants(domain, reflexive=False, mixin=mixin)
                 slot_domain.extend(slot_domain_desc)
         return self._format_all_elements(slot_domain, formatted)
 
@@ -1321,7 +1321,7 @@ class Toolkit(object):
                             slot_range.append(tk_element.range)
             if slot_range:
                 for range in slot_range:
-                    slot_range_desc = self.get_descendants(range, reflexive=True, mixin=mixin)
+                    slot_range_desc = self.get_descendants(range, reflexive=False, mixin=mixin)
                 slot_range.extend(slot_range_desc)
         return self._format_all_elements(slot_range, formatted)
 

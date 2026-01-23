@@ -53,6 +53,7 @@ NAMED_THING_CURIE = "biolink:NamedThing"
 ORGANISM_TAXON = "organism taxon"
 PHENOTYPIC_FEATURE = "phenotypic feature"
 RELATED_TO = "related to"
+PHENOTYPE_OF = "phenotype of"
 SUBJECT = "subject"
 THING_WITH_TAXON = "thing with taxon"
 TREATMENT = "treatment"
@@ -1199,6 +1200,7 @@ def test_get_slot_domain(toolkit):
     assert ENTITY in toolkit.get_slot_domain("category")
     assert ASSOCIATION in toolkit.get_slot_domain("predicate")
 
+    assert toolkit.get_slot_domain(PHENOTYPE_OF).count(PHENOTYPIC_FEATURE)==1
 
 def test_get_slot_range(toolkit):
     assert "disease or phenotypic feature" in toolkit.get_slot_range("treats")
@@ -1207,6 +1209,8 @@ def test_get_slot_range(toolkit):
         "treats", include_ancestors=True, formatted=True
     )
     assert "label type" in toolkit.get_slot_range("name")
+
+    assert toolkit.get_slot_range(PHENOTYPE_OF).count(BIOLOGICAL_ENTITY)==1
 
 
 def test_get_all_slots_with_class_domain(toolkit):
