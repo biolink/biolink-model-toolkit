@@ -22,23 +22,21 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ "3.9", "3.10", "3.11" ]
+        python: [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v6
         name: setup python environment
         with:
           python-version: ${{ matrix.python }}
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install poetry
-          poetry install 
+          make install 
 
       - name: Run tests
         run: |

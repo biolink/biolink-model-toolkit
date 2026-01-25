@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ "3.9", "3.10", "3.11" ]
+        python: [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -32,10 +32,7 @@ jobs:
       # with the latest dependencies
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install poetry
-          rm -rf poetry.lock
-          poetry install 
+          make install
 
       - name: Run bmt tests
         run: |
@@ -47,10 +44,10 @@ jobs:
           pwd
           git clone https://github.com/biolink/kgx.git
           cd kgx
-          poetry install  # this will install a different version of hdmf from the current one
-          poetry remove bmt
+          make install  # this will install a different version of hdmf from the current one
+          uv remove bmt
           ls -al ../
-          poetry add /home/runner/work/biolink-model-toolkit/biolink-model-toolkit
+          uv add /home/runner/work/biolink-model-toolkit/biolink-model-toolkit
 
       - name: Setup Neo4j Docker
         run: |
@@ -71,7 +68,7 @@ jobs:
           cd ../
           pwd
           cd kgx
-          poetry run pytest tests/unit/test_source/*.py
-          poetry run pytest tests/unit/test_sink/*.py
-          poetry run pytest tests/unit/*.py
-          poetry run pytest tests/integration/*.py
+          uv run pytest tests/unit/test_source/*.py
+          uv run pytest tests/unit/test_sink/*.py
+          uv run pytest tests/unit/*.py
+          uv run pytest tests/integration/*.py
