@@ -29,8 +29,8 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v6
 
-    - name: Install uv
-      uses: astral-sh/setup-uv@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: setup python environment
         uses: actions/setup-python@v6
