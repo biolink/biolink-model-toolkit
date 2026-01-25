@@ -1,12 +1,33 @@
-dev-install:
-	poetry install
+.DEFAULT_GOAL := all
+SHELL := bash
+RUN := uv run
 
+.PHONY: all
+all: install test
+
+.PHONY: install
 install:
-	poetry install
+	uv sync
 
+.PHONY: test
 test:
-	poetry run pytest tests/*
+	$(RUN) pytest tests
 
-cleandist:
-	rm -rf dist/
-	rm -rf build/
+.PHONY: clean
+clean:
+	rm -rf `find . -name __pycache__`
+	rm -f `find . -type f -name '*.py[co]' `
+	rm -rf .pytest_cache
+	rm -rf output test-output
+	rm -rf dist
+	rm -rf build
+
+.PHONY: lint
+lint:  ## Lint the codebase
+	$(RUN) ruff check --diff --exit-zero src/ tests/ examples/
+	$(RUN) ruff format --check --diff src/ tests/ examples/
+
+.PHONY: format
+format:  ## Format the codebase
+	$(RUN) ruff check --fix --exit-zero src/ tests/ examples/
+	$(RUN) ruff format src/ tests/ examples/
