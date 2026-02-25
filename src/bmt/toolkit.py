@@ -21,7 +21,7 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-LATEST_BIOLINK_RELEASE = "4.2.2"
+LATEST_BIOLINK_RELEASE = "4.3.7"
 
 BIOLINK_MODEL_RAW_BASEURL = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/"
 REMOTE_PATH = f"{BIOLINK_MODEL_RAW_BASEURL}biolink-model.yaml"
