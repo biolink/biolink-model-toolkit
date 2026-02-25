@@ -47,6 +47,7 @@ jobs:
           pwd
           git clone https://github.com/biolink/kgx.git
           cd kgx
+          uv venv  # create virtual environment
           uv pip install -e .  # install kgx with its dependencies
           ls -al ../
           uv pip install /home/runner/work/biolink-model-toolkit/biolink-model-toolkit  # override with local bmt
