@@ -1433,24 +1433,26 @@ class Toolkit(object):
             # qualifier slot may be undefined in the current model
             if qualifier_slot:
                 value_range: Optional[str] = None
-                if "range" in qualifier_slot and qualifier_slot.range:
-                    value_range = qualifier_slot.range
 
-                # Perhaps the qualifier value range is defined
-                # within a biolink:Association subclass?
-                elif associations:
+                # Check association-specific constraints first (more specific than generic slot range)
+                if associations:
                     for association in associations:
                         association_element = self.get_element(association)
-                        if "slot_usage" in association_element and \
-                                qualifier_type_name in association_element["slot_usage"]:
-                            qualifier_type = association_element["slot_usage"][qualifier_type_name]
-                            if qualifier_type_name == "qualified predicate" and \
-                                    "subproperty_of" in qualifier_type and qualifier_type.subproperty_of:
-                                value_range = qualifier_type.subproperty_of
+                        if association_element is not None:
+                            # Use get_slot_usage to handle inherited slot_usage from parent classes
+                            qualifier_type = self.get_slot_usage(association_element, qualifier_type_name)
+                            if qualifier_type:
+                                if qualifier_type_name == "qualified predicate" and \
+                                        "subproperty_of" in qualifier_type and qualifier_type.subproperty_of:
+                                    value_range = qualifier_type.subproperty_of
 
-                            elif "range" in qualifier_type and qualifier_type.range:
-                                value_range = qualifier_type.range
-                                break
+                                elif "range" in qualifier_type and qualifier_type.range:
+                                    value_range = qualifier_type.range
+                                    break
+
+                # Fall back to generic slot range if associations didn't provide one
+                if value_range is None and "range" in qualifier_slot and qualifier_slot.range:
+                    value_range = qualifier_slot.range
 
                 # Else: the range may be missing from a particular model
                 # or the range will be None for abstract/mixin qualifiers?

@@ -262,9 +262,9 @@ def test_get_all_associations(toolkit):
 def test_filter_values_on_slot(toolkit):
     # as our test data, we take an extant associations from Biolink release 3.5.4
     as_element: Optional[Element] = toolkit.get_element("chemical affects gene association")
-    slot_usage = as_element["slot_usage"]
 
-    subject_definition = slot_usage["subject"]  # "gene or gene product"
+    # Get slot_usage from hierarchy (may be inherited from parent classes)
+    subject_definition = toolkit.get_slot_usage(as_element, "subject")  # "chemical entity"
     assert toolkit.filter_values_on_slot(
         slot_values=[
             GENE_OR_GENE_PRODUCT_CURIE,
@@ -292,7 +292,7 @@ def test_filter_values_on_slot(toolkit):
         formatted=False
     )
 
-    predicate_definition = slot_usage["predicate"]  # "affects"
+    predicate_definition = toolkit.get_slot_usage(as_element, "predicate")  # "affects"
     assert toolkit.filter_values_on_slot(
         slot_values=[AFFECTS_CURIE, REGULATES_CURIE],
         definition=predicate_definition,
@@ -319,7 +319,7 @@ def test_filter_values_on_slot(toolkit):
         (  # query 1 - unformatted inputs, valid matches to given association
             "chemical entity assesses named thing association",
             ["chemical entity"],
-            ["assesses"],
+            ["was tested for effect on"],
             ["named thing"],
             False,  # don't use CURIEs
             True   # outcome == pass
@@ -327,7 +327,7 @@ def test_filter_values_on_slot(toolkit):
         (  # query 2 - CURIE formatted inputs, valid matches to given association
             "chemical entity assesses named thing association",
             ["biolink:ChemicalEntity"],
-            ["biolink:assesses"],
+            ["biolink:was_tested_for_effect_on"],
             ["biolink:NamedThing"],
             True,
             True   # outcome == pass
@@ -335,7 +335,7 @@ def test_filter_values_on_slot(toolkit):
         (  # query 3 - constraints matching another specific association
             "chemical entity assesses named thing association",
             ["biolink:ChemicalEntity"],
-            ["biolink:assesses"],
+            ["biolink:was_tested_for_effect_on"],
             ["biolink:NamedThing"],
             True,
             True   # outcome == pass
@@ -486,6 +486,8 @@ def test_get_associations_without_parameters(toolkit):
             #           may be protective or causative or associative, or as a model
             #       object:
             #         range: disease
+            # Note: GeneToPhenotypicFeatureAssociation removed - in new model it has object=phenotypic feature
+            # which is a sibling of disease, not an ancestor/descendant
             [GENE_CURIE],
             None,
             ["biolink:Disease"],
@@ -673,10 +675,11 @@ def test_get_associations_with_parameters(
 
 
 def test_get_associations_gene_to_chemical(toolkit):
+    # Note: Updated to use Gene instead of GeneOrGeneProduct (which is a mixin)
     associations = toolkit.get_associations(
         subject_categories=["biolink:ChemicalEntity"],
         predicates=[AFFECTS_CURIE],
-        object_categories=["biolink:GeneOrGeneProduct"],
+        object_categories=["biolink:Gene"],
         # we don't bother testing the 'format' flag simply in confidence
         # that the associated code is already well tested in other contexts
         formatted=True
@@ -686,7 +689,7 @@ def test_get_associations_gene_to_chemical(toolkit):
     unformatted_associations = toolkit.get_associations(
         subject_categories=["chemical entity"],
         predicates=["affects"],
-        object_categories=["gene or gene product"],
+        object_categories=["gene"],
         formatted=True
     )
 
@@ -745,7 +748,7 @@ def test_get_element(toolkit):
 
 def test_get_enum_via_element(toolkit):
     association_element = toolkit.get_element("biolink:ChemicalAffectsGeneAssociation")
-    qualifier_type = association_element["slot_usage"]["object aspect qualifier"]
+    qualifier_type = toolkit.get_slot_usage(association_element, "object aspect qualifier")
     value_range = qualifier_type.range
     assert value_range == "GeneOrGeneProductOrChemicalEntityAspectEnum"
 
@@ -915,13 +918,13 @@ def test_is_subproperty_of(toolkit):
         (
             SUBJECT_ASPECT_QUALIFIER_NAME,
             SUBJECT_ASPECT_QUALIFIER_SAMPLE_VALUE,
-            ["biolink:GeneToDiseaseOrPhenotypicFeatureAssociation"],
+            ["biolink:GeneToPhenotypicFeatureAssociation"],
             True
         ),  # Q12
         (
             SUBJECT_ASPECT_QUALIFIER_CURIE,
             SUBJECT_ASPECT_QUALIFIER_SAMPLE_VALUE,
-            ["biolink:GeneToDiseaseOrPhenotypicFeatureAssociation"],
+            ["biolink:GeneToPhenotypicFeatureAssociation"],
             True
         ),  # Q13 - CURIE accepted here too
 
@@ -1035,7 +1038,8 @@ def test_ancestors_for_kgx(toolkit):
     assert len(ancestors1) == 5
     ancestors2 = toolkit.get_ancestors(PHENOTYPIC_FEATURE, formatted=True)
     assert ancestors2 is not None
-    assert len(ancestors2) == 6
+    # Updated: biolink-model now includes Entity as root ancestor (7 instead of 6)
+    assert len(ancestors2) == 7
 
 
 def test_descendants(toolkit):
@@ -1198,7 +1202,8 @@ def test_get_slot_domain(toolkit):
         ENABLED_BY, include_ancestors=True, formatted=True
     )
     assert ENTITY in toolkit.get_slot_domain("category")
-    assert ASSOCIATION in toolkit.get_slot_domain("predicate")
+    # Note: in newer biolink-model versions, 'predicate' no longer has a direct domain
+    # assert ASSOCIATION in toolkit.get_slot_domain("predicate")
 
     assert toolkit.get_slot_domain(PHENOTYPE_OF).count(PHENOTYPIC_FEATURE)==1
 
@@ -1284,13 +1289,14 @@ def test_get_all_properties_with_class_domain(toolkit):
         GENE, check_ancestors=True, formatted=True
     )
 
-    assert "predicate" in toolkit.get_all_properties_with_class_domain(ASSOCIATION)
-    assert "predicate" in toolkit.get_all_properties_with_class_domain(
-        ASSOCIATION, check_ancestors=True
-    )
-    assert "biolink:predicate" in toolkit.get_all_properties_with_class_domain(
-        ASSOCIATION, check_ancestors=True, formatted=True
-    )
+    # Note: in newer biolink-model versions, 'predicate' no longer has association as direct domain
+    # assert "predicate" in toolkit.get_all_properties_with_class_domain(ASSOCIATION)
+    # assert "predicate" in toolkit.get_all_properties_with_class_domain(
+    #     ASSOCIATION, check_ancestors=True
+    # )
+    # assert "biolink:predicate" in toolkit.get_all_properties_with_class_domain(
+    #     ASSOCIATION, check_ancestors=True, formatted=True
+    # )
 
 
 def test_get_all_properties_with_class_range(toolkit):
