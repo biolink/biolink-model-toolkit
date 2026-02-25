@@ -47,10 +47,9 @@ jobs:
           pwd
           git clone https://github.com/biolink/kgx.git
           cd kgx
-          uv sync  # install kgx dependencies
-          uv remove bmt || true  # remove bmt if it exists, ignore error if it doesn't
+          uv pip install -e .  # install kgx with its dependencies
           ls -al ../
-          uv add /home/runner/work/biolink-model-toolkit/biolink-model-toolkit
+          uv pip install /home/runner/work/biolink-model-toolkit/biolink-model-toolkit  # override with local bmt
 
       - name: Setup Neo4j Docker
         run: |
