@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
+        python: [ "3.10", "3.11", "3.12", "3.13" ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -47,10 +47,10 @@ jobs:
           pwd
           git clone https://github.com/biolink/kgx.git
           cd kgx
-          make install  # this will install a different version of hdmf from the current one
-          uv remove bmt
+          uv venv  # create virtual environment
+          uv pip install -e .  # install kgx with its dependencies
           ls -al ../
-          uv add /home/runner/work/biolink-model-toolkit/biolink-model-toolkit
+          uv pip install /home/runner/work/biolink-model-toolkit/biolink-model-toolkit  # override with local bmt
 
       - name: Setup Neo4j Docker
         run: |

@@ -123,7 +123,7 @@ def _build_retrieval_source(
     if isinstance(source_spec, tuple):
         assert len(source_spec) == 2, f"Invalid supporting data source tuple: {source_spec}"
         resource_id = str(source_spec[0])
-        source_record_urls = source_spec[1]
+        source_record_urls = source_spec[1] if len(source_spec[1]) > 0 else None
     else:
         resource_id = source_spec
         source_record_urls = None
