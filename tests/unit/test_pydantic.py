@@ -4,7 +4,7 @@ Tests Pydantic related utility code
 import biolink_model.datamodel.pydanticmodel_v2 as pyd
 import pytest
 from bmt import Toolkit
-from bmt.pydantic import (
+from bmt.pydantic_utils import (
     entity_id,
     infores,
     get_node_class,
