@@ -48,7 +48,7 @@ jobs:
           git clone https://github.com/biolink/kgx.git
           cd kgx
           uv sync  # install kgx dependencies
-          uv remove bmt
+          uv remove bmt || true  # remove bmt if it exists, ignore error if it doesn't
           ls -al ../
           uv add /home/runner/work/biolink-model-toolkit/biolink-model-toolkit
 
