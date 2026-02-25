@@ -12,16 +12,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
       - name: Set up Python 3.
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v6
         with:
           python-version: 3.9
 
-      - name: Install Poetry
-        run: pip install poetry
+      - name: Install uv
+        run: make install
 
       - name: install
-        run: poetry install -E docs
+        run: uv add --group docs
 
       - name: Build documentation.
         run: |

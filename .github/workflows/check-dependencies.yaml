@@ -18,26 +18,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ "3.9", "3.10", "3.11" ]
+        python: [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v2
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - uses: actions/setup-python@v6
         name: setup python environment
         with:
           python-version: ${{ matrix.python }}
 
-      # this step we remove and rebuild the poetry.lock file to ensure that the tests that follow can be run
-      # with the latest dependencies
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install poetry
-          rm -rf poetry.lock
-          poetry install 
+          make install
 
       - name: Run bmt tests
         run: |
@@ -50,10 +48,10 @@ jobs:
           pwd
           git clone https://github.com/biolink/kgx.git
           cd kgx
-          poetry install  # this will install a different version of hdmf from the current one
-          poetry remove bmt
+          make install  # this will install a different version of hdmf from the current one
+          uv remove bmt
           ls -al ../
-          poetry add /home/runner/work/biolink-model-toolkit/biolink-model-toolkit
+          uv add /home/runner/work/biolink-model-toolkit/biolink-model-toolkit
 
       - name: Setup Neo4j Docker
         run: |
@@ -75,7 +73,8 @@ jobs:
           cd ../
           pwd
           cd kgx
-          poetry run pytest tests/unit/test_source/*.py
-          poetry run pytest tests/unit/test_sink/*.py
-          poetry run pytest tests/unit/*.py
-          poetry run pytest tests/integration/*.py
+          #TODO figure out if there's a way to make this $(RUN)
+          uv run pytest tests/unit/test_source/*.py
+          uv run pytest tests/unit/test_sink/*.py
+          uv run pytest tests/unit/*.py
+          uv run pytest tests/integration/*.py
