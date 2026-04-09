@@ -1,6 +1,6 @@
 [project]
 name = "bmt"
-version = "0.0.0"
+version = "1.4.6"
 description = "Biolink Model Toolkit: A Python API for working with the Biolink Model"
 authors = [
     {name="Sierra Taylor Moxon", email="sierra.taylor@gmail.com"},
