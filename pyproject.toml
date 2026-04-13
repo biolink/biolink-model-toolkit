@@ -4,8 +4,16 @@ version = "0.0.0"
 description = "Biolink Model Toolkit: A Python API for working with the Biolink Model"
 authors = [
     {name="Sierra Taylor Moxon", email="sierra.taylor@gmail.com"},
-    {name="Richard Bruskiewich", email=""},
-    {name="Daniel Korn", email="daniel_korn@med.unc.edu"}
+    {name="Richard Bruskiewich", email="richard.bruskiewich@delphinai.com"},
+    {name="Daniel Korn"},
+    {name="Deepak Unni", email="deepak.unni3@gmail.com"},
+    {name="Chris Bizon", email="bizon@email.unc.edu"},
+    {name="Gaurav Vaidya", email="gaurav@renci.org"},
+    {name="Harold Solbrig", email="solbrig@jhu.edu"},
+    {name="Kenneth Bruskiewicz"},
+    {name="Lance Hannestad"},
+    {name="Nomi Harris"},
+    {name="Patrick Wang", email="patrick@covar.com"},
 ]
 requires-python = ">=3.10,<4"
 license = "BSD-3-Clause"
