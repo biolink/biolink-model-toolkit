@@ -11,15 +11,25 @@ from linkml_runtime.linkml_model.meta import (
     TypeDefinition,
 )
 
+#This pattern matches anytime a transition happens between an uppercase and lowercase letter; that is not at the beginning of
+# the string (which is what the (?>!^) group is for). As an example this regex will take DiseaseOrPhenotype and break it into
+# 3 matches ["Disease", "Or", "Phenotype"] -- when used with camel_pattern.sub(STR,$SEP$) DiseaseOrPhenotype will become
+# Disease$SEP$Or$SEP$Phenotype
+camel_pattern = re.compile(r"(?<!^)(?=[A-Z][a-z])")
+
+#This pattern will match any word with at least one lowercase character somewhere inside it.
+#So it will match words like "Disease", but intentionally not match on acronyms like "URL".
 lowercase_pattern = re.compile(r"[a-zA-Z]*[a-z][a-zA-Z]*")
-underscore_pattern = re.compile(r"(?<!^)(?=[A-Z][a-z])")
+
 
 
 def from_camel(s: str, sep: str = " ") -> str:
-    underscored = underscore_pattern.sub(sep, s)
+    """This function will take as input a camel case string of the structure DiseaseOrGene;
+    go through """
+    camel_with_sep = camel_pattern.sub(sep, s)
     lowercased = lowercase_pattern.sub(
         lambda match: match.group(0).lower(),
-        underscored,
+        camel_with_sep,
     )
     return lowercased
 
