@@ -20,18 +20,15 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install uv
+      - name: Install dependencies
         run: make install
-
-      - name: install
-        run: uv add --group docs
 
       - name: Build documentation.
         run: |
           mkdir gh-pages
           touch gh-pages/.nojekyll
           cd docs/
-          poetry run make html
+          uv run make html
           cp -r _build/html/* ../gh-pages/
           ls -lrt ../gh-pages
       - name: Deploy documentation.
