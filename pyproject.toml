@@ -1,6 +1,6 @@
 [project]
 name = "bmt"
-version = "0.0.0"
+dynamic = ["version"]
 description = "Biolink Model Toolkit: A Python API for working with the Biolink Model"
 authors = [
     {name="Sierra Taylor Moxon", email="sierra.taylor@gmail.com"},
@@ -20,6 +20,20 @@ license = "BSD-3-Clause"
 readme = "README.md"
 repository = "https://github.com/biolink/biolink-model-toolkit"
 documentation = "https://biolink.github.io/biolink-model-toolkit/"
+keywords = ["schema", "linked data", "data modeling", "biolink", "api"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: BSD License",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13"
+]
 dependencies = [
     "deprecation>=2.1.0,<3.0.0",
     "stringcase>=1.2.0,<2.0.0",
@@ -36,43 +50,23 @@ dev = [
     # sphinx-autodoc-typehints = ">=1.19.5,<2.0.0",
 ]
 
-[tool.pytest.ini_options]
-pythonpath = ["."]
-
-
 [build-system]
-requires = ["uv_build>=0.9.26,<0.10.0"]
-build-backend = "uv_build"
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
 
-
-keywords = ["schema", "linked data", "data modeling", "biolink", "api"]
-
-classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Environment :: Console",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: Healthcare Industry",
-    "License :: BSD-3-Clause",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13"
-]
-
-#TODO: These lines may not be necessary, bmt should be automatically detected as a target package.
-packages = [
-    { include = "bmt" }
-]
+[tool.hatch.build.targets.wheel]
+packages = ["src/bmt"]
 
 [tool.uv-dynamic-versioning]
-enable = true
 vcs = "git"
 style = "pep440"
+fallback-version = "0.0.0"
 
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
 
 [tool.ruff]
 line-length = 120
