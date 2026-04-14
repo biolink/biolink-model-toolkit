@@ -31,8 +31,6 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      # this step we remove and rebuild the poetry.lock file to ensure that the tests that follow can be run
-      # with the latest dependencies
       - name: Install dependencies
         run: |
           make install

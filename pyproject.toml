@@ -74,9 +74,6 @@ style = "pep440"
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
 
-#[tool.poetry.extras]
-#docs = ["Sphinx", "sphinxcontrib-mermaid"]
-
 [tool.ruff]
 line-length = 120
 
