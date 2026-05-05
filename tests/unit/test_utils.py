@@ -58,3 +58,6 @@ def test_sentencecase_to_camelcase(query):
 def test_format_element(query, toolkit):
     n = format_element(toolkit.get_element(query[0]))
     assert n == query[1]
+
+if __name__ == '__main__':
+    pytest.main(["."])
