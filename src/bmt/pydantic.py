@@ -12,19 +12,6 @@ from bmt import Toolkit
 toolkit = Toolkit()
 logger = logging.getLogger(__name__)
 
-
-def entity_id() -> str:
-    """
-    Generate a unique identifier for a Biolink Model entity.
-
-    Returns
-    -------
-    str
-        unique identifier
-    """
-    return uuid4().urn
-
-
 def infores(identifier: str) -> str:
     """
     Coerce the specified identifier to the Biolink Model infores namespace.
@@ -128,7 +115,7 @@ def _build_retrieval_source(
         resource_id = source_spec
         source_record_urls = None
     return pyd.RetrievalSource(
-        id=entity_id(),
+        id=str(uuid4()),
         resource_id=infores(resource_id),
         resource_role=resource_role,
         source_record_urls=source_record_urls,

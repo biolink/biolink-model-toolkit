@@ -5,7 +5,6 @@ import biolink_model.datamodel.pydanticmodel_v2 as pyd
 import pytest
 from bmt import Toolkit
 from bmt.pydantic import (
-    entity_id,
     infores,
     get_node_class,
     get_edge_class,
@@ -15,9 +14,6 @@ from bmt.pydantic import (
 @pytest.fixture(scope="module")
 def toolkit():
     return Toolkit()
-
-def test_entity_id():
-    assert entity_id().startswith("urn:uuid:")
 
 def test_infores():
     with pytest.raises(AssertionError):
