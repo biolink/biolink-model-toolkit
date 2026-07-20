@@ -21,7 +21,7 @@ from bmt.utils import format_element, parse_name
 Url = str
 Path = str
 
-LATEST_BIOLINK_RELEASE = "4.2.2"
+LATEST_BIOLINK_RELEASE = "4.4.3"
 
 BIOLINK_MODEL_RAW_BASEURL = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/"
 REMOTE_PATH = f"{BIOLINK_MODEL_RAW_BASEURL}biolink-model.yaml"
@@ -1433,7 +1433,12 @@ class Toolkit(object):
             # qualifier slot may be undefined in the current model
             if qualifier_slot:
                 value_range: Optional[str] = None
-                if "range" in qualifier_slot and qualifier_slot.range:
+                # A 'qualified predicate' is validated against the association-specific
+                # 'subproperty_of' constraint rather than the generic slot 'range'
+                # (which is 'uriorcurie' as of Biolink 4.4.x), so defer to the
+                # association slot_usage below for that qualifier type.
+                if qualifier_type_name != "qualified predicate" and \
+                        "range" in qualifier_slot and qualifier_slot.range:
                     value_range = qualifier_slot.range
 
                 # Perhaps the qualifier value range is defined
@@ -1441,9 +1446,11 @@ class Toolkit(object):
                 elif associations:
                     for association in associations:
                         association_element = self.get_element(association)
-                        if "slot_usage" in association_element and \
-                                qualifier_type_name in association_element["slot_usage"]:
-                            qualifier_type = association_element["slot_usage"][qualifier_type_name]
+                        # The 'slot_usage' for the qualifier may be defined locally on the
+                        # association or inherited from a parent class or mixin, so use
+                        # 'get_slot_usage' to resolve it across the class context.
+                        qualifier_type = self.get_slot_usage(association_element, qualifier_type_name)
+                        if qualifier_type:
                             if qualifier_type_name == "qualified predicate" and \
                                     "subproperty_of" in qualifier_type and qualifier_type.subproperty_of:
                                 value_range = qualifier_type.subproperty_of
