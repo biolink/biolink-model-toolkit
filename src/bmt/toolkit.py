@@ -1,25 +1,29 @@
 import logging
-import yaml
+from collections.abc import Mapping
+from functools import lru_cache, reduce
+from os import PathLike, fspath
+from typing import Any, Dict, List, Optional, Set, TextIO, Union
+from urllib.parse import urlparse
+
 import deprecation
 import requests
-from functools import lru_cache, reduce
-
-from typing import List, Union, TextIO, Optional, Dict, Set
-
+import yaml
 from linkml_runtime.linkml_model import PermissibleValueText
-from linkml_runtime.utils.schemaview import SchemaView
 from linkml_runtime.linkml_model.meta import (
-    SchemaDefinition,
+    ClassDefinition,
+    Definition,
     Element,
     ElementName,
-    Definition,
-    ClassDefinition,
+    SchemaDefinition,
     SlotDefinition,
 )
+from linkml_runtime.utils.schemaview import SchemaView
+
 from bmt.utils import format_element, parse_name
 
 Url = str
 Path = str
+PredicateMap = Url | PathLike[str] | TextIO | Mapping[str, Any]
 
 LATEST_BIOLINK_RELEASE = "4.4.3"
 
@@ -37,6 +41,37 @@ CACHE_SIZE = 1024
 logger = logging.getLogger(__name__)
 
 
+def _load_predicate_map(
+    source: PredicateMap,
+    *,
+    timeout: float | tuple[float, float],
+) -> dict[str, Any]:
+    if isinstance(source, Mapping):
+        predicate_map = dict(source)
+    elif hasattr(source, "read"):
+        predicate_map = yaml.safe_load(source)
+    elif isinstance(source, (str, PathLike)):
+        location = fspath(source)
+        if urlparse(location).scheme in {"http", "https"}:
+            response = requests.get(location, timeout=timeout)
+            response.raise_for_status()
+            predicate_map = yaml.safe_load(response.text)
+        else:
+            with open(location, encoding="utf-8") as stream:
+                predicate_map = yaml.safe_load(stream)
+    else:
+        raise TypeError("Predicate map source must be a URL, local path, file object, or mapping")
+
+    if not isinstance(predicate_map, dict):
+        raise ValueError("Predicate map must be a YAML mapping")
+    mappings = predicate_map.get("predicate mappings")
+    if not isinstance(mappings, list):
+        raise ValueError("Predicate map must contain a 'predicate mappings' list")
+    if not all(isinstance(mapping, Mapping) for mapping in mappings):
+        raise ValueError("Predicate map entries must be mappings")
+    return predicate_map
+
+
 class Toolkit(object):
     """
     Provides a series of methods for performing lookups on the Biolink Model
@@ -45,16 +80,25 @@ class Toolkit(object):
     ----------
     schema: Union[str, TextIO, SchemaDefinition]
         The path or url to an instance of the biolink-model.yaml file.
+    predicate_map: Union[str, PathLike, TextIO, Mapping]
+        A URL, local path, file object, or parsed mapping containing predicate
+        mappings.
+    predicate_map_timeout: Union[float, tuple[float, float]]
+        Timeout passed to requests when predicate_map is an HTTP(S) URL.
 
     """
 
     def __init__(
             self, schema: Union[Url, Path, TextIO, SchemaDefinition] = REMOTE_PATH,
-            predicate_map: Url = PREDICATE_MAP
+            predicate_map: PredicateMap = PREDICATE_MAP,
+            *,
+            predicate_map_timeout: float | tuple[float, float] = 30.0,
     ) -> None:
         self.view = SchemaView(schema)
-        r = requests.get(predicate_map)
-        self.pmap = yaml.safe_load(r.text)
+        self.pmap = _load_predicate_map(
+            predicate_map,
+            timeout=predicate_map_timeout,
+        )
 
     @lru_cache(CACHE_SIZE)
     def get_all_elements(self, formatted: bool = False) -> List[str]:
