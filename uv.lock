@@ -6,6 +6,13 @@ resolution-markers = [
     "python_full_version < '3.11'",
 ]
 
+[options]
+exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
+exclude-newer-span = "P7D"
+
+[options.exclude-newer-package]
+biolink-model = { timestamp = "0001-01-01T00:00:00Z", span = "PT0S" }
+
 [[package]]
 name = "alabaster"
 version = "0.7.16"
@@ -193,8 +200,8 @@ name = "bmt"
 source = { editable = "." }
 dependencies = [
     { name = "biolink-model" },
+    { name = "casefy" },
     { name = "deprecation" },
-    { name = "stringcase" },
 ]
 
 [package.dev-dependencies]
@@ -209,8 +216,8 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "biolink-model", specifier = ">=4.4.3,<5.0.0" },
+    { name = "casefy", specifier = ">=1.1.0,<2.0.0" },
     { name = "deprecation", specifier = ">=2.1.0,<3.0.0" },
-    { name = "stringcase", specifier = ">=1.2.0,<2.0.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -220,6 +227,15 @@ dev = [
     { name = "sphinx", specifier = ">=5.3.0,<6.0.0" },
     { name = "sphinx-rtd-theme", specifier = ">=1.3.0,<2.0.0" },
     { name = "sphinxcontrib-napoleon", specifier = ">=0.7,<1.0" },
+]
+
+[[package]]
+name = "casefy"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/24/9c732e8e3585a1dc621c9c1349e55e87070c95d3c2d57bd8c5083ec8d731/casefy-1.1.0.tar.gz", hash = "sha256:849d6e0f80506fac70ab8e18999a4ca1eb7d8f70941682383d64aa22a7497f8f", size = 123884, upload-time = "2025-03-07T14:36:44.897Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f1/6a/1766f8c163951a3c9aeb30a4e6f5de9b2eed8389e3906c4cf30fcb475be6/casefy-1.1.0-py3-none-any.whl", hash = "sha256:a3dfcb14d85902d90702db1e9835760237f6a73ec0ae3b7e991ad767513a3cbc", size = 6539, upload-time = "2025-03-07T14:36:37.546Z" },
 ]
 
 [[package]]
@@ -461,7 +477,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [

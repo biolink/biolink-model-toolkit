@@ -36,7 +36,7 @@ classifiers = [
 ]
 dependencies = [
     "deprecation>=2.1.0,<3.0.0",
-    "stringcase>=1.2.0,<2.0.0",
+    "casefy>=1.1.0,<2.0.0",
     "biolink-model>=4.4.3,<5.0.0",
 ]
 

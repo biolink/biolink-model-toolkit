@@ -1,6 +1,6 @@
 import re
 
-import stringcase
+import casefy
 from linkml_runtime.linkml_model.meta import (
     ClassDefinition,
     SlotDefinition,
@@ -53,7 +53,7 @@ def snakecase_to_sentencecase(s: str) -> str:
     str
         string in sentence case form
     """
-    return stringcase.sentencecase(s).lower()
+    return casefy.sentencecase(s).lower()
 
 
 def sentencecase_to_snakecase(s: str) -> str:
@@ -69,7 +69,7 @@ def sentencecase_to_snakecase(s: str) -> str:
     str
         string in snake_case form
     """
-    return stringcase.snakecase(s).lower()
+    return casefy.snakecase(s).lower()
 
 
 def sentencecase_to_camelcase(s: str) -> str:
