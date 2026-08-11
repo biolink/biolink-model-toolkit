@@ -36,7 +36,7 @@ classifiers = [
 ]
 dependencies = [
     "deprecation>=2.1.0,<3.0.0",
-    "stringcase>=1.2.0,<2.0.0",
+    "casefy>=1.1.0,<2.0.0",
     "biolink-model>=4.4.4,<5.0.0",
     # Imported directly by src/bmt/toolkit.py. Declared explicitly rather than
     # relied on transitively: biolink-model 4.4.4 slimmed its runtime deps to
@@ -81,6 +81,13 @@ exclude-newer = "7 days"
 # (which exists to catch third-party supply-chain compromise) buys us nothing.
 # Exempt it so bmt can pick up a biolink-model release the day it ships.
 exclude-newer-package = { biolink-model = "0 days" }
+
+# prefixcommons (reached transitively via linkml-runtime) requires
+# pytest-logging, a 2015 package that is published as an sdist only, so
+# installing it executes a setup.py. Nothing in bmt or its test suite uses it.
+# The always-false marker drops it from resolution, which is what lets the
+# dependency-audit workflow run `uv sync --no-build`.
+override-dependencies = ["pytest-logging; sys_platform == 'never'"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

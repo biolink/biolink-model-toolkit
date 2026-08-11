@@ -13,6 +13,9 @@ exclude-newer-span = "P7D"
 [options.exclude-newer-package]
 biolink-model = { timestamp = "0001-01-01T00:00:00Z", span = "PT0S" }
 
+[manifest]
+overrides = [{ name = "pytest-logging", marker = "sys_platform == 'never'" }]
+
 [[package]]
 name = "alabaster"
 version = "0.7.16"
@@ -160,10 +163,10 @@ name = "bmt"
 source = { editable = "." }
 dependencies = [
     { name = "biolink-model" },
+    { name = "casefy" },
     { name = "deprecation" },
     { name = "pyyaml" },
     { name = "requests" },
-    { name = "stringcase" },
 ]
 
 [package.dev-dependencies]
@@ -178,10 +181,10 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "biolink-model", specifier = ">=4.4.4,<5.0.0" },
+    { name = "casefy", specifier = ">=1.1.0,<2.0.0" },
     { name = "deprecation", specifier = ">=2.1.0,<3.0.0" },
     { name = "pyyaml", specifier = ">=6.0.1,<7.0.0" },
     { name = "requests", specifier = ">=2.33.0,<3.0.0" },
-    { name = "stringcase", specifier = ">=1.2.0,<2.0.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -191,6 +194,15 @@ dev = [
     { name = "sphinx", specifier = ">=5.3.0,<6.0.0" },
     { name = "sphinx-rtd-theme", specifier = ">=1.3.0,<2.0.0" },
     { name = "sphinxcontrib-napoleon", specifier = ">=0.7,<1.0" },
+]
+
+[[package]]
+name = "casefy"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/24/9c732e8e3585a1dc621c9c1349e55e87070c95d3c2d57bd8c5083ec8d731/casefy-1.1.0.tar.gz", hash = "sha256:849d6e0f80506fac70ab8e18999a4ca1eb7d8f70941682383d64aa22a7497f8f", size = 123884, upload-time = "2025-03-07T14:36:44.897Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f1/6a/1766f8c163951a3c9aeb30a4e6f5de9b2eed8389e3906c4cf30fcb475be6/casefy-1.1.0-py3-none-any.whl", hash = "sha256:a3dfcb14d85902d90702db1e9835760237f6a73ec0ae3b7e991ad767513a3cbc", size = 6539, upload-time = "2025-03-07T14:36:37.546Z" },
 ]
 
 [[package]]
@@ -634,7 +646,7 @@ version = "0.1.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
-    { name = "pytest-logging" },
+    { name = "pytest-logging", marker = "sys_platform == 'never'" },
     { name = "pyyaml" },
     { name = "requests" },
 ]
@@ -1355,12 +1367,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/3b/44/6716b257b0aa6bfd5
 wheels = [
     { url = "https://files.pythonhosted.org/packages/52/a7/d2782e4e3f77c8450f727ba74a8f12756d5ba823d81b941f1b04da9d033a/sphinxcontrib_serializinghtml-2.0.0-py3-none-any.whl", hash = "sha256:6e2cb0eef194e10c27ec0023bfeb25badbbb5868244cf5bc5bdc04e4464bf331", size = 92072, upload-time = "2024-07-29T01:10:08.203Z" },
 ]
-
-[[package]]
-name = "stringcase"
-version = "1.2.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f3/1f/1241aa3d66e8dc1612427b17885f5fcd9c9ee3079fc0d28e9a3aeeb36fa3/stringcase-1.2.0.tar.gz", hash = "sha256:48a06980661908efe8d9d34eab2b6c13aefa2163b3ced26972902e3bdfd87008", size = 2958, upload-time = "2017-08-06T01:40:57.021Z" }
 
 [[package]]
 name = "tomli"
