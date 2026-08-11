@@ -25,7 +25,7 @@ Url = str
 Path = str
 PredicateMap = Url | PathLike[str] | TextIO | Mapping[str, Any]
 
-LATEST_BIOLINK_RELEASE = "4.4.3"
+LATEST_BIOLINK_RELEASE = "4.4.4"
 
 BIOLINK_MODEL_RAW_BASEURL = f"https://raw.githubusercontent.com/biolink/biolink-model/v{LATEST_BIOLINK_RELEASE}/"
 REMOTE_PATH = f"{BIOLINK_MODEL_RAW_BASEURL}biolink-model.yaml"
