@@ -117,7 +117,28 @@ from bmt import Toolkit
 t = Toolkit('/path/to/biolink-model.yaml')
 ```
 
-The path can be a file path or a URL.
+The path can be a file path or a URL. A matching predicate mapping can also be
+loaded from a URL, local file path, open file object, or parsed mapping:
+
+```py
+from bmt import Toolkit
+
+t = Toolkit(
+    "/path/to/biolink-model.yaml",
+    predicate_map="/path/to/predicate_mapping.yaml",
+)
+```
+
+HTTP predicate mappings are requested with a 30-second timeout by default. Use
+`predicate_map_timeout` to configure the timeout:
+
+```py
+t = Toolkit(
+    "/path/to/biolink-model.yaml",
+    predicate_map="https://example.org/predicate_mapping.yaml",
+    predicate_map_timeout=(5.0, 30.0),
+)
+```
 
 ## Extraordinary Toolkit Warnings
 
