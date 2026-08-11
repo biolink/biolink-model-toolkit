@@ -4,6 +4,10 @@ on:
   release:
     types: [ created ]
 
+# Publishing uses an explicit PyPI token, not OIDC, so no id-token scope needed.
+permissions:
+  contents: read
+
 jobs:
   build-n-publish:
     name: Build and publish Python 🐍 distributions 📦 to PyPI
@@ -16,7 +20,7 @@ jobs:
         fetch-tags: true
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v5
+      uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
 
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -27,7 +31,7 @@ jobs:
       run: uv build
 
     - name: Publish distribution 📦 to PyPI
-      uses: pypa/gh-action-pypi-publish@v1.13.0
+      uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
       with:
         user: __token__
         password: ${{ secrets.BMT_PYPI_TOKEN }}

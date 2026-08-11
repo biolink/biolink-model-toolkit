@@ -1,0 +1,75 @@
+name: Audit dependencies
+
+permissions:
+  contents: read
+
+# Global environment variables applied to all steps
+env:
+  UV_VERSION: "0.11.21"
+  UV_PREVIEW: "1"          # Enables the preview uv audit and malware engines
+  UV_MALWARE_CHECK: "1"    # Automatically blocks malicious installs on sync/run
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  merge_group:
+  workflow_dispatch:
+
+jobs:
+  security-check:
+    name: Validate Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      # Pin uv to a known-good, recent release. Pinned by commit SHA rather than
+      # tag: tags are mutable, and a compromised third-party action can be
+      # re-tagged in place (see the tj-actions/changed-files incident).
+      - name: Install uv and setup uv caching
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6.2.0
+        id: setup-python
+        with:
+          python-version: 3.13
+
+      # Step 1: Run uv audit to check for vulnerabilities (CVEs)
+      - name: Audit lockfile for CVEs
+        run: uv audit
+
+      # Step 2: Run a sync. If a package contains known malware,
+      # the OSV-lookup triggers an immediate, non-zero failure exit.
+      #
+      # NOTE: The malware gate only blocks malware that has *already* been
+      # published as an OSV advisory. There is a window between a malicious
+      # upload and its advisory. That gap is covered by uv's dependency
+      # cooldown (`exclude-newer`, a resolution-time setting added in uv
+      # 0.9.17), which is enabled with a 7-day window in pyproject.toml:
+      #
+      #   [tool.uv]
+      #   exclude-newer = "7 days"
+      #
+      # `--no-build` refuses to build any source distribution, so no third-party
+      # setup.py/PEP 517 hook runs on this runner; only pre-built wheels are
+      # installed. `--no-install-project` is required alongside it because bmt
+      # itself is an editable install, which is a build by definition -- and
+      # building our own checkout is not what this gate is guarding against.
+      - name: Verify Environment Sync (Anti-Malware Gate)
+        run: uv sync --frozen --all-groups --no-build --no-install-project
+
+      # Step 3: Build our own package. `--no-install-project` above skips this,
+      # which would otherwise drop two things: that bmt still builds at all, and
+      # that the build backend (hatchling, uv-dynamic-versioning and their
+      # transitive closure) passes the download-time malware check. Those are
+      # resolved unpinned at build time and are absent from uv.lock, so `uv
+      # audit` does not cover them -- this step is their only gate.
+      - name: Verify Project Build
+        run: uv build

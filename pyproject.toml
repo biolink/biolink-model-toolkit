@@ -37,7 +37,12 @@ classifiers = [
 dependencies = [
     "deprecation>=2.1.0,<3.0.0",
     "casefy>=1.1.0,<2.0.0",
-    "biolink-model>=4.4.3,<5.0.0",
+    "biolink-model>=4.4.4,<5.0.0",
+    # Imported directly by src/bmt/toolkit.py. Declared explicitly rather than
+    # relied on transitively: biolink-model 4.4.4 slimmed its runtime deps to
+    # pydantic + linkml-runtime, so these now only reach us via linkml-runtime.
+    "requests>=2.33.0,<3.0.0",
+    "pyyaml>=6.0.1,<7.0.0",
 ]
 
 [dependency-groups]
@@ -64,6 +69,25 @@ fallback-version = "0.0.0"
 
 [tool.hatch.version]
 source = "uv-dynamic-versioning"
+
+[tool.uv]
+# Wait 7 days after a release before resolving to it, giving time for
+# malware/CVE advisories to surface. This is the resolution-time counterpart
+# to the Dependabot `cooldown` setting and covers the window between a
+# malicious upload and its OSV advisory.
+exclude-newer = "7 days"
+
+# biolink-model is first-party and released by this same team, so the cooldown
+# (which exists to catch third-party supply-chain compromise) buys us nothing.
+# Exempt it so bmt can pick up a biolink-model release the day it ships.
+exclude-newer-package = { biolink-model = "0 days" }
+
+# prefixcommons (reached transitively via linkml-runtime) requires
+# pytest-logging, a 2015 package that is published as an sdist only, so
+# installing it executes a setup.py. Nothing in bmt or its test suite uses it.
+# The always-false marker drops it from resolution, which is what lets the
+# dependency-audit workflow run `uv sync --no-build`.
+override-dependencies = ["pytest-logging; sys_platform == 'never'"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
