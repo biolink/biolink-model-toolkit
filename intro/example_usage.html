@@ -182,7 +182,25 @@ version of Biolink Model YAML:</p>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">(</span><span class="s1">&#39;/path/to/biolink-model.yaml&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The path can be a file path or a URL.</p>
+<p>The path can be a file path or a URL. A matching predicate mapping can also be
+loaded from a URL, local file path, open file object, or parsed mapping:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bmt</span><span class="w"> </span><span class="kn">import</span> <span class="n">Toolkit</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">(</span>
+    <span class="s2">&quot;/path/to/biolink-model.yaml&quot;</span><span class="p">,</span>
+    <span class="n">predicate_map</span><span class="o">=</span><span class="s2">&quot;/path/to/predicate_mapping.yaml&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>HTTP predicate mappings are requested with a 30-second timeout by default. Use
+<code class="docutils literal notranslate"><span class="pre">predicate_map_timeout</span></code> to configure the timeout:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">t</span> <span class="o">=</span> <span class="n">Toolkit</span><span class="p">(</span>
+    <span class="s2">&quot;/path/to/biolink-model.yaml&quot;</span><span class="p">,</span>
+    <span class="n">predicate_map</span><span class="o">=</span><span class="s2">&quot;https://example.org/predicate_mapping.yaml&quot;</span><span class="p">,</span>
+    <span class="n">predicate_map_timeout</span><span class="o">=</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="extraordinary-toolkit-warnings">
 <h2>Extraordinary Toolkit Warnings<a class="headerlink" href="#extraordinary-toolkit-warnings" title="Permalink to this heading"></a></h2>
