@@ -24,19 +24,19 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Pin uv to a known-good, recent release. Pinned by commit SHA rather than
       # tag: tags are mutable, and a compromised third-party action can be
       # re-tagged in place (see the tj-actions/changed-files incident).
       - name: Install uv and setup uv caching
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: ${{ env.UV_VERSION }}
           enable-cache: true
 
       - name: Set up Python
-        uses: actions/setup-python@v6.2.0
+        uses: actions/setup-python@v7
         id: setup-python
         with:
           python-version: 3.13
