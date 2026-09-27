@@ -147,15 +147,15 @@ wheels = [
 
 [[package]]
 name = "biolink-model"
-version = "4.4.4"
+version = "4.4.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "linkml-runtime" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/85/f6/0691b06fd1f258d1c1e5e3cdd8293c2c9beed12a2d956ecfaa7280e58694/biolink_model-4.4.4.tar.gz", hash = "sha256:100e84f6ea05c22d8333a8d478f0a4e6b8036ff2afbc5e116a6dc286a06deeb4", size = 4042819, upload-time = "2026-08-10T23:34:47.678Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/95/b63c5b6bb70863585314a6ff14df32b91eaba5f38450a1e94228eef971ed/biolink_model-4.4.5.tar.gz", hash = "sha256:68534bbfa19c6ba979088bcb30e32fac081db36418ea574e7fbd4b03ab4febe4", size = 4115710, upload-time = "2026-09-18T15:06:06.971Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/62/de/a81e071f0aa904cb2e787b26f35e3d3e4c76db23eb22f4a663867bccd387/biolink_model-4.4.4-py3-none-any.whl", hash = "sha256:320ca2d83672e7cc24184cf2f2a415d755273c56f236128712ec457b2cf83c8b", size = 360399, upload-time = "2026-08-10T23:34:46.031Z" },
+    { url = "https://files.pythonhosted.org/packages/19/aa/1a95a68693332df121e143ad84ff1f640cbe5717e5c7ec5dfe521d97d001/biolink_model-4.4.5-py3-none-any.whl", hash = "sha256:62fbd39eb81a41fbf7fa150b550115fe5d1b5b076dc908c32486e37bd7ca7251", size = 370799, upload-time = "2026-09-18T15:06:05.22Z" },
 ]
 
 [[package]]
@@ -383,7 +383,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+    { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
